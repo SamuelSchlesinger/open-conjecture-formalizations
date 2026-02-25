@@ -16,6 +16,7 @@ git clone --recurse-submodules git@github.com:SamuelSchlesinger/open-conjecture-
 | Conjecture | Field | Repository |
 |---|---|---|
 | [Agoh–Giuga](number-theory/ago-giuga/) | Number Theory | [agoh-giuga-conjecture](https://github.com/SamuelSchlesinger/agoh-giuga-conjecture) |
+| [Collatz](number-theory/collatz/) | Number Theory | [collatz-conjecture](https://github.com/SamuelSchlesinger/collatz-conjecture) |
 | [Hadamard](combinatorics/hadamard-conjecture/) | Combinatorics | [hadamard-conjecture](https://github.com/SamuelSchlesinger/hadamard-conjecture) |
 | [Sensitivity](combinatorics/sensitivity/) | Combinatorics | [sensitivity-conjecture](https://github.com/SamuelSchlesinger/sensitivity-conjecture) |
 | [Reconstruction](graph-theory/reconstruction-conjecture/) | Graph Theory | [reconstruction-conjecture](https://github.com/SamuelSchlesinger/reconstruction-conjecture) |

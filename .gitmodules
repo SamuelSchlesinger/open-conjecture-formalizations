@@ -10,3 +10,6 @@
 [submodule "combinatorics/sensitivity"]
 	path = combinatorics/sensitivity
 	url = git@github.com:SamuelSchlesinger/sensitivity-conjecture.git
+[submodule "number-theory/collatz"]
+	path = number-theory/collatz
+	url = https://github.com/SamuelSchlesinger/collatz-conjecture.git
