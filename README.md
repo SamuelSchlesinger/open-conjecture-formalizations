@@ -1,9 +1,26 @@
-# List of Mathematical Conjectures
+# Open Conjecture Formalizations
 
-A comprehensive index of notable mathematical conjectures, transcribed from
+Lean 4 formalizations of open mathematical conjectures, alongside a curated
+index of notable conjectures transcribed from
 [Wikipedia's List of Conjectures](https://en.wikipedia.org/wiki/List_of_conjectures).
 
-## Contents
+## Formalizations
+
+Each conjecture formalization lives in its own repository, included here as a
+git submodule. To clone everything:
+
+```sh
+git clone --recurse-submodules git@github.com:SamuelSchlesinger/open-conjecture-formalizations.git
+```
+
+| Conjecture | Field | Repository |
+|---|---|---|
+| [Agoh–Giuga](number-theory/ago-giuga/) | Number Theory | [agoh-giuga](https://github.com/SamuelSchlesinger/agoh-giuga) |
+| [Hadamard](combinatorics/hadamard-conjecture/) | Combinatorics | [hadamard-conjecture](https://github.com/SamuelSchlesinger/hadamard-conjecture) |
+| [Sensitivity](combinatorics/sensitivity/) | Combinatorics | [sensitivity-conjecture](https://github.com/SamuelSchlesinger/sensitivity-conjecture) |
+| [Reconstruction](graph-theory/reconstruction-conjecture/) | Graph Theory | [reconstruction-conjecture](https://github.com/SamuelSchlesinger/reconstruction-conjecture) |
+
+## Conjecture Index
 
 ### [Open Problems](open-problems/README.md)
 
