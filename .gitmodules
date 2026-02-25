@@ -13,3 +13,6 @@
 [submodule "number-theory/collatz"]
 	path = number-theory/collatz
 	url = https://github.com/SamuelSchlesinger/collatz-conjecture.git
+[submodule "number-theory/erdos-straus"]
+	path = number-theory/erdos-straus
+	url = git@github.com:SamuelSchlesinger/erdos-straus-conjecture.git
