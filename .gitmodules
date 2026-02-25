@@ -1,6 +1,6 @@
 [submodule "number-theory/ago-giuga"]
 	path = number-theory/ago-giuga
-	url = git@github.com:SamuelSchlesinger/agoh-giuga.git
+	url = git@github.com:SamuelSchlesinger/agoh-giuga-conjecture.git
 [submodule "combinatorics/hadamard-conjecture"]
 	path = combinatorics/hadamard-conjecture
 	url = git@github.com:SamuelSchlesinger/hadamard-conjecture.git
