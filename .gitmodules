@@ -1,0 +1,12 @@
+[submodule "number-theory/ago-giuga"]
+	path = number-theory/ago-giuga
+	url = git@github.com:SamuelSchlesinger/agoh-giuga.git
+[submodule "combinatorics/hadamard-conjecture"]
+	path = combinatorics/hadamard-conjecture
+	url = git@github.com:SamuelSchlesinger/hadamard-conjecture.git
+[submodule "graph-theory/reconstruction-conjecture"]
+	path = graph-theory/reconstruction-conjecture
+	url = git@github.com:SamuelSchlesinger/reconstruction-conjecture.git
+[submodule "combinatorics/sensitivity"]
+	path = combinatorics/sensitivity
+	url = git@github.com:SamuelSchlesinger/sensitivity-conjecture.git
