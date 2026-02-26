@@ -25,3 +25,12 @@
 [submodule "number-theory/goldbach"]
 	path = number-theory/goldbach
 	url = git@github.com:SamuelSchlesinger/goldbach-conjecture.git
+[submodule "number-theory/legendre"]
+	path = number-theory/legendre
+	url = git@github.com:SamuelSchlesinger/legendre-conjecture.git
+[submodule "number-theory/twin-prime"]
+	path = number-theory/twin-prime
+	url = git@github.com:SamuelSchlesinger/twin-prime-conjecture.git
+[submodule "number-theory/oppermann"]
+	path = number-theory/oppermann
+	url = git@github.com:SamuelSchlesinger/oppermann-conjecture.git
