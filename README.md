@@ -1,10 +1,3 @@
----
-title: Home
-layout: default
-nav_order: 1
-permalink: /
----
-
 # Open Conjecture Formalizations
 
 Lean 4 formalizations of open mathematical conjectures, alongside a curated
