@@ -1,3 +1,10 @@
+---
+title: Combinatorics
+layout: default
+parent: Open Problems
+nav_order: 6
+---
+
 # Combinatorics & Order Theory — Open Conjectures
 
 [← Back to Open Problems](README.md) · [← Back to Index](../README.md)

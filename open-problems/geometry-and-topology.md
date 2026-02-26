@@ -1,3 +1,10 @@
+---
+title: "Geometry & Topology"
+layout: default
+parent: Open Problems
+nav_order: 4
+---
+
 # Geometry & Topology — Open Conjectures
 
 [← Back to Open Problems](README.md) · [← Back to Index](../README.md)

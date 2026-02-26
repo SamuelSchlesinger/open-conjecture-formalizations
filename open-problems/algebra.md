@@ -1,3 +1,10 @@
+---
+title: Algebra
+layout: default
+parent: Open Problems
+nav_order: 3
+---
+
 # Algebra — Open Conjectures
 
 [← Back to Open Problems](README.md) · [← Back to Index](../README.md)

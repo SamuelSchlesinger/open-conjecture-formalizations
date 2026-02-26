@@ -1,0 +1,32 @@
+remote_theme: just-the-docs/just-the-docs
+
+title: Open Conjecture Formalizations
+description: Lean 4 formalizations of open mathematical conjectures
+
+plugins:
+  - jekyll-relative-links
+
+relative_links:
+  enabled: true
+  collections: true
+
+exclude:
+  - number-theory/ago-giuga/
+  - number-theory/carmichael-totient/
+  - number-theory/collatz/
+  - number-theory/erdos-straus/
+  - number-theory/goldbach/
+  - number-theory/legendre/
+  - number-theory/oppermann/
+  - number-theory/twin-prime/
+  - combinatorics/hadamard-conjecture/
+  - combinatorics/sensitivity/
+  - algebra/herzog-schonheim/
+  - graph-theory/reconstruction-conjecture/
+  - Gemfile
+  - Gemfile.lock
+  - "*.lean"
+  - lakefile.toml
+  - lean-toolchain
+  - lake-manifest.json
+  - ".lake/"

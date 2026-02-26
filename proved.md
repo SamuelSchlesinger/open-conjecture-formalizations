@@ -1,3 +1,9 @@
+---
+title: Proved
+layout: default
+nav_order: 3
+---
+
 # Conjectures Now Proved (Theorems)
 
 [← Back to Index](README.md)

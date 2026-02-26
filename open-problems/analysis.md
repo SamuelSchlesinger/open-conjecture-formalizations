@@ -1,3 +1,10 @@
+---
+title: Analysis
+layout: default
+parent: Open Problems
+nav_order: 5
+---
+
 # Analysis — Open Conjectures
 
 [← Back to Open Problems](README.md) · [← Back to Index](../README.md)

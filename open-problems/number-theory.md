@@ -1,3 +1,10 @@
+---
+title: Number Theory
+layout: default
+parent: Open Problems
+nav_order: 1
+---
+
 # Number Theory — Open Conjectures
 
 [← Back to Open Problems](README.md) · [← Back to Index](../README.md)

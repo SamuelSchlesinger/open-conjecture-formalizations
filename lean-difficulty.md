@@ -1,3 +1,9 @@
+---
+title: Difficulty Ratings
+layout: default
+nav_order: 6
+---
+
 # Lean 4 Formalization Difficulty Assessment
 
 [← Back to Index](README.md)

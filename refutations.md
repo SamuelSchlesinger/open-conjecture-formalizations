@@ -1,3 +1,9 @@
+---
+title: Refutations
+layout: default
+nav_order: 5
+---
+
 # Refutations of Conventional Wisdom
 
 [← Back to Index](README.md)

@@ -1,3 +1,9 @@
+---
+title: Disproved
+layout: default
+nav_order: 4
+---
+
 # Disproved Conjectures
 
 [← Back to Index](README.md)

@@ -1,3 +1,10 @@
+---
+title: Graph Theory
+layout: default
+parent: Open Problems
+nav_order: 2
+---
+
 # Graph Theory — Open Conjectures
 
 [← Back to Open Problems](README.md) · [← Back to Index](../README.md)

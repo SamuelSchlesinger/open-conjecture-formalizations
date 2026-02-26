@@ -1,3 +1,10 @@
+---
+title: Open Problems
+layout: default
+nav_order: 2
+has_children: true
+---
+
 # Open Problems
 
 The following conjectures remain open, organized by mathematical field.

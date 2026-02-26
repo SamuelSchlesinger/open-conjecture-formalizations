@@ -1,3 +1,10 @@
+---
+title: Other Fields
+layout: default
+parent: Open Problems
+nav_order: 7
+---
+
 # Other Fields — Open Conjectures
 
 [← Back to Open Problems](README.md) · [← Back to Index](../README.md)
