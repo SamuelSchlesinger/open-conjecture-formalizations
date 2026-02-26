@@ -16,3 +16,12 @@
 [submodule "number-theory/erdos-straus"]
 	path = number-theory/erdos-straus
 	url = git@github.com:SamuelSchlesinger/erdos-straus-conjecture.git
+[submodule "algebra/herzog-schonheim"]
+	path = algebra/herzog-schonheim
+	url = git@github.com:SamuelSchlesinger/herzog-schonheim-conjecture.git
+[submodule "number-theory/carmichael-totient"]
+	path = number-theory/carmichael-totient
+	url = git@github.com:SamuelSchlesinger/carmichael-totient-conjecture.git
+[submodule "number-theory/goldbach"]
+	path = number-theory/goldbach
+	url = git@github.com:SamuelSchlesinger/goldbach-conjecture.git

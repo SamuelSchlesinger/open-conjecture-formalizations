@@ -16,9 +16,12 @@ git clone --recurse-submodules git@github.com:SamuelSchlesinger/open-conjecture-
 | Conjecture | Field | Repository |
 |---|---|---|
 | [Agoh–Giuga](number-theory/ago-giuga/) | Number Theory | [agoh-giuga-conjecture](https://github.com/SamuelSchlesinger/agoh-giuga-conjecture) |
+| [Carmichael Totient](number-theory/carmichael-totient/) | Number Theory | [carmichael-totient-conjecture](https://github.com/SamuelSchlesinger/carmichael-totient-conjecture) |
 | [Collatz](number-theory/collatz/) | Number Theory | [collatz-conjecture](https://github.com/SamuelSchlesinger/collatz-conjecture) |
 | [Erdős–Straus](number-theory/erdos-straus/) | Number Theory | [erdos-straus-conjecture](https://github.com/SamuelSchlesinger/erdos-straus-conjecture) |
+| [Strong Goldbach](number-theory/goldbach/) | Number Theory | [goldbach-conjecture](https://github.com/SamuelSchlesinger/goldbach-conjecture) |
 | [Hadamard](combinatorics/hadamard-conjecture/) | Combinatorics | [hadamard-conjecture](https://github.com/SamuelSchlesinger/hadamard-conjecture) |
+| [Herzog–Schönheim](algebra/herzog-schonheim/) | Algebra | [herzog-schonheim-conjecture](https://github.com/SamuelSchlesinger/herzog-schonheim-conjecture) |
 | [Sensitivity](combinatorics/sensitivity/) | Combinatorics | [sensitivity-conjecture](https://github.com/SamuelSchlesinger/sensitivity-conjecture) |
 | [Reconstruction](graph-theory/reconstruction-conjecture/) | Graph Theory | [reconstruction-conjecture](https://github.com/SamuelSchlesinger/reconstruction-conjecture) |
 
