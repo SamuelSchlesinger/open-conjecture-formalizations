@@ -19,7 +19,10 @@ git clone --recurse-submodules git@github.com:SamuelSchlesinger/open-conjecture-
 | [Carmichael Totient](number-theory/carmichael-totient/) | Number Theory | [carmichael-totient-conjecture](https://github.com/SamuelSchlesinger/carmichael-totient-conjecture) |
 | [Collatz](number-theory/collatz/) | Number Theory | [collatz-conjecture](https://github.com/SamuelSchlesinger/collatz-conjecture) |
 | [Erdős–Straus](number-theory/erdos-straus/) | Number Theory | [erdos-straus-conjecture](https://github.com/SamuelSchlesinger/erdos-straus-conjecture) |
+| [Legendre](number-theory/legendre/) | Number Theory | [legendre-conjecture](https://github.com/SamuelSchlesinger/legendre-conjecture) |
+| [Oppermann](number-theory/oppermann/) | Number Theory | [oppermann-conjecture](https://github.com/SamuelSchlesinger/oppermann-conjecture) |
 | [Strong Goldbach](number-theory/goldbach/) | Number Theory | [goldbach-conjecture](https://github.com/SamuelSchlesinger/goldbach-conjecture) |
+| [Twin Prime](number-theory/twin-prime/) | Number Theory | [twin-prime-conjecture](https://github.com/SamuelSchlesinger/twin-prime-conjecture) |
 | [Hadamard](combinatorics/hadamard-conjecture/) | Combinatorics | [hadamard-conjecture](https://github.com/SamuelSchlesinger/hadamard-conjecture) |
 | [Herzog–Schönheim](algebra/herzog-schonheim/) | Algebra | [herzog-schonheim-conjecture](https://github.com/SamuelSchlesinger/herzog-schonheim-conjecture) |
 | [Sensitivity](combinatorics/sensitivity/) | Combinatorics | [sensitivity-conjecture](https://github.com/SamuelSchlesinger/sensitivity-conjecture) |
