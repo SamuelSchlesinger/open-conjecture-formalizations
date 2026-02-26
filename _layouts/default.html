@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="{{ page.title | default: site.title }} — {{ site.description }}">
+    <title>{{ page.title | default: site.title }} — {{ site.title }}</title>
+    <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
+    <script src="https://kit.fontawesome.com/3b83e0293b.js" crossorigin="anonymous"></script>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" as="style">
+</head>
+<body>
+    <div class="page-wrapper">
+        <header>
+            <div class="container">
+                <div class="header-content">
+                    <h1 class="site-title"><a href="https://samuelschlesinger.github.io/">SG Schlesinger</a></h1>
+                    <button class="mobile-menu-toggle" aria-label="Toggle navigation menu" aria-expanded="false">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                    <nav id="navigation">
+                        <ul>
+                            <li><a href="{{ '/' | relative_url }}" {% if page.url == '/' or page.url == '/index.html' %}class="active"{% endif %}>Home</a></li>
+                            <li><a href="{{ '/open-problems/' | relative_url }}" {% if page.url contains 'open-problems' %}class="active"{% endif %}>Open Problems</a></li>
+                            <li><a href="{{ '/proved' | relative_url }}" {% if page.url contains 'proved' %}class="active"{% endif %}>Proved</a></li>
+                            <li><a href="{{ '/disproved' | relative_url }}" {% if page.url contains 'disproved' %}class="active"{% endif %}>Disproved</a></li>
+                            <li><a href="{{ '/refutations' | relative_url }}" {% if page.url contains 'refutations' %}class="active"{% endif %}>Refutations</a></li>
+                            <li><a href="{{ '/lean-difficulty' | relative_url }}" {% if page.url contains 'lean-difficulty' %}class="active"{% endif %}>Difficulty</a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </header>
+
+        <div class="content-wrapper">
+            {% if page.url contains 'open-problems' and page.url != '/open-problems/' and page.url != '/open-problems/index.html' and page.url != '/open-problems/README' %}
+            <aside class="sidebar">
+                <div class="sidebar-title">Fields</div>
+                <ul>
+                    <li><a href="{{ '/open-problems/' | relative_url }}" {% if page.url == '/open-problems/' or page.url == '/open-problems/index.html' %}class="active"{% endif %}>Overview</a></li>
+                    <li><a href="{{ '/open-problems/number-theory' | relative_url }}" {% if page.url contains 'number-theory' %}class="active"{% endif %}>Number Theory</a></li>
+                    <li><a href="{{ '/open-problems/graph-theory' | relative_url }}" {% if page.url contains 'graph-theory' %}class="active"{% endif %}>Graph Theory</a></li>
+                    <li><a href="{{ '/open-problems/algebra' | relative_url }}" {% if page.url contains 'algebra' %}class="active"{% endif %}>Algebra</a></li>
+                    <li><a href="{{ '/open-problems/geometry-and-topology' | relative_url }}" {% if page.url contains 'geometry-and-topology' %}class="active"{% endif %}>Geometry & Topology</a></li>
+                    <li><a href="{{ '/open-problems/analysis' | relative_url }}" {% if page.url contains 'analysis' %}class="active"{% endif %}>Analysis</a></li>
+                    <li><a href="{{ '/open-problems/combinatorics' | relative_url }}" {% if page.url contains 'combinatorics' %}class="active"{% endif %}>Combinatorics</a></li>
+                    <li><a href="{{ '/open-problems/other' | relative_url }}" {% if page.url contains '/other' %}class="active"{% endif %}>Other Fields</a></li>
+                </ul>
+            </aside>
+            {% endif %}
+
+            <main class="main-content">
+                {{ content }}
+            </main>
+        </div>
+
+        <footer>
+            <div class="container">
+                <div class="footer-content">
+                    <p class="footer-text">&copy; Samuel Schlesinger. All rights reserved.</p>
+                    <ul class="footer-links">
+                        <li>
+                            <a href="https://github.com/SamuelSchlesinger" target="_blank" rel="noopener">
+                                <i class="fab fa-github"></i> GitHub
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://samuelschlesinger.github.io/" rel="noopener">
+                                <i class="fas fa-home"></i> Main Site
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Page load animation
+        window.addEventListener('load', function() {
+            document.body.classList.add('loaded');
+        });
+
+        // Mobile menu toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggle = document.querySelector('.mobile-menu-toggle');
+            const nav = document.getElementById('navigation');
+
+            toggle.addEventListener('click', function() {
+                const isActive = nav.classList.contains('active');
+                nav.classList.toggle('active');
+                toggle.classList.toggle('active');
+                toggle.setAttribute('aria-expanded', !isActive);
+            });
+
+            // Close on link click
+            nav.querySelectorAll('a').forEach(function(link) {
+                link.addEventListener('click', function() {
+                    nav.classList.remove('active');
+                    toggle.classList.remove('active');
+                    toggle.setAttribute('aria-expanded', 'false');
+                });
+            });
+
+            // Close on outside click
+            document.addEventListener('click', function(e) {
+                if (!nav.contains(e.target) && !toggle.contains(e.target)) {
+                    nav.classList.remove('active');
+                    toggle.classList.remove('active');
+                    toggle.setAttribute('aria-expanded', 'false');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

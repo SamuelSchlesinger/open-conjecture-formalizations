@@ -11,15 +11,18 @@ The following conjectures remain open, organized by mathematical field.
 
 ## By Field
 
-| # | Field | Count | Page |
-|---|-------|-------|------|
-| 1 | [Number Theory](number-theory.md) | 32 | Primes, Diophantine equations, arithmetic functions |
-| 2 | [Graph Theory](graph-theory.md) | 11 | Colorings, matchings, graph structure |
-| 3 | [Algebra](algebra.md) | 18 | Algebraic geometry, topology, K-theory, ring theory, group theory |
-| 4 | [Geometry & Topology](geometry-and-topology.md) | 14 | Differential, discrete, geometric topology, Diophantine geometry |
-| 5 | [Analysis](analysis.md) | 7 | Complex, harmonic, functional analysis, operator theory |
-| 6 | [Combinatorics & Order Theory](combinatorics.md) | 7 | Enumerative, extremal combinatorics, partial orders |
-| 7 | [Other Fields](other.md) | 14 | Dynamical systems, computational complexity, probability, and more |
+Counts are intentionally omitted here to avoid duplicated bookkeeping.
+Each field page is the source of truth for current totals.
+
+| # | Field | Page |
+|---|-------|------|
+| 1 | [Number Theory](number-theory.md) | Primes, Diophantine equations, arithmetic functions |
+| 2 | [Graph Theory](graph-theory.md) | Colorings, matchings, graph structure |
+| 3 | [Algebra](algebra.md) | Algebraic geometry, topology, K-theory, ring theory, group theory |
+| 4 | [Geometry & Topology](geometry-and-topology.md) | Differential, discrete, geometric topology, Diophantine geometry |
+| 5 | [Analysis](analysis.md) | Complex, harmonic, functional analysis, operator theory |
+| 6 | [Combinatorics & Order Theory](combinatorics.md) | Enumerative, extremal combinatorics, partial orders |
+| 7 | [Other Fields](other.md) | Dynamical systems, computational complexity, probability, and more |
 
 ## Alphabetical Index
 

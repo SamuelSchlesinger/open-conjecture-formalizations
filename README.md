@@ -40,13 +40,15 @@ git clone --recurse-submodules git@github.com:SamuelSchlesinger/open-conjecture-
 
 Conjectures that remain unproven, organized by mathematical field:
 
-1. [Number Theory](open-problems/number-theory.md) — 32 conjectures
-2. [Graph Theory](open-problems/graph-theory.md) — 11 conjectures
-3. [Algebra](open-problems/algebra.md) — 18 conjectures
-4. [Geometry & Topology](open-problems/geometry-and-topology.md) — 14 conjectures
-5. [Analysis](open-problems/analysis.md) — 7 conjectures
-6. [Combinatorics & Order Theory](open-problems/combinatorics.md) — 7 conjectures
-7. [Other Fields](open-problems/other.md) — 14 conjectures
+Up-to-date accounting lives on the field pages:
+
+1. [Number Theory](open-problems/number-theory.md)
+2. [Graph Theory](open-problems/graph-theory.md)
+3. [Algebra](open-problems/algebra.md)
+4. [Geometry & Topology](open-problems/geometry-and-topology.md)
+5. [Analysis](open-problems/analysis.md)
+6. [Combinatorics & Order Theory](open-problems/combinatorics.md)
+7. [Other Fields](open-problems/other.md)
 
 ### [Conjectures Now Proved](proved.md)
 
