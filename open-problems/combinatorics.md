@@ -42,4 +42,4 @@ nav_order: 6
 - van Lint, J. H. & Wilson, R. M. *A Course in Combinatorics*. 2nd ed., Cambridge University Press, 2001.
 - Stanley, R. P. *Enumerative Combinatorics*. Vol. 1 & 2, Cambridge University Press.
 
-For references on the formalized Hadamard and Sensitivity conjectures, see the [centralized bibliography](../references.md#combinatorics).
+For references on the formalized Dittert, Gold partition, Hadamard, and Sensitivity conjectures, see the [centralized bibliography](../references.md#combinatorics).

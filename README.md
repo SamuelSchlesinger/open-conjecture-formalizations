@@ -6,8 +6,11 @@ index of notable conjectures transcribed from
 
 ## Formalizations
 
-Each conjecture formalization lives in its own repository, included here as a
-git submodule. To clone everything:
+Most existing conjecture formalizations live in standalone repositories and are
+included here as git submodules. New formalizations may also be developed
+directly in this repository under `<field>/<slug>/`.
+
+To clone everything (including current submodules):
 
 ```sh
 git clone --recurse-submodules git@github.com:SamuelSchlesinger/open-conjecture-formalizations.git
@@ -19,10 +22,15 @@ git clone --recurse-submodules git@github.com:SamuelSchlesinger/open-conjecture-
 | [Carmichael Totient](https://samuelschlesinger.github.io/carmichael-totient-conjecture/docs/) | Number Theory | [carmichael-totient-conjecture](https://github.com/SamuelSchlesinger/carmichael-totient-conjecture) |
 | [Collatz](https://samuelschlesinger.github.io/collatz-conjecture/docs/) | Number Theory | [collatz-conjecture](https://github.com/SamuelSchlesinger/collatz-conjecture) |
 | [Erdős–Straus](https://samuelschlesinger.github.io/erdos-straus-conjecture/docs/) | Number Theory | [erdos-straus-conjecture](https://github.com/SamuelSchlesinger/erdos-straus-conjecture) |
+| [Catalan-Mersenne](number-theory/catalan-mersenne/README.md) | Number Theory | In-repo directory (`number-theory/catalan-mersenne`) |
 | [Legendre](https://samuelschlesinger.github.io/legendre-conjecture/docs/) | Number Theory | [legendre-conjecture](https://github.com/SamuelSchlesinger/legendre-conjecture) |
+| [New Mersenne](number-theory/new-mersenne/README.md) | Number Theory | In-repo directory (`number-theory/new-mersenne`) |
 | [Oppermann](https://samuelschlesinger.github.io/oppermann-conjecture/docs/) | Number Theory | [oppermann-conjecture](https://github.com/SamuelSchlesinger/oppermann-conjecture) |
+| [Fortune](number-theory/fortune/README.md) | Number Theory | In-repo directory (`number-theory/fortune`) |
 | [Strong Goldbach](https://samuelschlesinger.github.io/goldbach-conjecture/docs/) | Number Theory | [goldbach-conjecture](https://github.com/SamuelSchlesinger/goldbach-conjecture) |
 | [Twin Prime](https://samuelschlesinger.github.io/twin-prime-conjecture/docs/) | Number Theory | [twin-prime-conjecture](https://github.com/SamuelSchlesinger/twin-prime-conjecture) |
+| [Dittert](combinatorics/dittert/README.md) | Combinatorics | In-repo directory (`combinatorics/dittert`) |
+| [Gold Partition](combinatorics/gold-partition/README.md) | Combinatorics | In-repo directory (`combinatorics/gold-partition`) |
 | [Hadamard](https://samuelschlesinger.github.io/hadamard-conjecture/docs/) | Combinatorics | [hadamard-conjecture](https://github.com/SamuelSchlesinger/hadamard-conjecture) |
 | [Herzog–Schönheim](https://samuelschlesinger.github.io/herzog-schonheim-conjecture/docs/) | Algebra | [herzog-schonheim-conjecture](https://github.com/SamuelSchlesinger/herzog-schonheim-conjecture) |
 | [Sensitivity](https://samuelschlesinger.github.io/sensitivity-conjecture/docs/) | Combinatorics | [sensitivity-conjecture](https://github.com/SamuelSchlesinger/sensitivity-conjecture) |

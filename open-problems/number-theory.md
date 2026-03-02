@@ -71,4 +71,4 @@ nav_order: 1
 - Guy, R. K. *Unsolved Problems in Number Theory*. 3rd ed., Springer, 2004.
 - Ireland, K. & Rosen, M. *A Classical Introduction to Modern Number Theory*. Springer GTM 84.
 
-For references on formalized conjectures (Agoh–Giuga, Carmichael Totient, Collatz, Erdős–Straus, Goldbach, Legendre, Oppermann, Twin Prime), see the [centralized bibliography](../references.md#number-theory).
+For references on formalized conjectures (Agoh–Giuga, Carmichael Totient, Catalan-Mersenne, Collatz, Erdős–Straus, Fortune, Goldbach, Legendre, New Mersenne, Oppermann, Twin Prime), see the [centralized bibliography](../references.md#number-theory).

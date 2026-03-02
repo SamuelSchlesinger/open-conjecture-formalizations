@@ -4,8 +4,8 @@
 
 This is an umbrella repository containing:
 
-- **Lean 4 submodules** — each conjecture formalization lives in its own repo
-  under `<field>/<slug>/` (e.g. `number-theory/collatz/`)
+- **Lean 4 projects** — existing formalizations are mostly submodules; new
+  projects may live directly under `<field>/<slug>/` (e.g. `number-theory/fortune/`)
 - **Jekyll site** — GitHub Pages site with layout in `_layouts/`, styles in
   `assets/css/`, and content pages at the root and under `open-problems/`
 - **Open-problems index** — curated tables of open conjectures organized by
@@ -22,14 +22,15 @@ This is an umbrella repository containing:
 | `CONTRIBUTING.md` | Contributor workflow and review checklist |
 | `references.md` | Centralized bibliography |
 
-## Submodule Conventions
+## Project Conventions
 
-- **SSH URLs only** — `.gitmodules` entries must use `git@github.com:…`
+- **Policy** — keep existing submodules as-is; prefer in-repo directories for new work
+- **SSH URLs only (legacy submodules)** — `.gitmodules` entries must use `git@github.com:…`
 - **Lean version** — pin `leanprover/lean4:v4.28.0` in `lean-toolchain`
 - **Mathlib version** — pin `v4.28.0` in `lakefile.toml`
 - **Lake TOML format** — use top-level `name` (not `[package]`); dependencies
   use `rev` (not `version = "git#..."`)
-- **`.gitignore`** — every submodule must ignore `/.lake` at minimum
+- **`.gitignore`** — every Lean project directory must ignore `/.lake` at minimum
 
 ## Lean Coding Conventions
 
@@ -70,8 +71,8 @@ This is an umbrella repository containing:
 
 ### Phase 5: Literature & References
 1. **Cite sources in doc-comments** — use author names inline, matching
-   the submodule's references. File-level headers use `Reference: URL`.
-2. **Update submodule README** — document the result and its status
+   the project's references. File-level headers use `Reference: URL`.
+2. **Update project README** — document the result and its status
 3. **Update centralized `references.md`** — add citations for new papers used
 4. **Classify novelty** — is this a formalization of a known result, or
    potentially new? If uncertain, note what literature search was done.
@@ -90,8 +91,8 @@ Before marking any theorem as "done":
 
 See `CONTRIBUTING.md` for the full workflow. In brief:
 
-1. Create a standalone Lean repo with pinned toolchain and Mathlib
-2. Add it as a submodule: `git submodule add git@github.com:SamuelSchlesinger/<repo>.git <field>/<slug>`
+1. Create a new in-repo Lean project at `<field>/<slug>` with pinned toolchain and Mathlib
+2. Follow the standard module layout (`Defs`, `Basic`, `SmallCases`, `Conjecture`)
 3. Update `README.md`, the relevant `open-problems/<field>.md`, and `references.md`
 4. Ensure CI passes (hygiene + Jekyll + Lean build)
 
@@ -108,4 +109,4 @@ GitHub Actions workflow (`.github/workflows/ci.yml`) runs three jobs:
 
 1. **hygiene** — validates submodule URLs are SSH, no build artifacts staged
 2. **jekyll** — builds the Jekyll site to catch broken links/syntax
-3. **lean-build** — matrix build across all submodules using `leanprover/lean-action@v1`
+3. **lean-build** — matrix build across configured Lean projects using `leanprover/lean-action@v1`
