@@ -57,3 +57,10 @@ Conjectures that have been shown to be false via counterexample.
 
 Historical examples of widely-accepted mathematical beliefs that were later
 shown to be false.
+
+## Acknowledgments
+
+This project is developed with AI assistance (Claude by Anthropic). The Lean
+formalizations, conjecture transcriptions, and documentation have been produced
+through human–AI collaboration. All formal proofs are machine-checked by Lean
+regardless of how they were authored.
