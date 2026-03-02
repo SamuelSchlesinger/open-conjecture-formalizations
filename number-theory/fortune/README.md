@@ -43,7 +43,7 @@ where `nthPrimorial n = ∏_{i < n} p_i` and `nthPrime i` are formalized from `N
 | 2.A (quantitative bound) | `Route2ReductionBound` | conditional: reduced to `Route2IntervalPrimeExistence` |
 | 2.B (reduction theorem) | `Route2BoundImpliesFortune` | proved |
 | 3 (congruence obstructions) | `Route3CongruenceObstructions` | proved |
-| 4 (prime-divisor profile) | `Route4PrimeDivisorProfile` | proved |
+| 4 (prime-divisor profile) | `Route4PrimeDivisorProfile` | proved (coprimality + all nontrivial divisors exceed `lastIncludedPrime n`) |
 | 5 (tightened lower interval) | `Route5LowerIntervalTightening` | proved |
 | 6 (certified finite range) | `Route6CertifiedRange` | proved for `1 <= n <= 5` |
 | Main conjecture | `fortune_conjecture` | open |
@@ -57,8 +57,10 @@ where `nthPrimorial n = ∏_{i < n} p_i` and `nthPrime i` are formalized from `N
 | Least Fortunate offsets are unique | `leastFortunateOffset_unique` / `existsUnique_leastFortunateOffset` | proved |
 | Any Fortunate offset is coprime to the indexed primorial | `fortunateOffset_coprime_nthPrimorial` | proved |
 | Any Fortunate offset is coprime to `primorial (lastIncludedPrime n)` | `fortunateOffset_coprime_primorial_lastIncludedPrime` | proved |
+| Any least offset is coprime to `primorial (lastIncludedPrime n)` | `leastOffset_coprime_primorial_lastIncludedPrime` | proved |
 | No included prime divides a least offset (indexed congruence form) | `leastFortunateOffset_not_modEq_zero_nthPrime` | proved |
 | Prime divisors of least offsets are above `lastIncludedPrime n` | `prime_divisor_gt_lastIncludedPrime_of_leastOffset` | proved |
+| Any nontrivial divisor of least offsets is above `lastIncludedPrime n` | `divisor_gt_lastIncludedPrime_of_leastOffset` | proved |
 | Primorial upper-interval primality criterion (`q# + 1 < p < q# + r^2`) | `prime_sub_primorial_of_interval` | proved |
 | Primorial lower-interval primality criterion (tightened side condition) | `prime_primorial_sub_of_interval_tight` | proved |
 | Certified finite range extension | `hasPrimeLeastFortunateOffset_one_to_five` | proved |

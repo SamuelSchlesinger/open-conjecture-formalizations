@@ -93,16 +93,17 @@ theorem route3_congruenceObstructions :
 
 /-- Route 4 prime-divisor profile strengthening. -/
 def Route4PrimeDivisorProfile : Prop :=
-  ∀ n m p : Nat, 1 ≤ n →
+  ∀ n m : Nat, 1 ≤ n →
     IsLeastFortunateOffset n m →
-    Nat.Prime p →
-    p ∣ m →
-    lastIncludedPrime n < p
+    Nat.Coprime m (primorial (lastIncludedPrime n)) ∧
+      (∀ d : Nat, 1 < d → d ∣ m → lastIncludedPrime n < d)
 
 theorem route4_primeDivisorProfile :
     Route4PrimeDivisorProfile := by
-  intro n m p hn hLeast hp hpdvd
-  exact prime_divisor_gt_lastIncludedPrime_of_leastOffset hn hLeast hp hpdvd
+  intro n m hn hLeast
+  refine ⟨leastOffset_coprime_primorial_lastIncludedPrime hn hLeast, ?_⟩
+  intro d hd_gt_one hddvd
+  exact divisor_gt_lastIncludedPrime_of_leastOffset hn hLeast hd_gt_one hddvd
 
 /-- Route 5 tightened lower-interval theorem. -/
 def Route5LowerIntervalTightening : Prop :=

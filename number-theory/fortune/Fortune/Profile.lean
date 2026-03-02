@@ -35,6 +35,53 @@ theorem prime_divisor_gt_lastIncludedPrime_of_leastOffset {n m p : Nat}
     lastIncludedPrime n < p :=
   prime_divisor_gt_lastIncludedPrime_of_fortunateOffset hn hLeast.1 hp hpdvd
 
+/-- Any nontrivial divisor of a Fortunate offset lies above `lastIncludedPrime n`. -/
+theorem divisor_gt_lastIncludedPrime_of_fortunateOffset {n m d : Nat}
+    (hn : 1 ≤ n)
+    (hOffset : IsFortunateOffset n m)
+    (hd_gt_one : 1 < d)
+    (hddvd : d ∣ m) :
+    lastIncludedPrime n < d := by
+  let p := Nat.minFac d
+  have hp_prime : Nat.Prime p := Nat.minFac_prime (n := d) (ne_of_gt hd_gt_one)
+  have hp_dvd_d : p ∣ d := Nat.minFac_dvd d
+  have hp_dvd_m : p ∣ m := dvd_trans hp_dvd_d hddvd
+  have hlast_lt_p : lastIncludedPrime n < p :=
+    prime_divisor_gt_lastIncludedPrime_of_fortunateOffset hn hOffset hp_prime hp_dvd_m
+  have hd_pos : 0 < d := lt_trans (by decide : 0 < 1) hd_gt_one
+  have hp_le_d : p ≤ d := Nat.minFac_le hd_pos
+  exact lt_of_lt_of_le hlast_lt_p hp_le_d
+
+/-- Any nontrivial divisor of a least Fortunate offset lies above `lastIncludedPrime n`. -/
+theorem divisor_gt_lastIncludedPrime_of_leastOffset {n m d : Nat}
+    (hn : 1 ≤ n)
+    (hLeast : IsLeastFortunateOffset n m)
+    (hd_gt_one : 1 < d)
+    (hddvd : d ∣ m) :
+    lastIncludedPrime n < d :=
+  divisor_gt_lastIncludedPrime_of_fortunateOffset hn hLeast.1 hd_gt_one hddvd
+
+/-- Least Fortunate offsets are coprime to `primorial (lastIncludedPrime n)`. -/
+theorem leastOffset_coprime_primorial_lastIncludedPrime {n m : Nat}
+    (hn : 1 ≤ n) (hLeast : IsLeastFortunateOffset n m) :
+    Nat.Coprime m (primorial (lastIncludedPrime n)) := by
+  have hcop : Nat.Coprime m (nthPrimorial n) := fortunateOffset_coprime_nthPrimorial hLeast.1
+  have hprimorial : nthPrimorial n = primorial (lastIncludedPrime n) :=
+    bridge_nthPrimorial_eq_primorial_lastIncludedPrime n hn
+  simpa [hprimorial] using hcop
+
+/-- No nontrivial divisor at most `lastIncludedPrime n` can divide a least offset. -/
+theorem leastOffset_not_dvd_of_le_lastIncludedPrime {n m d : Nat}
+    (hn : 1 ≤ n)
+    (hLeast : IsLeastFortunateOffset n m)
+    (hd_gt_one : 1 < d)
+    (hd_le : d ≤ lastIncludedPrime n) :
+    ¬ d ∣ m := by
+  intro hddvd
+  have hlast_lt_d : lastIncludedPrime n < d :=
+    divisor_gt_lastIncludedPrime_of_leastOffset hn hLeast hd_gt_one hddvd
+  exact (Nat.not_lt_of_ge hd_le) hlast_lt_d
+
 /-- Equivalent threshold-primorial coprimality profile for indexed Fortunate offsets. -/
 theorem fortunateOffset_coprime_primorial_lastIncludedPrime {n m : Nat}
     (hn : 1 ≤ n) (hOffset : IsFortunateOffset n m) :
