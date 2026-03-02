@@ -3,6 +3,8 @@ import Fortune.Literature
 import Fortune.Bridge
 import Fortune.Reduction
 import Fortune.ReductionBound
+import Fortune.IntervalExistence
+import Fortune.IntervalExistenceSmall
 import Fortune.Congruence
 import Fortune.Profile
 import Fortune.LowerInterval
@@ -69,6 +71,39 @@ theorem route2_reductionBound_of_intervalPrimeExistence :
     Route2IntervalPrimeExistence → Route2ReductionBound := by
   intro hInterval
   exact reduction_bound_of_intervalPrimeExists_at_lastIncluded hInterval
+
+/-- Converse Route 2 direction: the reduction bound yields interval-prime existence. -/
+theorem route2_intervalPrimeExistence_of_reductionBound :
+    Route2ReductionBound → Route2IntervalPrimeExistence := by
+  intro hBound
+  exact intervalPrimeExistence_of_reductionBound hBound
+
+/-- Route 2 equivalence between interval-prime existence and reduction bound. -/
+theorem route2_intervalPrimeExistence_iff_reductionBound :
+    Route2IntervalPrimeExistence ↔ Route2ReductionBound :=
+  intervalPrimeExistence_iff_reductionBound
+
+/-- Finite verified interval-prime existence for `1 ≤ n ≤ 5`. -/
+def Route2IntervalPrimeExistenceOneToFive : Prop :=
+  ∀ n r : Nat, 1 ≤ n → n ≤ 5 →
+    ConsecutivePrimes (lastIncludedPrime n) r →
+    IntervalPrimeExistsAtPrime (lastIncludedPrime n) r
+
+theorem route2_intervalPrimeExistence_one_to_five_progress :
+    Route2IntervalPrimeExistenceOneToFive := by
+  intro n r hn1 hn5 hqr
+  exact Fortune.route2_intervalPrimeExistence_one_to_five hn1 hn5 hqr
+
+def Route2ReductionBoundOneToFive : Prop :=
+  ∀ n m r : Nat, 1 ≤ n → n ≤ 5 →
+    IsLeastFortunateOffset n m →
+    ConsecutivePrimes (lastIncludedPrime n) r →
+    m < r ^ 2
+
+theorem route2_reductionBound_one_to_five_progress :
+    Route2ReductionBoundOneToFive := by
+  intro n m r hn1 hn5 hLeast hqr
+  exact Fortune.route2_reductionBound_one_to_five hn1 hn5 hLeast hqr
 
 /-- Route 2.B reduction theorem. -/
 def Route2BoundImpliesFortune : Prop :=

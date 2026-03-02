@@ -26,6 +26,8 @@ where `nthPrimorial n = ∏_{i < n} p_i` and `nthPrime i` are formalized from `N
 | `Fortune.Literature` | Primorial interval theorems (Theorem 17/18 style) and Fortune-offset corollary | 0 |
 | `Fortune.Bridge` | Route 1 bridges between indexed and threshold primorial models | 0 |
 | `Fortune.ReductionBound` | Conditional Route 2.A derivation from interval-prime existence | 0 |
+| `Fortune.IntervalExistence` | Route 2 equivalences: interval-prime existence ↔ reduction bound | 0 |
+| `Fortune.IntervalExistenceSmall` | Finite (`1 <= n <= 5`) interval-existence and reduction-bound verification | 0 |
 | `Fortune.Reduction` | Route 2.B reduction: quantitative bound implies `FortuneConjecture` | 0 |
 | `Fortune.Congruence` | Route 3 congruence obstructions for indexed/threshold least offsets | 0 |
 | `Fortune.Profile` | Route 4 prime-divisor profile strengthening | 0 |
@@ -40,7 +42,7 @@ where `nthPrimorial n = ∏_{i < n} p_i` and `nthPrime i` are formalized from `N
 | Route | Lean statement(s) | Status |
 |-------|-------------------|--------|
 | 1.A/1.B/1.C (bridges) | `Route1PrimorialBridge`, `Route1LeastOffsetBridge`, `Route1NextPrimeWitness` | proved |
-| 2.A (quantitative bound) | `Route2ReductionBound` | conditional: reduced to `Route2IntervalPrimeExistence` |
+| 2.A (quantitative bound) | `Route2ReductionBound` | equivalent to `Route2IntervalPrimeExistence`; proved for `1 <= n <= 5` |
 | 2.B (reduction theorem) | `Route2BoundImpliesFortune` | proved |
 | 3 (congruence obstructions) | `Route3CongruenceObstructions` | proved |
 | 4 (prime-divisor profile) | `Route4PrimeDivisorProfile` | proved (coprimality + all nontrivial divisors exceed `lastIncludedPrime n`) |
@@ -62,6 +64,10 @@ where `nthPrimorial n = ∏_{i < n} p_i` and `nthPrime i` are formalized from `N
 | Prime divisors of least offsets are above `lastIncludedPrime n` | `prime_divisor_gt_lastIncludedPrime_of_leastOffset` | proved |
 | Any nontrivial divisor of least offsets is above `lastIncludedPrime n` | `divisor_gt_lastIncludedPrime_of_leastOffset` | proved |
 | Primorial upper-interval primality criterion (`q# + 1 < p < q# + r^2`) | `prime_sub_primorial_of_interval` | proved |
+| Upper-interval existence as `p`-form ↔ offset `k`-form | `intervalPrimeExistsAtPrime_iff_offsetPrimeExistsAtPrime` | proved |
+| Route 2 bridge equivalence (`interval existence ↔ reduction bound`) | `route2_intervalPrimeExistence_iff_reductionBound` | proved |
+| Finite route-2 interval existence (`1 <= n <= 5`) | `route2_intervalPrimeExistence_one_to_five` | proved |
+| Finite route-2 reduction bound (`1 <= n <= 5`) | `route2_reductionBound_one_to_five` | proved |
 | Primorial lower-interval primality criterion (tightened side condition) | `prime_primorial_sub_of_interval_tight` | proved |
 | Certified finite range extension | `hasPrimeLeastFortunateOffset_one_to_five` | proved |
 
