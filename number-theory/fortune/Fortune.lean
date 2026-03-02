@@ -4,5 +4,6 @@ import Fortune.Structure
 import Fortune.Existence
 import Fortune.Bounds
 import Fortune.Literature
+import Fortune.TODO
 import Fortune.SmallCases
 import Fortune.Conjecture
