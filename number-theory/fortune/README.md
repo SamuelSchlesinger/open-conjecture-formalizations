@@ -24,8 +24,29 @@ where `nthPrimorial n = ∏_{i < n} p_i` and `nthPrime i` are formalized from `N
 | `Fortune.Existence` | Existence of offsets and existence/uniqueness of least offsets | 0 |
 | `Fortune.Bounds` | `minFac` and growth lower bounds for Fortunate offsets | 0 |
 | `Fortune.Literature` | Primorial interval theorems (Theorem 17/18 style) and Fortune-offset corollary | 0 |
+| `Fortune.Bridge` | Route 1 bridges between indexed and threshold primorial models | 0 |
+| `Fortune.ReductionBound` | Conditional Route 2.A derivation from interval-prime existence | 0 |
+| `Fortune.Reduction` | Route 2.B reduction: quantitative bound implies `FortuneConjecture` | 0 |
+| `Fortune.Congruence` | Route 3 congruence obstructions for indexed/threshold least offsets | 0 |
+| `Fortune.Profile` | Route 4 prime-divisor profile strengthening | 0 |
+| `Fortune.LowerInterval` | Route 5 tightened lower-interval theorem variant | 0 |
+| `Fortune.CertifiedRange` | Route 6 certified finite extension (`1 <= n <= 5`) | 0 |
+| `Fortune.Progress` | Route-level status statements and proved implications | 0 |
 | `Fortune.SmallCases` | Finite-range theorem for `1 <= n <= 4` | 0 |
 | `Fortune.Conjecture` | Main open statement and expanded form | 1 |
+
+## Route Progress
+
+| Route | Lean statement(s) | Status |
+|-------|-------------------|--------|
+| 1.A/1.B/1.C (bridges) | `Route1PrimorialBridge`, `Route1LeastOffsetBridge`, `Route1NextPrimeWitness` | proved |
+| 2.A (quantitative bound) | `Route2ReductionBound` | conditional: reduced to `Route2IntervalPrimeExistence` |
+| 2.B (reduction theorem) | `Route2BoundImpliesFortune` | proved |
+| 3 (congruence obstructions) | `Route3CongruenceObstructions` | proved |
+| 4 (prime-divisor profile) | `Route4PrimeDivisorProfile` | proved |
+| 5 (tightened lower interval) | `Route5LowerIntervalTightening` | proved |
+| 6 (certified finite range) | `Route6CertifiedRange` | proved for `1 <= n <= 5` |
+| Main conjecture | `fortune_conjecture` | open |
 
 ## Structural Result Inventory
 
@@ -34,16 +55,13 @@ where `nthPrimorial n = ∏_{i < n} p_i` and `nthPrime i` are formalized from `N
 | Every `n` has a Fortunate offset candidate | `exists_fortunateOffset` | proved |
 | Every `n` has a least Fortunate offset | `exists_leastFortunateOffset` / `hasLeastFortunateOffset` | proved |
 | Least Fortunate offsets are unique | `leastFortunateOffset_unique` / `existsUnique_leastFortunateOffset` | proved |
-| Any Fortunate offset is coprime to the `n`-primorial | `fortunateOffset_coprime_nthPrimorial` | proved |
-| No included prime divides a Fortunate offset | `fortunateOffset_not_dvd_nthPrime` / `fortunateOffset_not_dvd_firstPrimes` | proved |
-| For `n ≥ 1`, the `n`-primorial is even | `nthPrimorial_even_of_one_le` | proved |
-| For `n ≥ 1`, any Fortunate offset is odd | `fortunateOffset_odd_of_one_le` | proved |
-| Lower bound by minimal prime factor | `minFac_gt_lastIncludedPrime_of_fortunateOffset` | proved |
-| Composite-offset quadratic lower bound | `succ_lastIncludedPrime_sq_le_offset_of_composite_fortunateOffset` | proved |
+| Any Fortunate offset is coprime to the indexed primorial | `fortunateOffset_coprime_nthPrimorial` | proved |
+| Any Fortunate offset is coprime to `primorial (lastIncludedPrime n)` | `fortunateOffset_coprime_primorial_lastIncludedPrime` | proved |
+| No included prime divides a least offset (indexed congruence form) | `leastFortunateOffset_not_modEq_zero_nthPrime` | proved |
+| Prime divisors of least offsets are above `lastIncludedPrime n` | `prime_divisor_gt_lastIncludedPrime_of_leastOffset` | proved |
 | Primorial upper-interval primality criterion (`q# + 1 < p < q# + r^2`) | `prime_sub_primorial_of_interval` | proved |
-| Primorial lower-interval primality criterion (`q# - s^2 < p < q# - 1`, with `q < p`) | `prime_primorial_sub_of_interval` | proved |
-| Least-offset corollary from the interval criterion | `least_offset_prime_of_lt_nextPrime_sq` | proved |
-| Fortune's conjecture (all least offsets are prime) | `fortune_conjecture` | open |
+| Primorial lower-interval primality criterion (tightened side condition) | `prime_primorial_sub_of_interval_tight` | proved |
+| Certified finite range extension | `hasPrimeLeastFortunateOffset_one_to_five` | proved |
 
 The interval criteria above correspond to the Fortune-adjacent primorial theorems
 discussed in Čejchan–Křížek–Somer (Rocky Mountain J. Math., 2018); see
