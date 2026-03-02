@@ -105,6 +105,27 @@ theorem route2_reductionBound_one_to_five_progress :
   intro n m r hn1 hn5 hLeast hqr
   exact Fortune.route2_reductionBound_one_to_five hn1 hn5 hLeast hqr
 
+def Route2IntervalPrimeExistenceOneToSix : Prop :=
+  ∀ n r : Nat, 1 ≤ n → n ≤ 6 →
+    ConsecutivePrimes (lastIncludedPrime n) r →
+    IntervalPrimeExistsAtPrime (lastIncludedPrime n) r
+
+theorem route2_intervalPrimeExistence_one_to_six_progress :
+    Route2IntervalPrimeExistenceOneToSix := by
+  intro n r hn1 hn6 hqr
+  exact Fortune.route2_intervalPrimeExistence_one_to_six hn1 hn6 hqr
+
+def Route2ReductionBoundOneToSix : Prop :=
+  ∀ n m r : Nat, 1 ≤ n → n ≤ 6 →
+    IsLeastFortunateOffset n m →
+    ConsecutivePrimes (lastIncludedPrime n) r →
+    m < r ^ 2
+
+theorem route2_reductionBound_one_to_six_progress :
+    Route2ReductionBoundOneToSix := by
+  intro n m r hn1 hn6 hLeast hqr
+  exact Fortune.route2_reductionBound_one_to_six hn1 hn6 hLeast hqr
+
 /-- Route 2.B reduction theorem. -/
 def Route2BoundImpliesFortune : Prop :=
   Route2ReductionBound → FortuneConjecture
