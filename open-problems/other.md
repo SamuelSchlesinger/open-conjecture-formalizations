@@ -56,3 +56,10 @@ Conjectures from fields not covered by the other pages.
 | 3 | [Ibragimov–Iosifescu conjecture](https://en.wikipedia.org/wiki/Ibragimov%E2%80%93Iosifescu_conjecture_for_%CF%86-mixing_sequences) | Probability theory | Ildar Ibragimov, Marius Iosifescu | For φ-mixing sequences |
 | 4 | [Kung–Traub conjecture](https://en.wikipedia.org/wiki/Kung%E2%80%93Traub_conjecture) | Iterative methods | H. T. Kung, Joseph F. Traub | |
 | 5 | [Pierce–Birkhoff conjecture](https://en.wikipedia.org/wiki/Pierce%E2%80%93Birkhoff_conjecture) | Real algebraic geometry | Richard S. Pierce, Garrett Birkhoff | |
+
+## References
+
+- Arora, S. & Barak, B. *Computational Complexity: A Modern Approach*. Cambridge University Press, 2009.
+- Katok, A. & Hasselblatt, B. *Introduction to the Modern Theory of Dynamical Systems*. Cambridge University Press, 1995.
+
+See also the [centralized bibliography](../references.md) for general references.

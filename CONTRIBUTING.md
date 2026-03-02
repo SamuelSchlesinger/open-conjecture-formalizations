@@ -43,6 +43,24 @@ Each conjecture project is developed in its own repository and linked here.
 - [ ] Builds pass for all modified Lean submodules.
 - [ ] No build artifacts are staged (`.lake`, `build`, etc.).
 
+## CI
+
+CI runs automatically on pull requests (`.github/workflows/ci.yml`):
+
+1. **hygiene** — validates SSH submodule URLs, checks for build artifacts
+2. **jekyll** — builds the Jekyll site to catch rendering errors
+3. **lean-build** — matrix build across all submodules (depends on hygiene)
+
+All three jobs must pass before merge.
+
+## References
+
+When adding a new conjecture, add references in two places:
+
+1. **Submodule README** — cite the original paper(s) and key surveys
+2. **Centralized `references.md`** — add an entry under the appropriate field
+   section with a link back to the submodule
+
 ## About Template Drift
 
 YAML does not support native file imports, but GitHub Actions supports reusable

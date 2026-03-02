@@ -37,3 +37,10 @@ analysis, and operator theory.
 |---|-----------|-----------|----------|
 | 1 | [Baum–Connes conjecture](https://en.wikipedia.org/wiki/Baum%E2%80%93Connes_conjecture) | Paul Baum, Alain Connes | Operator K-theory. ⇒ Gromov-Lawson-Rosenberg conjecture; ⇒ Kaplansky-Kadison conjecture; ⇒ Novikov conjecture |
 | 2 | [Zauner's conjecture](https://en.wikipedia.org/wiki/Zauner%27s_conjecture) | Gerhard Zauner | |
+
+## References
+
+- Stein, E. M. & Shakarchi, R. *Princeton Lectures in Analysis*. Vols. I–IV, Princeton University Press.
+- Conway, J. B. *A Course in Functional Analysis*. 2nd ed., Springer GTM 96.
+
+See also the [centralized bibliography](../references.md) for general references.

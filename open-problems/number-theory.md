@@ -64,3 +64,11 @@ nav_order: 1
 | 51 | [Vandiver's conjecture](https://en.wikipedia.org/wiki/Vandiver%27s_conjecture) | Ernst Kummer, Harry Vandiver | |
 | 52 | [Vojta's conjecture](https://en.wikipedia.org/wiki/Vojta%27s_conjecture) | Paul Vojta | ⇒ abc conjecture |
 | 53 | [Waring's conjecture](https://en.wikipedia.org/wiki/Waring%27s_conjecture) | Edward Waring | |
+
+## References
+
+- Hardy, G. H. & Wright, E. M. *An Introduction to the Theory of Numbers*. Oxford University Press.
+- Guy, R. K. *Unsolved Problems in Number Theory*. 3rd ed., Springer, 2004.
+- Ireland, K. & Rosen, M. *A Classical Introduction to Modern Number Theory*. Springer GTM 84.
+
+For references on formalized conjectures (Agoh–Giuga, Carmichael Totient, Collatz, Erdős–Straus, Goldbach, Legendre, Oppermann, Twin Prime), see the [centralized bibliography](../references.md#number-theory).

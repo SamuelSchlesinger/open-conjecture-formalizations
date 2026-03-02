@@ -56,3 +56,10 @@ topology, Diophantine geometry, metric geometry, and related areas.
 | 1 | [Hopf conjectures](https://en.wikipedia.org/wiki/Hopf_conjecture) | Heinz Hopf | |
 | 2 | [Toeplitz' conjecture](https://en.wikipedia.org/wiki/Toeplitz%27_conjecture) | Otto Toeplitz | Inscribed square problem for Jordan curves |
 | 3 | [Ulam's packing conjecture](https://en.wikipedia.org/wiki/Ulam%27s_packing_conjecture) | Stanislaw Ulam | |
+
+## References
+
+- Croft, H. T.; Falconer, K. J. & Guy, R. K. *Unsolved Problems in Geometry*. Springer, 1991.
+- do Carmo, M. P. *Riemannian Geometry*. Birkhäuser, 1992.
+
+See also the [centralized bibliography](../references.md) for general references.

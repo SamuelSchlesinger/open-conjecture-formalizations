@@ -22,3 +22,10 @@ nav_order: 2
 | 9 | [Ringel–Kotzig conjecture](https://en.wikipedia.org/wiki/Ringel%E2%80%93Kotzig_conjecture) | Gerhard Ringel, Anton Kotzig | |
 | 10 | [Tuza's conjecture](https://en.wikipedia.org/wiki/Tuza%27s_conjecture) | Zsolt Tuza | |
 | 11 | [Vizing's conjecture](https://en.wikipedia.org/wiki/Vizing%27s_conjecture) | Vadim G. Vizing | |
+
+## References
+
+- Diestel, R. *Graph Theory*. 5th ed., Springer GTM 173, 2017.
+- Bondy, J. A. & Murty, U. S. R. *Graph Theory*. Springer GTM 244, 2008.
+
+For references on the formalized Reconstruction conjecture, see the [centralized bibliography](../references.md#graph-theory).

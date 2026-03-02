@@ -36,3 +36,10 @@ nav_order: 6
 |---|-----------|-------|-----------|----------|
 | 1 | [Scholz conjecture](https://en.wikipedia.org/wiki/Scholz_conjecture) | Addition chains | Arnold Scholz | |
 | 2 | [Singmaster's conjecture](https://en.wikipedia.org/wiki/Singmaster%27s_conjecture) | Binomial coefficients | David Singmaster | |
+
+## References
+
+- van Lint, J. H. & Wilson, R. M. *A Course in Combinatorics*. 2nd ed., Cambridge University Press, 2001.
+- Stanley, R. P. *Enumerative Combinatorics*. Vol. 1 & 2, Cambridge University Press.
+
+For references on the formalized Hadamard and Sensitivity conjectures, see the [centralized bibliography](../references.md#combinatorics).

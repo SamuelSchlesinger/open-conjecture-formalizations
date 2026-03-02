@@ -1,0 +1,86 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  hygiene:
+    name: Repository hygiene
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Validate SSH submodule URLs
+        run: |
+          bad=$(git config --file .gitmodules --get-regexp 'submodule\..*\.url' \
+                | grep -v 'git@github.com:' || true)
+          if [ -n "$bad" ]; then
+            echo "::error::Non-SSH submodule URLs found:"
+            echo "$bad"
+            exit 1
+          fi
+
+      - name: Check for build artifacts
+        run: |
+          artifacts=$(find . -name '.lake' -o -name 'build' -type d \
+                      | grep -v '.github' | grep -v 'node_modules' || true)
+          if [ -n "$artifacts" ]; then
+            echo "::error::Build artifacts found in repo:"
+            echo "$artifacts"
+            exit 1
+          fi
+
+  jekyll:
+    name: Build Jekyll site
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+
+      - name: Build site
+        run: bundle exec jekyll build
+        env:
+          JEKYLL_ENV: production
+
+  lean-build:
+    name: "Build ${{ matrix.submodule }}"
+    runs-on: ubuntu-latest
+    needs: hygiene
+    strategy:
+      fail-fast: false
+      matrix:
+        submodule:
+          - number-theory/ago-giuga
+          - number-theory/carmichael-totient
+          - number-theory/collatz
+          - number-theory/erdos-straus
+          - number-theory/goldbach
+          - number-theory/legendre
+          - number-theory/oppermann
+          - number-theory/twin-prime
+          - combinatorics/hadamard-conjecture
+          - combinatorics/sensitivity
+          - algebra/herzog-schonheim
+          - graph-theory/reconstruction-conjecture
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - uses: leanprover/lean-action@v1
+        with:
+          lake-package-directory: ${{ matrix.submodule }}

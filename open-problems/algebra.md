@@ -65,3 +65,10 @@ K-theory, commutative algebra, ring theory, group theory, and algebraic curves.
 | # | Conjecture | Eponym(s) | Comments |
 |---|-----------|-----------|----------|
 | 1 | [Green's conjecture](https://en.wikipedia.org/wiki/Green%27s_conjecture) | Mark Lee Green | |
+
+## References
+
+- Lang, S. *Algebra*. Revised 3rd ed., Springer GTM 211.
+- Rotman, J. J. *An Introduction to the Theory of Groups*. 4th ed., Springer GTM 148.
+
+For references on the formalized Herzog–Schönheim conjecture, see the [centralized bibliography](../references.md#algebra).

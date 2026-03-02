@@ -21,6 +21,8 @@ exclude:
   - combinatorics/sensitivity/
   - algebra/herzog-schonheim/
   - graph-theory/reconstruction-conjecture/
+  - CLAUDE.md
+  - LICENSE
   - Gemfile
   - Gemfile.lock
   - "*.lean"
