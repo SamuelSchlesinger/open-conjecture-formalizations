@@ -1,4 +1,5 @@
 import Fortune.SmallCases
+import Fortune.IntervalExistenceSmall
 import Mathlib.Tactic.IntervalCases
 
 namespace Fortune
@@ -55,5 +56,49 @@ theorem hasPrimeLeastFortunateOffset_one_to_five {n : Nat}
   · exact hasPrimeLeastFortunateOffset_three
   · exact hasPrimeLeastFortunateOffset_four
   · exact hasPrimeLeastFortunateOffset_five
+
+theorem hasPrimeLeastFortunateOffset_one_to_twelve {n : Nat}
+    (hn1 : 1 ≤ n) (hn12 : n ≤ 12) :
+    ∃ m : Nat, IsLeastFortunateOffset n m ∧ Nat.Prime m := by
+  obtain ⟨m, hLeast⟩ := exists_leastFortunateOffset n
+  obtain ⟨r, hqr⟩ := bridge_exists_nextPrime_at_lastIncluded n hn1
+  have hm_lt : m < r ^ 2 :=
+    route2_reductionBound_one_to_twelve hn1 hn12 hLeast hqr
+  have hLeastAtPrime : IsLeastFortunateOffsetAtPrime (lastIncludedPrime n) m :=
+    (bridge_leastOffset_indexed_to_threshold n m hn1).1 hLeast
+  exact ⟨m, hLeast, least_offset_prime_of_lt_nextPrime_sq hqr hLeastAtPrime hm_lt⟩
+
+theorem hasPrimeLeastFortunateOffset_one_to_fifteen {n : Nat}
+    (hn1 : 1 ≤ n) (hn15 : n ≤ 15) :
+    ∃ m : Nat, IsLeastFortunateOffset n m ∧ Nat.Prime m := by
+  obtain ⟨m, hLeast⟩ := exists_leastFortunateOffset n
+  obtain ⟨r, hqr⟩ := bridge_exists_nextPrime_at_lastIncluded n hn1
+  have hm_lt : m < r ^ 2 :=
+    route2_reductionBound_one_to_fifteen hn1 hn15 hLeast hqr
+  have hLeastAtPrime : IsLeastFortunateOffsetAtPrime (lastIncludedPrime n) m :=
+    (bridge_leastOffset_indexed_to_threshold n m hn1).1 hLeast
+  exact ⟨m, hLeast, least_offset_prime_of_lt_nextPrime_sq hqr hLeastAtPrime hm_lt⟩
+
+theorem hasPrimeLeastFortunateOffset_one_to_sixteen {n : Nat}
+    (hn1 : 1 ≤ n) (hn16 : n ≤ 16) :
+    ∃ m : Nat, IsLeastFortunateOffset n m ∧ Nat.Prime m := by
+  obtain ⟨m, hLeast⟩ := exists_leastFortunateOffset n
+  obtain ⟨r, hqr⟩ := bridge_exists_nextPrime_at_lastIncluded n hn1
+  have hm_lt : m < r ^ 2 :=
+    route2_reductionBound_one_to_sixteen hn1 hn16 hLeast hqr
+  have hLeastAtPrime : IsLeastFortunateOffsetAtPrime (lastIncludedPrime n) m :=
+    (bridge_leastOffset_indexed_to_threshold n m hn1).1 hLeast
+  exact ⟨m, hLeast, least_offset_prime_of_lt_nextPrime_sq hqr hLeastAtPrime hm_lt⟩
+
+theorem hasPrimeLeastFortunateOffset_one_to_seventeen {n : Nat}
+    (hn1 : 1 ≤ n) (hn17 : n ≤ 17) :
+    ∃ m : Nat, IsLeastFortunateOffset n m ∧ Nat.Prime m := by
+  obtain ⟨m, hLeast⟩ := exists_leastFortunateOffset n
+  obtain ⟨r, hqr⟩ := bridge_exists_nextPrime_at_lastIncluded n hn1
+  have hm_lt : m < r ^ 2 :=
+    route2_reductionBound_one_to_seventeen hn1 hn17 hLeast hqr
+  have hLeastAtPrime : IsLeastFortunateOffsetAtPrime (lastIncludedPrime n) m :=
+    (bridge_leastOffset_indexed_to_threshold n m hn1).1 hLeast
+  exact ⟨m, hLeast, least_offset_prime_of_lt_nextPrime_sq hqr hLeastAtPrime hm_lt⟩
 
 end Fortune

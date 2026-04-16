@@ -8,6 +8,7 @@ import Fortune.Bridge
 import Fortune.Reduction
 import Fortune.ReductionBound
 import Fortune.IntervalExistence
+import Fortune.Sieve
 import Fortune.IntervalExistenceSmall
 import Fortune.Congruence
 import Fortune.Profile
