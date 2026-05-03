@@ -73,6 +73,7 @@ jobs:
           - number-theory/oppermann
           - number-theory/twin-prime
           - combinatorics/hadamard-conjecture
+          - combinatorics/frankl
           - combinatorics/sensitivity
           - algebra/herzog-schonheim
           - graph-theory/reconstruction-conjecture

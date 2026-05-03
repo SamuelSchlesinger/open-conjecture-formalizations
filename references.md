@@ -53,6 +53,8 @@ repository. For per-conjecture details, see the linked project documentation.
 ### Formalized conjectures
 
 - **Dittert conjecture** — N. J. Cavenagh, J. Hämäläinen, C. M. Wanless, "On Dittert's conjecture," *Electronic Journal of Combinatorics* (2008). [In-repo project](combinatorics/dittert/)
+- **Frankl's union-closed sets conjecture** — Poonen, B. "Union-closed families." *Journal of Combinatorial Theory, Series A* 59(2), 253–268 (1992). [In-repo project](combinatorics/frankl/)
+  - Vučković, B.; Živković, M. "Formalizing Frankl's Conjecture: FC-families." arXiv:1207.3604, 2012. (For the singleton FC-family viewpoint formalized in `Frankl.Basic`.)
 - **Gold partition conjecture** — M. Peczarski, "The Gold Partition Conjecture," *Order* 29 (2012), 321–336. [In-repo project](combinatorics/gold-partition/)
 - **Hadamard conjecture** — Hadamard, J. "Résolution d'une question relative aux déterminants." *Bull. Sci. Math.* 17 (1893), 240–246. [Submodule](combinatorics/hadamard-conjecture/)
 - **Sensitivity conjecture** (now theorem) — Huang, H. "Induced subgraphs of hypercubes and a proof of the Sensitivity Conjecture." *Ann. of Math.* 190 (2019), 949–955. [Submodule](combinatorics/sensitivity/)

@@ -30,6 +30,7 @@ git clone --recurse-submodules git@github.com:SamuelSchlesinger/open-conjecture-
 | [Strong Goldbach](https://samuelschlesinger.github.io/goldbach-conjecture/docs/) | Number Theory | [goldbach-conjecture](https://github.com/SamuelSchlesinger/goldbach-conjecture) |
 | [Twin Prime](https://samuelschlesinger.github.io/twin-prime-conjecture/docs/) | Number Theory | [twin-prime-conjecture](https://github.com/SamuelSchlesinger/twin-prime-conjecture) |
 | [Dittert](combinatorics/dittert/README.md) | Combinatorics | In-repo directory (`combinatorics/dittert`) |
+| [Frankl](combinatorics/frankl/README.md) | Combinatorics | In-repo directory (`combinatorics/frankl`) |
 | [Gold Partition](combinatorics/gold-partition/README.md) | Combinatorics | In-repo directory (`combinatorics/gold-partition`) |
 | [Hadamard](https://samuelschlesinger.github.io/hadamard-conjecture/docs/) | Combinatorics | [hadamard-conjecture](https://github.com/SamuelSchlesinger/hadamard-conjecture) |
 | [Herzog–Schönheim](https://samuelschlesinger.github.io/herzog-schonheim-conjecture/docs/) | Algebra | [herzog-schonheim-conjecture](https://github.com/SamuelSchlesinger/herzog-schonheim-conjecture) |
