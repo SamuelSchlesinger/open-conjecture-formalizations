@@ -1,0 +1,1995 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem}
+\usepackage[colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue]{hyperref}
+
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{problem}{Problem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\newtheorem{corollary}{Corollary}
+\newtheorem{heuristic}{Heuristic}
+\newtheorem{definition}{Definition}
+\newtheorem{example}{Example}
+
+\DeclareMathOperator{\supp}{supp}
+\DeclareMathOperator{\TC}{TC}
+\DeclareMathOperator{\Ent}{H}
+\DeclareMathOperator{\E}{\mathbb{E}}
+\DeclareMathOperator{\Prb}{\mathbb{P}}
+
+\title{An Entropy--Transport Attack on Frankl's Union-Closed Sets Conjecture}
+\author{Open Conjecture Formalizations}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This note develops a possible route toward Frankl's union-closed sets
+conjecture by trying to combine two proof paradigms that have historically
+stalled separately: entropy growth under union, and pairing/matching
+arguments.  The organizing idea is that the entropy method fails precisely
+when the union map has large collision/dependence cost, while pairing methods
+fail precisely when attempted injections collide.  We propose treating these
+as the same obstruction.  Either a well-chosen coupling of two random members
+of the family produces an entropy contradiction, or the dual obstruction to
+such a coupling should produce a Hall-type certificate rigid enough to force
+a Frankl element.
+\end{abstract}
+
+\section{The Basic Setup}
+
+Let $\mathcal{F}$ be a finite union-closed family of finite sets.  After
+replacing the ambient set by $\bigcup_{A \in \mathcal{F}} A$, write the ground
+set as $[n]$.  Equivalently,
+\[
+  \mathcal{F} \subseteq \{0,1\}^n
+\]
+is closed under coordinatewise OR.
+
+Let $X$ be uniformly distributed on $\mathcal{F}$, and write
+\[
+  p_i = \Prb[X_i = 1].
+\]
+Frankl's conjecture is:
+\[
+  \max_i p_i \geq \frac12,
+\]
+provided $\mathcal{F}$ has at least one nonempty member.
+
+\begin{conjecture}[Frankl]
+If $\mathcal{F}$ is finite, nontrivial, and union-closed, then some element of
+the ground set belongs to at least half of the members of $\mathcal{F}$.
+\end{conjecture}
+
+For this note, assume toward contradiction that $\mathcal{F}$ is a
+counterexample:
+\[
+  0 < p_i < \frac12 \qquad \text{for every active coordinate } i.
+\]
+
+\section{The Join-Semilattice View}
+
+The family $\mathcal{F}$ is a finite join-semilattice with join operation
+\[
+  A \vee B = A \cup B.
+\]
+Each coordinate $i$ gives a join-homomorphism
+\[
+  \chi_i : \mathcal{F} \to \mathbf{2},
+  \qquad
+  \chi_i(A) = 1 \Longleftrightarrow i \in A,
+\]
+because
+\[
+  \chi_i(A \vee B) = \chi_i(A) \vee \chi_i(B).
+\]
+The maps $\chi_i$ jointly separate points if the ground set has been reduced
+by identifying indistinguishable elements.
+
+Thus Frankl can be read as a sharp fiber-size statement:
+\[
+  \text{one separating join-homomorphism }
+  \chi_i : \mathcal{F} \to \mathbf{2}
+  \text{ has }
+  |\chi_i^{-1}(1)| \geq |\mathcal{F}|/2.
+\]
+The categorical viewpoint is useful because it isolates the structure:
+\[
+  \text{finite join-semilattice}
+  \quad + \quad
+  \text{separating coordinates to } \mathbf{2}
+  \quad + \quad
+  \text{uniform counting measure}.
+\]
+The hard part is the last phrase.  Pure structure-preserving maps do not, by
+themselves, remember the sharp counting threshold.
+
+\section{Known Quantitative Barriers}
+
+\subsection{The iid Entropy Barrier}
+
+Let $X,Y$ be independent uniform samples from $\mathcal{F}$, and set
+\[
+  Z = X \vee Y.
+\]
+Since $\mathcal{F}$ is union-closed, $Z$ is supported on $\mathcal{F}$, so
+\[
+  \Ent(Z) \leq \log |\mathcal{F}| = \Ent(X).
+\]
+On coordinate $i$,
+\[
+  q_i := \Prb[Z_i = 1] = 2p_i - p_i^2.
+\]
+The coordinate entropy gain is
+\[
+  h(q_i) - h(p_i),
+\]
+where $h(t)=-t\log t-(1-t)\log(1-t)$.
+
+This gain is positive as long as
+\[
+  p_i < 2p_i - p_i^2 < 1-p_i,
+\]
+which gives
+\[
+  p_i < \frac{3-\sqrt{5}}{2}.
+\]
+This is the natural barrier faced by iid OR-sampling: above that threshold,
+OR pushes the coordinate past the entropy peak at $1/2$.
+
+\subsection{Average-Size Bounds Lose Dimension}
+
+Average-size methods estimate
+\[
+  \sum_i p_i = \E[|X|].
+\]
+But Frankl requires one $p_i \geq 1/2$.  Any lower bound on the sum loses force
+when the effective number of coordinates is large.
+
+\subsection{Pairing Arguments Collide}
+
+If $\{i\} \in \mathcal{F}$, then the map
+\[
+  A \mapsto A \cup \{i\}
+\]
+injects members omitting $i$ into members containing $i$, proving that $i$
+appears in at least half the family.
+
+For a larger set $S \in \mathcal{F}$, the natural map
+\[
+  A \mapsto A \cup S
+\]
+can collapse many different $A$ to the same image.  This is the basic local
+failure of pairing proofs.
+
+\section{Coupled OR Transport}
+
+The iid choice of $(X,Y)$ is only one coupling of the uniform distribution on
+$\mathcal{F}$ with itself.  Let $\Pi(\mathcal{F})$ be the set of probability
+measures $\pi$ on $\mathcal{F} \times \mathcal{F}$ whose two marginals are both
+uniform.
+
+For $\pi \in \Pi(\mathcal{F})$, let $(X,Y) \sim \pi$ and
+\[
+  Z = X \vee Y.
+\]
+Define
+\[
+  q_i(\pi) = \Prb_\pi[Z_i=1].
+\]
+Since $Z$ is supported on $\mathcal{F}$,
+\[
+  \Ent(Z) \leq \Ent(X)=\log|\mathcal{F}|.
+\]
+Now decompose entropy into coordinate entropy minus total correlation:
+\[
+  \Ent(W)
+  =
+  \sum_i \Ent(W_i) - \TC(W),
+\]
+where
+\[
+  \TC(W) = \sum_i \Ent(W_i) - \Ent(W).
+\]
+Thus
+\[
+  \Ent(Z)-\Ent(X)
+  =
+  \sum_i \bigl(h(q_i(\pi))-h(p_i)\bigr)
+  -
+  \bigl(\TC(Z)-\TC(X)\bigr).
+\]
+
+\begin{definition}[Entropy advantage]
+For a coupling $\pi \in \Pi(\mathcal{F})$, define
+\[
+  \Phi(\pi)
+  =
+  \sum_i \bigl(h(q_i(\pi))-h(p_i)\bigr)
+  -
+  \bigl(\TC(Z)-\TC(X)\bigr).
+\]
+\end{definition}
+
+Since $Z$ is supported on $\mathcal{F}$, every coupling satisfies
+\[
+  \Phi(\pi) = \Ent(Z)-\Ent(X) \leq 0.
+\]
+Therefore:
+
+\begin{proposition}[Entropy contradiction criterion]
+If, under the assumption $p_i<1/2$ for all $i$, there exists
+$\pi\in\Pi(\mathcal{F})$ with $\Phi(\pi)>0$, then $\mathcal{F}$ is not a
+counterexample.
+\end{proposition}
+
+The difficulty is to choose $\pi$.  The iid coupling often makes
+$q_i(\pi)=2p_i-p_i^2$ too large for coordinates near $1/2$.  The diagonal
+coupling makes $q_i(\pi)=p_i$ and gives no coordinate gain.  We want a
+positively correlated but not fully diagonal coupling:
+\[
+  p_i < q_i(\pi) < 1-p_i
+  \qquad \text{for all } i.
+\]
+
+Equivalently, since
+\[
+  q_i(\pi)=2p_i-r_i(\pi),
+  \qquad
+  r_i(\pi)=\Prb_\pi[X_i=Y_i=1],
+\]
+we want
+\[
+  3p_i-1 < r_i(\pi) < p_i.
+\]
+For coordinates close to $1/2$, this asks for very strong positive
+correlation, but still leaves room below the diagonal.
+
+\section{The Linear Feasibility Problem and Its Dual}
+
+Fix a set of coordinates $I$ and desired targets $\tau_i$ for $i\in I$.
+For example, $\tau_i=1/2$ asks to center coordinate $i$ at the entropy peak.
+Let
+\[
+  c_i(A,B)=\mathbf{1}_{i\in A\cup B}.
+\]
+The centering problem is the following transportation feasibility problem:
+\[
+\begin{array}{rll}
+  \text{find} & \pi_{A,B}\ge 0 & (A,B\in\mathcal{F})\\[2mm]
+  \text{such that}
+    & \displaystyle \sum_B \pi_{A,B}=1/m & (A\in\mathcal{F}),\\[3mm]
+    & \displaystyle \sum_A \pi_{A,B}=1/m & (B\in\mathcal{F}),\\[3mm]
+    & \displaystyle \sum_{A,B} c_i(A,B)\pi_{A,B}=\tau_i
+      & (i\in I),
+\end{array}
+\]
+where $m=|\mathcal{F}|$.
+
+By Farkas' lemma, this system is infeasible if and only if there exist row
+potentials $u_A$, column potentials $v_B$, and coordinate weights $\lambda_i$
+such that
+\[
+  u_A+v_B+\sum_{i\in I}\lambda_i c_i(A,B)\ge 0
+  \qquad\text{for all }A,B\in\mathcal{F},
+\]
+but
+\[
+  \frac1m\sum_A u_A+\frac1m\sum_B v_B+\sum_{i\in I}\lambda_i\tau_i<0.
+\]
+Thus any failure to center a collection of coordinates has a very concrete
+dual certificate: a weighted inequality on the OR-incidence matrix that is
+nonnegative on every pair $(A,B)$ but negative on the demanded marginals.
+
+For the window problem one replaces the equality constraints by
+\[
+  p_i+\gamma \leq \sum_{A,B}c_i(A,B)\pi_{A,B}
+  \leq 1-p_i-\gamma
+\]
+and maximizes $\gamma$.  The dual then has two nonnegative coordinate weights
+for each $i$, one for the lower wall and one for the upper wall.  Boundary
+examples with $p_i=1/2$ are already explained by this dual: the diagonal
+coupling gives $q_i=p_i$, while the upper wall is also $1-p_i=p_i$, so no
+positive margin is possible.
+
+\section{One Coordinate Can Be Understood Exactly}
+
+The first sanity check is the one-coordinate problem.  It does not use
+union-closure at all.
+
+\begin{proposition}[Single-coordinate OR range]
+Fix a coordinate $i$, and let
+\[
+  R_i=\{A\in\mathcal{F}:i\in A\},\qquad
+  L_i=\{A\in\mathcal{F}:i\notin A\}.
+\]
+Write $r=|R_i|$, $\ell=|L_i|$, $m=r+\ell$, and $p_i=r/m$.  As $\pi$ ranges
+over uniform couplings of two uniform samples from $\mathcal{F}$, the possible
+values of
+\[
+  q_i(\pi)=\Prb_\pi[i\in X\cup Y]
+\]
+fill the interval
+\[
+  p_i \le q_i(\pi)\le \min(1,2p_i).
+\]
+\end{proposition}
+
+\begin{proof}
+By the Birkhoff-von Neumann theorem, it is enough to consider permutation
+couplings and then take convex combinations.  For a permutation coupling
+$Y=\sigma(X)$, every row $A\in R_i$ contributes to $q_i$.  In addition, a row
+$A\in L_i$ contributes precisely when $\sigma(A)\in R_i$.  If $t$ denotes the
+number of rows of $L_i$ mapped into columns of $R_i$, then
+\[
+  q_i=\frac{r+t}{m}.
+\]
+The possible values of $t$ range from $0$ to $\min(\ell,r)$: assign as many
+columns of $R_i$ as desired to rows of $L_i$, and fill the remaining rows and
+columns bijectively.  Hence the permutation values range from $r/m$ to
+$(r+\min(\ell,r))/m=\min(1,2r/m)$, and convex combinations fill the interval.
+\end{proof}
+
+Consequently, for a strictly light coordinate $0<p_i<1/2$ the window
+\[
+  p_i<q_i<1-p_i
+\]
+is always possible for that coordinate alone.  However, exact centering
+$q_i=1/2$ is possible only when
+\[
+  p_i\ge \frac14.
+\]
+This corrects the naive ``center every light coordinate'' guess: very rare
+coordinates can be moved upward, but not all the way to the entropy peak in a
+single OR step.
+
+\section{The Assignment-Dual Form of Critical Centering}
+
+The computational evidence below suggests that critical light coordinates can
+often be centered simultaneously.  It is useful to put that claim into a form
+that has no hidden analysis.
+
+Fix a coordinate set $I$.  For a permutation $\sigma$ of $\mathcal{F}$, write
+\[
+  q(\sigma)_i
+  =
+  \frac1m
+  \left|\{A\in\mathcal{F}:i\in A\cup\sigma(A)\}\right|
+  \qquad (i\in I).
+\]
+By Birkhoff-von Neumann, the possible vectors $q_I(\pi)$ over all uniform
+self-couplings are exactly the convex hull of the permutation vectors
+$q(\sigma)$.
+
+\begin{proposition}[Assignment dual for critical centering]
+The center vector $(1/2,\dots,1/2)\in\mathbb{R}^{I}$ belongs to this convex
+hull if and only if, for every weight vector $\lambda\in\mathbb{R}^{I}$,
+\[
+  \max_{\sigma\in S_{\mathcal{F}}}
+  \frac1m
+  \sum_{A\in\mathcal{F}}
+  \sum_{i\in I}
+  \lambda_i\mathbf{1}_{i\in A\cup\sigma(A)}
+  \geq
+  \frac12\sum_{i\in I}\lambda_i.
+\]
+\end{proposition}
+
+\begin{proof}
+This is the separating-hyperplane theorem applied to the finite polytope
+$\operatorname{conv}\{q(\sigma):\sigma\in S_{\mathcal{F}}\}$.  If the center
+is outside the polytope, some linear functional $\lambda$ is larger at the
+center than on every permutation vector.  Conversely, such a $\lambda$ is
+exactly a separating functional.
+\end{proof}
+
+Thus critical centering is equivalent to a weighted assignment problem.  For
+fixed $\lambda$, define
+\[
+  w_\lambda(A,B)
+  =
+  \sum_{i\in I}\lambda_i\mathbf{1}_{i\in A\cup B}.
+\]
+The desired inequality is
+\[
+  \max_{\sigma}
+  \sum_A w_\lambda(A,\sigma(A))
+  \geq
+  \frac{m}{2}\sum_i\lambda_i.
+\]
+The weight matrix has special join form:
+\[
+  w_\lambda(A,B)
+  =
+  \sum_{i\in A\cap I}\lambda_i
+  +
+  \sum_{i\in I\setminus A}\lambda_i\mathbf{1}_{i\in B}.
+\]
+So the row contribution already present in $A$ is fixed; only the missing
+positive or negative coordinate weights are assigned to columns.
+
+This exposes a thinner quantitative barrier.  The diagonal permutation gives
+$q_i=p_i$, and therefore proves the dual inequality whenever all coordinate
+weights are nonpositive, since $\lambda_i p_i>\lambda_i/2$ when
+$\lambda_i<0$ and $p_i<1/2$.  The average over all permutations gives
+\[
+  \mathbb{E}_\sigma q(\sigma)_i=2p_i-p_i^2,
+\]
+which is at least $1/2$ when
+\[
+  p_i\geq 1-\frac1{\sqrt{2}}\approx 0.2929.
+\]
+Therefore nonnegative weights on the upper part of the critical range are
+handled by the random-permutation average.  The remaining genuinely hard zone
+is narrow but important:
+\[
+  \frac14\leq p_i<1-\frac1{\sqrt{2}},
+\]
+especially when these rare positive coordinates must be centered while
+negative coordinates are kept from being pushed upward.  Thus the real
+assignment problem is a signed compromise between diagonal behavior and
+outward-pushing behavior.  A proof of the assignment dual would need to show
+that the maximizing permutation beats the random average in precisely this
+rare-coordinate regime.
+
+\begin{problem}[Weighted critical assignment inequality]
+Let $\mathcal{F}$ be union-closed, let $I=\{i:1/4\le p_i<1/2\}$, and let
+$\lambda\in\mathbb{R}^{I}$.  Prove
+\[
+  \max_{\sigma\in S_{\mathcal{F}}}
+  \frac1m
+  \sum_A w_\lambda(A,\sigma(A))
+  \geq
+  \frac12\sum_i\lambda_i,
+\]
+or classify exactly which signed weights can fail.  Any genuine failure gives
+a concrete separating certificate for the critical-centering conjecture.
+\end{problem}
+
+\subsection{The Assignment LP Dual}
+
+For a fixed $\lambda$, write
+\[
+  s_\lambda(A)=\sum_{i\in A\cap I}\lambda_i,
+  \qquad
+  g_\lambda(A,B)=\sum_{i\in I\setminus A}\lambda_i\mathbf{1}_{i\in B}.
+\]
+Then
+\[
+  w_\lambda(A,B)=s_\lambda(A)+g_\lambda(A,B).
+\]
+The row term is independent of the assignment:
+\[
+  \sum_{A\in\mathcal{F}}s_\lambda(A)
+  =
+  m\sum_{i\in I}\lambda_i p_i.
+\]
+Therefore the weighted critical assignment inequality is equivalent to
+\[
+  \max_{\sigma}
+  \sum_A g_\lambda(A,\sigma(A))
+  \geq
+  m\sum_{i\in I}\lambda_i\left(\frac12-p_i\right).
+\]
+Set
+\[
+  d_i=\frac12-p_i>0.
+\]
+The normalized problem is:
+\[
+  \max_{\sigma}
+  \sum_A
+  \sum_{i\in I\setminus A}\lambda_i\mathbf{1}_{i\in\sigma(A)}
+  \geq
+  m\sum_i\lambda_i d_i.
+\]
+
+This form is conceptually useful.  The positive part of $\lambda$ asks rows
+missing $i$ to be matched into columns containing $i$.  The negative part asks
+rows missing $i$ to avoid such columns.  Since the right side is also signed,
+large negative weights are usually harmless; they make the demanded lower
+bound easier, and the diagonal assignment realizes zero gain on every missing
+coordinate.
+
+Now pass to the bipartite assignment LP:
+\[
+\begin{array}{rll}
+  \text{maximize}
+    & \displaystyle\sum_{A,B}g_\lambda(A,B)x_{A,B}\\[2mm]
+  \text{subject to}
+    & \displaystyle\sum_B x_{A,B}=1 & (A\in\mathcal{F}),\\[2mm]
+    & \displaystyle\sum_A x_{A,B}=1 & (B\in\mathcal{F}),\\[2mm]
+    & x_{A,B}\geq 0.
+\end{array}
+\]
+The Birkhoff-von Neumann theorem says its optimum is attained by a
+permutation.  Its dual is
+\[
+\begin{array}{rll}
+  \text{minimize}
+    & \displaystyle\sum_A \alpha_A+\sum_B\beta_B\\[2mm]
+  \text{subject to}
+    & \alpha_A+\beta_B\geq g_\lambda(A,B)
+      & (A,B\in\mathcal{F}).
+\end{array}
+\]
+Thus failure of critical centering is equivalent to the existence of
+$\lambda$, row potentials $\alpha_A$, and column potentials $\beta_B$ such
+that
+\[
+  \alpha_A+\beta_B
+  \geq
+  \sum_{i\in I\setminus A}\lambda_i\mathbf{1}_{i\in B}
+  \qquad(A,B\in\mathcal{F}),
+\]
+but
+\[
+  \sum_A\alpha_A+\sum_B\beta_B
+  <
+  m\sum_i\lambda_i d_i.
+\]
+This is the finite certificate we should try to rule out.
+
+\begin{problem}[Potential obstruction]
+Classify triples $(\lambda,\alpha,\beta)$ satisfying the dual inequalities
+with objective below $m\sum_i\lambda_i d_i$.  Show that, after quotienting
+clones and deleting dominated critical coordinates, no such triple exists.
+\end{problem}
+
+\subsection{The Remaining Obstruction Cone}
+
+Two elementary assignments already rule out most possible signs.
+
+First, the diagonal assignment $\sigma(A)=A$ gives
+\[
+  \sum_A g_\lambda(A,A)=0.
+\]
+Hence any failing $\lambda$ must satisfy
+\[
+  \sum_i\lambda_i d_i>0.
+\]
+Second, averaging over a uniformly random permutation gives
+\[
+  \mathbb{E}_\sigma
+  \sum_A g_\lambda(A,\sigma(A))
+  =
+  m\sum_i\lambda_i p_i(1-p_i).
+\]
+Therefore any failing $\lambda$ must also satisfy
+\[
+  \sum_i\lambda_i p_i(1-p_i)
+  <
+  \sum_i\lambda_i d_i.
+\]
+Equivalently, with
+\[
+  e_i=p_i(1-p_i)-d_i
+      =2p_i-p_i^2-\frac12,
+\]
+a failing $\lambda$ must lie in the cone
+\[
+  \sum_i\lambda_i d_i>0,
+  \qquad
+  \sum_i\lambda_i e_i<0.
+\]
+For $p_i\geq 1-1/\sqrt{2}$, one has $e_i\geq0$.  Thus positive mass on
+high-critical coordinates helps the random-permutation bound rather than
+hurting it.  The only positive weights that can drive the second inequality
+must concentrate on the narrow low-critical range
+\[
+  \frac14\leq p_i<1-\frac1{\sqrt{2}}.
+\]
+
+\begin{lemma}[Necessary cone for a dual obstruction]
+If $\lambda$ violates the weighted critical assignment inequality, then
+\[
+  \sum_i\lambda_i\left(\frac12-p_i\right)>0
+  \quad\text{and}\quad
+  \sum_i\lambda_i\left(2p_i-p_i^2-\frac12\right)<0.
+\]
+\end{lemma}
+
+\begin{proof}
+The first inequality follows because the diagonal assignment gives left-hand
+side $0$ in the normalized problem.  The second follows because the optimum is
+at least the average value of the normalized objective over all permutations.
+\end{proof}
+
+This cone is a useful target for both proof and search.  In particular, a
+face-stripped obstruction cannot be all-negative, cannot be supported only on
+high-critical positive coordinates, and cannot be explained by coordinate
+order.  It must be a genuinely signed tradeoff between rare positive
+coordinates and compensating negative coordinates.
+
+\subsection{Single-Positive Directions}
+
+The one-coordinate part of the remaining cone is completely harmless.
+
+\begin{proposition}[One-coordinate dual inequality]
+Let $I=\{i\}$ and $1/4\leq p_i<1/2$.  Then the weighted critical assignment
+inequality holds for every $\lambda_i\in\mathbb{R}$.
+\end{proposition}
+
+\begin{proof}
+If $\lambda_i\geq0$, choose a permutation coupling maximizing $q_i$.  By the
+single-coordinate range, this gives $q_i=2p_i$, so
+\[
+  \lambda_i q_i-\lambda_i/2
+  =
+  \lambda_i(2p_i-1/2)\geq0.
+\]
+If $\lambda_i<0$, choose the diagonal coupling, giving $q_i=p_i$.  Then
+\[
+  \lambda_i q_i-\lambda_i/2
+  =
+  \lambda_i(p_i-1/2)\geq0,
+\]
+because both factors are negative.
+\end{proof}
+
+The first genuinely mixed case is therefore a positive low-critical
+coordinate compensated by one or more negative coordinates.  There is a clean
+matching condition that resolves many such directions.
+
+Let $i$ be the positive coordinate and let $J$ be the set of negative
+coordinates.  Partition $\mathcal{F}$ by the trace on $J$: two sets lie in the
+same block if they contain exactly the same coordinates from $J$.
+
+\begin{lemma}[Protected one-positive boosting]
+Assume $1/4\leq p_i<1/2$.  Suppose that for every $J$-trace block
+$\mathcal{B}\subseteq\mathcal{F}$,
+\[
+  |\{A\in\mathcal{B}:i\in A\}|
+  \leq
+  \frac{|\mathcal{B}|}{2}.
+\]
+Then the weighted critical assignment inequality holds for every signed
+weight vector with $\lambda_i>0$ and $\lambda_j\leq0$ for all $j\in J$.
+\end{lemma}
+
+\begin{proof}
+Inside each $J$-trace block $\mathcal{B}$, choose a bijection
+$\sigma_{\mathcal{B}}:\mathcal{B}\to\mathcal{B}$ such that every column
+containing $i$ is assigned to a row omitting $i$.  This is possible because
+the number of $i$-columns in the block is at most the number of rows omitting
+$i$ in the same block.  Combining these bijections gives a permutation
+$\sigma$ of $\mathcal{F}$.
+
+Since $\sigma$ preserves every $J$-trace block, it does not increase any
+negative coordinate: $q_j(\sigma)=p_j$ for each $j\in J$.  Since every
+$i$-column is assigned to an $i$-missing row, the extra contribution to
+$q_i$ is $p_i$, so $q_i(\sigma)=2p_i$.  Hence
+\[
+  \sum_k\lambda_k q_k(\sigma)-\frac12\sum_k\lambda_k
+  =
+  \lambda_i(2p_i-1/2)
+  +
+  \sum_{j\in J}\lambda_j(p_j-1/2)
+  \geq0.
+\]
+The first term is nonnegative because $p_i\geq1/4$, and each summand in the
+second term is nonnegative because $\lambda_j\leq0$ and $p_j<1/2$.
+\end{proof}
+
+Thus any obstruction not handled by this lemma must have the positive
+coordinate too dense inside some trace block of the negative coordinates.
+This is a local obstruction, not a global entropy phenomenon.
+
+There is a more flexible version that allows dense blocks as long as the
+negative weights leave enough slack.
+
+\begin{lemma}[Trace-preserving partial boost]
+Let $i$ be the unique coordinate with positive weight, and let
+$J$ be the set of coordinates with negative weights.  Partition
+$\mathcal{F}$ into blocks by the $J$-trace.  For a block $\mathcal{B}$, write
+\[
+  r_{\mathcal{B}}=|\{A\in\mathcal{B}:i\in A\}|,
+  \qquad
+  \ell_{\mathcal{B}}=|\{A\in\mathcal{B}:i\notin A\}|.
+\]
+Set
+\[
+  \Delta_{i|J}
+  =
+  \frac1m\sum_{\mathcal{B}}\min(r_{\mathcal{B}},\ell_{\mathcal{B}}).
+\]
+Then there is a permutation coupling such that
+\[
+  q_j=p_j\quad(j\in J),
+  \qquad
+  q_i=p_i+\Delta_{i|J}.
+\]
+Consequently the weighted critical assignment inequality holds whenever
+\[
+  \Delta_{i|J}
+  \geq
+  \left(\frac12-p_i\right)
+  +
+  \frac1{\lambda_i}\sum_{j\in J}\lambda_j\left(\frac12-p_j\right).
+\]
+\end{lemma}
+
+\begin{proof}
+Inside each $J$-trace block $\mathcal{B}$, match as many $i$-containing
+columns as possible to $i$-omitting rows.  This creates exactly
+$\min(r_{\mathcal{B}},\ell_{\mathcal{B}})$ new OR occurrences of $i$ inside
+the block.  Complete the partial matching arbitrarily to a bijection of
+$\mathcal{B}$.  Combining these bijections over all blocks gives a
+permutation of $\mathcal{F}$ preserving every $J$-trace, hence preserving
+$q_j=p_j$ for all $j\in J$, and increasing $q_i$ by $\Delta_{i|J}$.
+
+For this coupling,
+\[
+  \sum_k\lambda_k(q_k-1/2)
+  =
+  \lambda_i\left(p_i+\Delta_{i|J}-\frac12\right)
+  +
+  \sum_{j\in J}\lambda_j\left(p_j-\frac12\right).
+\]
+The displayed lower bound on $\Delta_{i|J}$ is exactly the condition that
+this quantity is nonnegative.
+\end{proof}
+
+The protected-block lemma is the special case where
+$r_{\mathcal{B}}\leq \ell_{\mathcal{B}}$ in every block, so
+$\Delta_{i|J}=p_i$.
+
+\subsection{Multi-Positive Trace Blocks}
+
+Now let $P=\{i:\lambda_i>0\}$ and $J=\{j:\lambda_j<0\}$.  The natural
+generalization is to preserve the $J$-trace while optimizing the positive
+coordinates inside each trace block.
+
+For a $J$-trace block $\mathcal{B}$, define the positive gain weight
+\[
+  g^+_\lambda(A,B)
+  =
+  \sum_{i\in P\setminus A}\lambda_i\mathbf{1}_{i\in B}.
+\]
+Let
+\[
+  M_{\mathcal{B}}(\lambda)
+  =
+  \max_{\sigma_{\mathcal{B}}\in S_{\mathcal{B}}}
+  \sum_{A\in\mathcal{B}} g^+_\lambda(A,\sigma_{\mathcal{B}}(A)).
+\]
+This is an ordinary assignment problem inside the block.
+
+\begin{lemma}[Trace-preserving positive reduction]
+If
+\[
+  \sum_{\mathcal{B}} M_{\mathcal{B}}(\lambda)
+  \geq
+  m\sum_{i\in P}\lambda_i\left(\frac12-p_i\right)
+  +
+  m\sum_{j\in J}\lambda_j\left(\frac12-p_j\right),
+\]
+then the weighted critical assignment inequality holds for $\lambda$.
+\end{lemma}
+
+\begin{proof}
+For each $J$-trace block $\mathcal{B}$, choose a maximizing permutation
+$\sigma_{\mathcal{B}}$ in the definition of $M_{\mathcal{B}}(\lambda)$.
+Combining these permutations gives a permutation $\sigma$ of
+$\mathcal{F}$ preserving the $J$-trace of every set.  Hence
+$q_j(\sigma)=p_j$ for all $j\in J$.  The positive gain of this permutation is
+exactly $\sum_{\mathcal{B}}M_{\mathcal{B}}(\lambda)$.  Therefore
+\[
+  \sum_i\lambda_i(q_i(\sigma)-1/2)
+  =
+  \frac1m\sum_{\mathcal{B}}M_{\mathcal{B}}(\lambda)
+  -
+  \sum_{i\in P}\lambda_i\left(\frac12-p_i\right)
+  -
+  \sum_{j\in J}\lambda_j\left(\frac12-p_j\right).
+\]
+The assumed inequality says that the right-hand side is nonnegative, which is
+the weighted critical assignment inequality.
+\end{proof}
+
+A cheaper sufficient condition comes from random block permutations.  If
+$p_{i|\mathcal{B}}$ denotes the conditional frequency of coordinate $i$ inside
+the block $\mathcal{B}$, then averaging a uniform random permutation of each
+block gives expected positive gain
+\[
+  \sum_{\mathcal{B}}|\mathcal{B}|
+  \sum_{i\in P}\lambda_i
+  p_{i|\mathcal{B}}(1-p_{i|\mathcal{B}}).
+\]
+Thus the trace-preserving reduction holds whenever
+\[
+  \frac1m
+  \sum_{\mathcal{B}}|\mathcal{B}|
+  \sum_{i\in P}\lambda_i
+  p_{i|\mathcal{B}}(1-p_{i|\mathcal{B}})
+  \geq
+  \sum_{i\in P}\lambda_i\left(\frac12-p_i\right)
+  +
+  \sum_{j\in J}\lambda_j\left(\frac12-p_j\right).
+\]
+
+\begin{problem}[Trace-block boost problem]
+Determine when a remaining-cone weight vector satisfies the trace-preserving
+positive reduction.  When it fails, quantify how much negative-coordinate
+``leakage'' is needed to compensate for the missing trace-preserving boost.
+\end{problem}
+
+The trace-preserving positive reduction is not the final theorem.  It is a
+useful sufficient condition, but it can fail even while the full assignment
+inequality succeeds.
+
+\begin{example}[Controlled leakage is sometimes necessary]
+There is a reduced union-closed family on six coordinates with
+$|\mathcal{F}|=27$ and two maximal critical coordinates $i,j$ such that
+\[
+  p_i=\frac8{27},
+  \qquad
+  p_j=\frac{11}{27}.
+\]
+Take weights
+\[
+  \lambda_i=1,
+  \qquad
+  \lambda_j=-\frac1{25}.
+\]
+This weight vector lies in the remaining cone:
+\[
+  \lambda_i\left(\frac12-p_i\right)
+  +
+  \lambda_j\left(\frac12-p_j\right)
+  =
+  \frac15>0,
+\]
+and
+\[
+  \lambda_i\left(2p_i-p_i^2-\frac12\right)
+  +
+  \lambda_j\left(2p_j-p_j^2-\frac12\right)
+  =
+  -\frac{7}{6075}<0.
+\]
+If we preserve the $j$-trace, the best boost gives
+\[
+  q_i=\frac{13}{27},
+  \qquad
+  q_j=\frac{11}{27},
+\]
+and the weighted slack is negative:
+\[
+  \lambda_i(q_i-1/2)+\lambda_j(q_j-1/2)
+  =
+  -\frac{2}{135}<0.
+\]
+However the unrestricted assignment can choose
+\[
+  q_i=\frac{16}{27},
+  \qquad
+  q_j=\frac{14}{27},
+\]
+giving positive weighted slack
+\[
+  \lambda_i(q_i-1/2)+\lambda_j(q_j-1/2)
+  =
+  \frac{62}{675}>0.
+\]
+Thus the proof cannot insist on preserving every negative coordinate.  It
+must allow controlled leakage in the negative coordinates when the positive
+boost gained is sufficiently larger.
+\end{example}
+
+\begin{problem}[Controlled-leakage assignment]
+For a remaining-cone weight vector, prove that either the trace-preserving
+positive reduction succeeds, or there is an assignment whose additional
+positive gain exceeds the weighted cost of increasing the negative
+coordinates.  The two-coordinate case should be attacked first, since the
+example above already shows the necessary phenomenon.
+\end{problem}
+
+\subsection{Trace-Count Reduction}
+
+The controlled-leakage problem has an important simplification: for a fixed
+coordinate set, the OR-marginal polytope depends only on the counts of
+coordinate traces.
+
+Let $I$ be a finite set of coordinates.  For a trace
+$u\in\{0,1\}^{I}$, write
+\[
+  n_u=|\{A\in\mathcal{F}: A|_I=u\}|.
+\]
+For a uniform coupling of two members of $\mathcal{F}$, let
+$T_{u,v}$ be the amount of mass transported from trace $u$ to trace $v$,
+scaled by $m=|\mathcal{F}|$.  Then $T$ is a nonnegative matrix satisfying
+\[
+  \sum_v T_{u,v}=n_u,
+  \qquad
+  \sum_u T_{u,v}=n_v.
+\]
+Conversely, every such transportation matrix is realized by a convex
+combination of uniform couplings of $\mathcal{F}$.
+
+\begin{proposition}[Trace-count reduction]
+For a fixed coordinate set $I$, the set of possible OR-marginal vectors
+$q_I(\pi)$ over all uniform self-couplings $\pi$ is exactly the image of the
+transportation polytope
+\[
+  \{T_{u,v}\geq0:
+    \sum_vT_{u,v}=n_u,\ \sum_uT_{u,v}=n_v\}
+\]
+under the linear map
+\[
+  q_i(T)
+  =
+  \frac1m
+  \sum_{u,v:\ (u\vee v)_i=1} T_{u,v}.
+\]
+\end{proposition}
+
+\begin{proof}
+Any coupling of $\mathcal{F}$ pushes forward to such a transportation matrix
+on $I$-traces, and the displayed formula for $q_i$ is immediate.  Conversely,
+given $T$, distribute the mass $T_{u,v}$ arbitrarily among the complete
+bipartite pairs between the sets with trace $u$ and the sets with trace $v$.
+This gives a coupling of the uniform measure on $\mathcal{F}$ with itself.
+\end{proof}
+
+Thus the two-coordinate controlled-leakage problem is a statement about a
+$4\times4$ transportation polytope, independent of union-closure except
+through which trace-count vectors can occur in reduced maximal critical
+families.
+
+\begin{proposition}[Two-coordinate critical centering]
+Let $I=\{i,j\}$.  If
+\[
+  \frac14\leq p_i<\frac12,
+  \qquad
+  \frac14\leq p_j<\frac12,
+\]
+then the trace-count transportation polytope contains a coupling with
+\[
+  q_i=q_j=\frac12.
+\]
+Equivalently, every two-coordinate weighted critical assignment inequality
+holds, with no union-closure hypothesis needed beyond the realized trace
+counts.
+\end{proposition}
+
+\begin{proof}
+Normalize the trace counts by $m=|\mathcal{F}|$, and write
+\[
+  a=\Prb[00],\qquad b=\Prb[10],\qquad
+  c=\Prb[01],\qquad d=\Prb[11].
+\]
+Thus
+\[
+  p_i=b+d,\qquad p_j=c+d.
+\]
+Start with the diagonal self-coupling.  If we move an amount $\varepsilon$
+symmetrically from the two diagonal atoms $u,u$ and $v,v$ to the off-diagonal
+atoms $u,v$ and $v,u$, then the two marginals are unchanged.  This swap
+increases $q_i$ by $\varepsilon$ exactly when the traces $u$ and $v$ differ in
+coordinate $i$, and similarly for $j$.
+
+It is therefore enough to choose nonnegative edge weights on the complete
+graph on the four traces, with incident weight at a trace at most its mass,
+so that the total weight crossing the $i$-cut is
+\[
+  D_i=\frac12-p_i=\frac12-b-d
+\]
+and the total weight crossing the $j$-cut is
+\[
+  D_j=\frac12-p_j=\frac12-c-d.
+\]
+The assumptions give $0\leq D_i,D_j\leq 1/4$.
+
+Assume first that $c\geq b$; the other case follows by interchanging
+$i$ and $j$.  Then
+\[
+  D_i-D_j=c-b=:E.
+\]
+We first spend this excess $i$-demand on edges which cross only the $i$-cut.
+Put
+\[
+  z=\min(d,E)
+  \quad\text{on the edge }01\text{--}11,
+  \qquad
+  u=E-z
+  \quad\text{on the edge }00\text{--}10.
+\]
+The choice of $z$ is plainly feasible.  If $u>0$, then $E>d$, so
+$u=c-b-d$.  The inequality $u\leq b$ follows from
+\[
+  c\leq \frac12-d\leq 2b+d,
+\]
+where the last inequality is $b+d\geq 1/4$.  Also $u\leq a$ follows from
+$c<1/2$.  Thus the excess step is feasible.  After it, the two remaining
+demands are both equal to $D_j$.
+
+There are two cases.  If $E\leq d$, then the residual masses at the traces
+$00,10,01,11$ are
+\[
+  a,\quad b,\quad b,\quad d-E.
+\]
+Use $\min(b,D_j)$ on the edge $10$--$01$.  If this does not exhaust the
+remaining demand, the leftover amount is
+\[
+  D_j-b=\frac12-b-c-d=a-\frac12.
+\]
+This is at most $a$, and it is at most $d-E=d-c+b$ because
+\[
+  \frac12-b-c-d\leq d-c+b
+  \quad\Longleftrightarrow\quad
+  \frac12\leq 2(b+d).
+\]
+The last inequality is again $p_i\geq 1/4$.  Hence the leftover can be put on
+the edge $00$--$11$.
+
+If $E>d$, then after the excess step the trace $11$ has no residual mass, and
+we put all of the remaining demand $D_j$ on the edge $10$--$01$.  This fits at
+trace $10$ because
+\[
+  D_j\leq 2b+d-c
+  \quad\Longleftrightarrow\quad
+  \frac12\leq 2(b+d),
+\]
+and it fits at trace $01$ because
+\[
+  D_j\leq c-d
+  \quad\Longleftrightarrow\quad
+  c\geq \frac14.
+\]
+The latter follows from $E>d$, since then $c>b+d=p_i\geq 1/4$.
+
+In all cases we have built feasible symmetric swaps whose $i$- and $j$-cut
+weights are exactly $D_i$ and $D_j$.  Applying these swaps to the diagonal
+coupling gives a self-coupling with
+\[
+  q_i=p_i+D_i=\frac12,
+  \qquad
+  q_j=p_j+D_j=\frac12.
+\]
+Scaling back by $m$ gives the required point in the trace-count
+transportation polytope.
+\end{proof}
+
+The script still contains an exhaustive sanity check for this proposition on
+all two-coordinate trace count vectors with total size at most $16$.  The
+check is deliberately trace-count based: it enumerates $4\times4$
+transportation matrices rather than permutations of the full family.  This
+makes the controlled-leakage phenomenon visible as a small transportation
+fact.
+
+\subsection{The First Higher-Dimensional Test}
+
+The proof just given has a useful general form.  For a coordinate set $I$,
+let $\mu_u$ be the normalized mass of trace $u\in\{0,1\}^I$, and put
+\[
+  D_i=\frac12-p_i.
+\]
+Starting from the diagonal self-coupling, a symmetric swap of mass
+$\varepsilon$ between two traces $u$ and $v$ preserves both marginals and
+increases $q_i$ by $\varepsilon$ exactly when $u_i\neq v_i$.  Therefore the
+following finite certificate is enough to center all coordinates in $I$: find
+edge weights $\varepsilon_{u,v}\geq0$ on unordered pairs of traces such that
+\[
+  \sum_{v\neq u}\varepsilon_{u,v}\leq \mu_u
+  \qquad\text{for every trace }u
+\]
+and
+\[
+  \sum_{u_i\neq v_i}\varepsilon_{u,v}=D_i
+  \qquad\text{for every }i\in I.
+\]
+The two-coordinate proposition proves that this capacitated cut-demand problem
+is always feasible for $|I|=2$ when both coordinates are critical.
+
+The naive higher-dimensional version is already false if one ignores
+union-closure.
+For three coordinates, take normalized trace counts with total mass $7$:
+\[
+  n_{100}=n_{010}=n_{001}=2,\qquad
+  n_{011}=1,
+\]
+and all other trace counts zero.  Then
+\[
+  (p_1,p_2,p_3)=\left(\frac27,\frac37,\frac37\right),
+\]
+so all three coordinates are critical, but an exact enumeration of the
+$8\times8$ trace transportation polytope finds no coupling with
+$q_1=q_2=q_3=1/2$.  This is not a legal trace support for a union-closed
+family: for instance $100\vee010=110$ is missing.  Thus the third coordinate
+is precisely where the join-closure of the trace support has to become part
+of the proof, not just the one-coordinate marginals.
+
+A small exhaustive check first seemed to support this diagnosis: among the
+$147$ three-coordinate critical trace count vectors of total size at most $9$
+whose positive support is union-closed, the script found no miss.  But the
+next layer produces a genuine obstruction.
+
+\begin{proposition}[A parametric three-coordinate trace obstruction]
+Let $k\geq2$.  For three coordinates $x,y,z$, take trace counts
+\[
+  n_{000}=4,\qquad
+  n_{110}=k,\qquad
+  n_{001}=k,\qquad
+  n_{011}=2,\qquad
+  n_{111}=1,
+\]
+and all other trace counts zero.  The positive trace support is union-closed,
+and
+\[
+  (p_x,p_y,p_z)
+  =
+  \left(
+    \frac{k+1}{2k+7},
+    \frac{k+3}{2k+7},
+    \frac{k+3}{2k+7}
+  \right),
+\]
+so all three coordinates are critical.  Nevertheless the trace-count
+transportation polytope does not contain
+$(1/2,1/2,1/2)$.
+\end{proposition}
+
+\begin{proof}
+Use the signed functional
+\[
+  \varphi(q)=q_x-q_y-q_z.
+\]
+At the desired center, $\varphi=-1/2$.  On the support
+\[
+  S=\{000,110,001,011,111\},
+\]
+define potentials
+\[
+  \tau(000)=0,\quad
+  \tau(110)=0,\quad
+  \tau(001)=-\frac12,\quad
+  \tau(011)=-1,\quad
+  \tau(111)=0.
+\]
+A direct check of the $5\times5$ table gives
+\[
+  \varphi(u\vee v)\leq \tau(u)+\tau(v)
+  \qquad\text{for all }u,v\in S.
+\]
+Therefore every self-coupling of the trace distribution satisfies
+\[
+  \E[\varphi(U\vee V)]
+  \leq
+  2\E[\tau(U)]
+  =
+  2\cdot\frac{k(-1/2)+2(-1)}{2k+7}
+  =
+  -\frac{k+4}{2k+7}
+  <
+  -\frac12.
+\]
+Thus the center is separated by the assignment-dual direction
+$(1,-1,-1)$.
+\end{proof}
+
+This obstruction is not merely an artificial non-realizable count vector.  It
+is the projection, onto coordinates $(1,2,4)$, of the union-closed family on
+five coordinates
+\[
+  \{\,
+  0,1,7,8,9,15,24,25,28,29,31
+  \,\},
+\]
+where sets are written as bit masks.  But that lift has hidden Frankl
+witnesses: the two auxiliary coordinates have frequencies $7/11$ and $8/11$.
+So the failed trace-count theorem is not a dead end; it is a sharper version
+of the entropy--Hall dichotomy.  The three-coordinate dual obstruction can
+exist at the projected trace level, but in this lift the obstruction is paid
+for by heavy coordinates inside the fibers.
+
+In fact this is forced for every lift of this obstruction profile.
+
+\begin{lemma}[Bottom-fiber propagation]
+Let $\mathcal{F}$ be a union-closed family, projected onto a coordinate set
+$I$.  Let $A$ be the fiber over the zero trace $0\in\{0,1\}^I$, viewed as a
+family of auxiliary sets in the remaining coordinates.  Suppose an auxiliary
+coordinate $h$ appears in $r$ members of $A$.
+
+If $u$ is any projected trace such that the fiber $F_u$ has a maximum
+auxiliary set $M_u$, then $h\in M_u$.  Consequently, if $U$ is a collection
+of such traces with nonempty fibers, then $h$ appears in at least
+\[
+  r+|U|
+\]
+members of the original family, provided $U$ does not include the zero trace.
+\end{lemma}
+
+\begin{proof}
+Choose a member $a\in A$ containing $h$.  Since the projected trace of $a$ is
+zero, the union of $a$ with any member of $F_u$ still has projected trace
+$u$.  In particular, $a\cup M_u$ belongs to $F_u$.  But $M_u$ is maximum in
+that fiber and $M_u\subseteq a\cup M_u$, so $a\cup M_u=M_u$.  Hence
+$h\in M_u$.
+\end{proof}
+
+\begin{lemma}[Four-set local Frankl]
+Every four-element union-closed family of auxiliary sets has an element which
+appears in at least two members.
+\end{lemma}
+
+\begin{proof}
+If every member were empty there would not be four distinct sets.  Suppose, to
+the contrary, that every auxiliary element appears in at most one member.
+Then any two nonempty members are disjoint.  But the union of two distinct
+nonempty members contains every element of both, so each of those elements
+appears again in the union member.  This is impossible.  Therefore there
+cannot be two distinct nonempty members; with the empty set, this gives at
+most two distinct members total, again impossible.  Hence some element appears
+in at least two members.
+\end{proof}
+
+\begin{lemma}[Small local Frankl bounds]
+The following local bounds hold for finite union-closed families of auxiliary
+sets:
+\[
+\begin{array}{c|cccc}
+|G| & 4 & 5 & 6 & 7\\ \hline
+\max_h |\{g\in G:h\in g\}| & \geq2 & \geq3 & \geq4 & \geq4.
+\end{array}
+\]
+The six-set bound is deliberately stronger than the ordinary half bound.
+\end{lemma}
+
+\begin{proof}
+For $|G|=4$, the preceding four-set local Frankl lemma proves the claim.  For
+the other three cases we use a finite incidence-pattern reduction, which is
+also the intended Lean proof route.
+
+Assume $G$ has $m$ members and no element reaches the claimed threshold $t$.
+Let $M$ be the maximum member of $G$, and label its row by $m-1$.  Every
+active auxiliary coordinate then has an incidence column containing row
+$m-1$ and at most $t-2$ of the other rows.  There are only
+\[
+  \sum_{j=0}^{t-2}\binom{m-1}{j}
+\]
+such columns.  The script enumerates every subset of these columns, keeps the
+ones that separate the $m$ rows, and checks whether the resulting row set is
+closed under coordinatewise OR.  For
+\[
+  (m,t)=(5,3),(6,4),(7,4)
+\]
+there is no such row set.  This is a finite certificate, printed by
+\texttt{--local-frankl-checks}.
+\end{proof}
+
+\begin{lemma}[Horn propagation certificate]
+Fix an auxiliary coordinate $h$ obtained from the zero fiber.  For each trace
+u, let $y_u$ be the number of members in the $u$-fiber containing $h$, and
+let $n_u$ be the fiber size.  Then the following constraints are sound:
+\[
+  y_0\geq r_0,
+  \qquad
+  y_u\geq1 \quad (u\neq0,\ n_u>0),
+\]
+where $r_0$ is any valid local lower bound in the zero fiber, and
+\[
+  y_{u\vee v}=n_{u\vee v}
+  \quad\Longrightarrow\quad
+  y_u=n_u\ \text{or}\ y_v=n_v.
+\]
+\end{lemma}
+
+\begin{proof}
+The first inequality is the chosen local zero-fiber bound.  The second is
+bottom-fiber propagation: each nonzero fiber maximum contains $h$.
+
+For the Horn implication, suppose all members of the $(u\vee v)$-fiber
+contain $h$.  If some member of the $u$-fiber omitted $h$ and some member of
+the $v$-fiber also omitted $h$, then their union would omit $h$ but would lie
+in the $(u\vee v)$-fiber, a contradiction.  Hence one of the two input
+fibers must consist entirely of members containing $h$.
+\end{proof}
+
+\begin{proposition}[The parametric obstruction forces a hidden witness]
+Let $k\geq2$.
+Let $\mathcal{F}$ be a union-closed family whose projection onto three
+coordinates has trace counts
+\[
+  n_{000}=4,\qquad
+  n_{110}=k,\qquad
+  n_{001}=k,\qquad
+  n_{011}=2,\qquad
+  n_{111}=1,
+\]
+with all other trace counts zero.  If all members with the same trace are
+viewed as auxiliary sets in the remaining coordinates, then some auxiliary
+coordinate belongs to at least $k+5$ of the $2k+7$ members of
+$\mathcal{F}$.  In particular, it is a Frankl witness.
+\end{proposition}
+
+\begin{proof}
+Let $A$ be the $000$ fiber.  Since $000\vee000=000$, the four auxiliary sets
+in $A$ form a union-closed family.  By the four-set local Frankl lemma, this
+fiber has an element $h$ which appears in at least two members of $A$.
+
+Let $B,C,D,T$ be the $110$, $001$, $011$, and $111$ fibers respectively.
+Every finite union-closed fiber has a maximum auxiliary set, so bottom-fiber
+propagation already shows that $h$ appears in the maxima of all four nonzero
+fibers.  If $h$ appears in every member of $B$, then $h$ appears in at least
+\[
+  2+k+1+1+1=k+5
+\]
+members of the original family.
+
+Otherwise choose $b\in B$ with $h\notin b$.  Since $110\vee001=111$, for
+every $c\in C$ the union $b\cup c$ is the unique member of the $111$ fiber;
+therefore $h\in c$.  Similarly, since $110\vee011=111$, every member of
+$D$ contains $h$.  Together with one occurrence in the maximum of $B$, this
+gives at least
+\[
+  2+1+k+2+1=k+6
+\]
+occurrences.  In either case $h$ appears at least $k+5$ times, while
+\[
+  \frac{|\mathcal{F}|}{2}=\frac{2k+7}{2}<k+5.
+\]
+\end{proof}
+
+\begin{corollary}[The first sign obstructions are fiber-paid]
+For three-coordinate critical trace counts of total size at most $16$, the
+script's propagation scan
+\[
+  \texttt{--trace-three-propagation-scan-size 16}
+\]
+finds that every $\{-1,0,1\}$-separated class is paid for by the hidden
+element propagation certificate above.
+\end{corollary}
+
+\begin{proof}
+This is a finite computation.  For each separated trace-count vector, the
+script minimizes $\sum_u y_u$ subject to the small local zero-fiber bounds,
+bottom-fiber propagation, and the Horn implications above.  In every case of
+total size at most $16$, the minimum is at least half the total family size.
+\end{proof}
+
+At total size $17$, the same scan reports the first unpaid classes: $66$
+sign-separated trace counts, of which $48$ are paid by propagation and four
+canonical classes remain unpaid.  Three of these have zero-fiber size $8$,
+where the local zero-fiber bound has not yet been added.  The remaining class
+\[
+  (6,0,0,3,3,0,3,2)
+\]
+has propagation lower bound $8$, exactly one occurrence short of half.  This
+is the current next obstruction layer.
+
+The refined target is therefore not a pure trace-count theorem.  It is a
+fiber-sensitive statement: if a projected three-coordinate obstruction of
+this kind occurs in an actual union-closed family, then either controlled
+transport using the internal fibers restores centering, or the same dual
+certificate can be lifted into a genuine Frankl witness outside the projected
+coordinates.  The command \texttt{--trace-three-obstruction} prints this
+trace obstruction, its separating direction, and the explicit lift above.
+
+\subsection{Lean-Ready Boundary}
+
+The part of the argument that now looks stable enough to formalize is not the
+whole Frankl strategy, but the first obstruction layer.  It breaks into a
+small reusable API:
+\begin{enumerate}
+  \item A finite nonempty union-closed family has a maximum member, namely the
+  union of all its members.
+  \item Bottom-fiber propagation: if a zero-trace auxiliary coordinate appears
+  in a bottom fiber, then it appears in the maximum member of every nonzero
+  fiber.
+  \item Small local Frankl bounds for zero fibers of sizes $4$, $5$, $6$, and
+  $7$.
+  \item The Horn propagation certificate for fibers whose joins land in
+  all-$h$ fibers.
+  \item The parametric three-coordinate trace obstruction is separated by the
+  explicit assignment-dual potential above.
+  \item Every union-closed lift of that parametric obstruction has a hidden
+  Frankl witness.
+\end{enumerate}
+These are local, finite, and do not depend on any unproved global form of
+Frankl's conjecture.  They are therefore good candidates for the next Lean
+pass before attempting to formalize the broader entropy--transport program.
+
+\subsection{Coordinate-Order Faces}
+
+Some tight dual directions are structural and should be stripped away before
+looking for a real obstruction.  Define a preorder on coordinates by
+\[
+  i\preceq j
+  \qquad\Longleftrightarrow\qquad
+  \forall A\in\mathcal{F},\ i\in A\Rightarrow j\in A.
+\]
+Equivalently, $\chi_i\leq \chi_j$ pointwise.  If $i\preceq j$, then every
+coupled OR marginal satisfies
+\[
+  q_i(\pi)\leq q_j(\pi).
+\]
+Indeed, $i\in A\cup B$ implies $i\in A$ or $i\in B$, hence $j\in A$ or
+$j\in B$, so $j\in A\cup B$.
+
+Thus the hyperplane $q_i=q_j$ can support the centering polytope at
+$(1/2,\dots,1/2)$ without representing a failure.  The corresponding signed
+dual direction is $\lambda_i=1$, $\lambda_j=-1$.  Clone coordinates give the
+special case $i\preceq j$ and $j\preceq i$, where $q_i=q_j$ for all couplings.
+
+This suggests the following normalization before attacking the assignment
+dual:
+\[
+  \text{quotient coordinate clones, then keep only maximal coordinates under }
+  \preceq.
+\]
+For Frankl this is harmless as a search principle: if $i\preceq j$, then
+$p_i\leq p_j$, so the dominated coordinate $i$ is never a better witness than
+$j$.  In a putative counterexample all maximal coordinates are still light.
+
+\begin{problem}[Face-stripped assignment inequality]
+Prove the weighted critical assignment inequality after quotienting clone
+coordinates and restricting to maximal critical coordinates.  Then solve the
+extension problem for dominated coordinates with compatible targets
+$q_i\leq q_j$ when $i\preceq j$.  Exact centering of every dominated
+coordinate may be more than the entropy argument needs; a target inside
+$p_i<q_i<1-p_i$ would still give coordinate entropy gain.
+\end{problem}
+
+\section{The First Novel Program}
+
+\begin{problem}[Optimal coupled OR]
+Among all couplings $\pi\in\Pi(\mathcal{F})$, maximize
+\[
+  \Phi(\pi)=\Ent(X\vee Y)-\Ent(X).
+\]
+Understand the dual certificate when the maximum is nonpositive.
+\end{problem}
+
+This problem is nonlinear because of entropy, but it has a transport flavor:
+we are choosing mass on $\mathcal{F}\times\mathcal{F}$ with fixed marginals,
+and the objective depends only on the OR fibers
+\[
+  m^{-1}(C)=\{(A,B): A\vee B=C\}.
+\]
+The failure of entropy gain should therefore be witnessed by a potential on
+OR fibers and coordinates.
+
+\begin{heuristic}[Entropy failure equals collision structure]
+If no coupling gives positive entropy advantage, then the OR map
+\[
+  m:\mathcal{F}\times\mathcal{F}\to\mathcal{F},
+  \qquad
+  m(A,B)=A\vee B,
+\]
+has enough forced collision/dependence structure to produce a combinatorial
+certificate.  That certificate should be interpretable as a Hall obstruction
+to naive pairing.
+\end{heuristic}
+
+\section{Hall Certificates for Pairing Failure}
+
+Fix a coordinate $i$.  Let
+\[
+  L_i = \{A\in\mathcal{F}: i\notin A\},
+  \qquad
+  R_i = \{B\in\mathcal{F}: i\in B\}.
+\]
+Frankl for coordinate $i$ is exactly
+\[
+  |L_i| \leq |R_i|.
+\]
+
+Build a bipartite graph $G_i$ from $L_i$ to $R_i$ by declaring that
+$A\in L_i$ is adjacent to $B\in R_i$ if
+\[
+  B=A\cup C
+  \quad \text{for some } C\in\mathcal{F} \text{ with } i\in C.
+\]
+Union-closure guarantees $B\in\mathcal{F}$ whenever $C$ is chosen.
+
+\begin{lemma}[Matching certificate, desired]
+If $G_i$ has a matching saturating $L_i$, then $i$ is a Frankl element.
+\end{lemma}
+
+This is immediate from Hall's theorem.  The point is what happens when no such
+matching exists.
+
+\begin{definition}[Hall defect]
+For $U\subseteq L_i$, define
+\[
+  \delta_i(U)=|U|-|N_i(U)|.
+\]
+A positive Hall defect is a certificate that the obvious union-pairing strategy
+for coordinate $i$ cannot work.
+\end{definition}
+
+In a counterexample, every coordinate has $|L_i|>|R_i|$, so every coordinate
+has global counting pressure against Frankl.  But the graphs $G_i$ are not
+independent: all are induced by the same join operation on $\mathcal{F}$.
+
+\begin{problem}[Incompatibility of Hall defects]
+Show that a finite union-closed family cannot support coherent positive Hall
+defects for every active coordinate, unless some coordinate has
+$p_i\geq 1/2$.
+\end{problem}
+
+\section{The Entropy--Hall Synthesis}
+
+The central proposal is a dichotomy.
+
+\begin{conjecture}[Entropy--Hall dichotomy]
+Let $\mathcal{F}$ be a finite union-closed family with $0<p_i<1/2$ for every
+active coordinate.  Then at least one of the following holds:
+\begin{enumerate}[label=(\alph*)]
+  \item There exists a coupling $\pi\in\Pi(\mathcal{F})$ with
+  $\Phi(\pi)>0$.
+  \item The dual obstruction to $\Phi(\pi)>0$ yields Hall-defect data
+  $\{\delta_i(U_i)>0\}_i$ that is incompatible with union-closure.
+\end{enumerate}
+\end{conjecture}
+
+The first alternative gives an entropy contradiction.  The second alternative
+is meant to convert the entropy method's slack into a purely finite
+combinatorial contradiction.
+
+\section{Encountering the Barriers One by One}
+
+\subsection{Barrier: iid OR stops around \texorpdfstring{$(3-\sqrt{5})/2$}{(3-sqrt(5))/2}}
+
+Path through: replace iid OR by a positively correlated coupling.  The target
+is not arbitrary dependence, but dependence tuned so that
+\[
+  p_i < q_i(\pi) < 1-p_i
+\]
+for all coordinates.  This preserves positive coordinate entropy gain while
+still moving away from the original distribution.
+
+Concrete test:
+\[
+  \text{Can every putative counterexample admit such a coupling?}
+\]
+If not, what is the transport dual obstruction?
+
+\subsection{Barrier: entropy gains are eaten by dependence}
+
+Path through: measure the loss explicitly as
+\[
+  \TC(Z)-\TC(X).
+\]
+This loss is not noise; it records collision structure of the OR map.  Try to
+show that large dependence loss implies a strong Hall-defect pattern.
+
+Concrete target:
+\[
+  \TC(Z)-\TC(X)
+  \leq
+  \text{a weighted sum of local collision defects}.
+\]
+If the right side is too large, extract a coordinate with an actual matching
+or fractional matching.
+
+\subsection{Barrier: average-size bounds lose dimension}
+
+Path through: introduce an effective dimension for the separating coordinate
+system
+\[
+  \{\chi_i:\mathcal{F}\to\mathbf{2}\}.
+\]
+Possible choices:
+\begin{enumerate}[label=(\roman*)]
+  \item rank of the incidence matrix over $\mathbb{Q}$;
+  \item entropy dimension, $\sum_i h(p_i)$ normalized by $\log|\mathcal{F}|$;
+  \item number of join-irreducible coordinates after quotienting clones;
+  \item VC or shatter dimension of the coordinate traces.
+\end{enumerate}
+Then prove a trichotomy:
+\[
+  \text{dense} \quad \vee \quad
+  \text{low effective dimension} \quad \vee \quad
+  \text{entropy--transport contradiction}.
+\]
+
+\subsection{Barrier: dense cases are not the hard cases}
+
+Path through: use known density theorems as a boundary condition, but focus
+the new argument on sparse families.  Sparse families have larger OR-collision
+fibers, which is exactly the regime where the entropy/Hall synthesis should
+have more structure to exploit.
+
+\subsection{Barrier: equivalent formulations move the problem}
+
+Path through: choose the formulation by the obstruction it exposes.
+\[
+\begin{array}{ccl}
+\text{set families} &\leadsto& \text{frequency and pairing},\\
+\text{join-semilattices} &\leadsto& \text{coordinate homomorphisms},\\
+\text{graphs} &\leadsto& \text{maximal stable set counts},\\
+\text{closure systems} &\leadsto& \text{Galois duality and irreducibles}.
+\end{array}
+\]
+The proposed note lives in the join-semilattice/probability hybrid because it
+keeps both the OR operation and the counting measure visible.
+
+\section{Concrete Lemmas to Try}
+
+\begin{lemma}[Coupled OR window]
+Assume $\max_i p_i<1/2$.  Either there exists a coupling
+$\pi\in\Pi(\mathcal{F})$ such that
+\[
+  p_i < q_i(\pi) < 1-p_i
+  \quad\text{for all active } i,
+\]
+or the transport dual yields a nonzero signed measure on coordinates that
+separates the family from this window.
+\end{lemma}
+
+\begin{lemma}[Window plus bounded correlation loss]
+If a coupling $\pi$ satisfies the OR window and
+\[
+  \TC(X\vee Y)-\TC(X)
+  <
+  \sum_i \bigl(h(q_i(\pi))-h(p_i)\bigr),
+\]
+then $\mathcal{F}$ satisfies Frankl.
+\end{lemma}
+
+This lemma is tautological, but useful: it isolates the only remaining
+obstacle as correlation growth.
+
+\begin{lemma}[Correlation loss gives Hall defect]
+For an entropy-maximizing coupling $\pi$, large positive
+$\TC(X\vee Y)-\TC(X)$ forces a positive weighted combination of Hall defects
+in the graphs $G_i$.
+\end{lemma}
+
+This is the first genuinely speculative lemma.  It asks us to turn dependence
+created by OR-collisions into a finite matching obstruction.
+
+\begin{lemma}[Hall defects uncross]
+For each coordinate $i$, among all positive Hall defects choose an inclusion
+minimal $U_i\subseteq L_i$.  The family of minimal defects can be chosen to
+satisfy an uncrossing property compatible with joins:
+\[
+  U_i \vee U_j
+  =
+  \{A\vee B:A\in U_i,\ B\in U_j\}
+\]
+has controlled neighborhood growth.
+\end{lemma}
+
+\begin{lemma}[No coherent defect web]
+No reduced finite join-semilattice with separating coordinates and
+$p_i<1/2$ for all $i$ admits a coherent system of uncrossed positive Hall
+defects for every coordinate.
+\end{lemma}
+
+If the last two lemmas are true in an appropriately sharpened form, they would
+complete the entropy--Hall dichotomy.
+
+\section{A Minimal-Counterexample Normalization}
+
+Suppose $\mathcal{F}$ is a counterexample of minimal size.  We should be able
+to enforce the following normalizations:
+\begin{enumerate}[label=(N\arabic*)]
+  \item The ground set is exactly $\bigcup\mathcal{F}$.
+  \item Distinct coordinates induce distinct homomorphisms
+  $\chi_i:\mathcal{F}\to\mathbf{2}$.
+  \item No singleton belongs to $\mathcal{F}$, by the already formalized
+  singleton case.
+  \item Every coordinate has $0<p_i<1/2$.
+  \item The family is closed under deleting irrelevant duplicate coordinates.
+\end{enumerate}
+Each normalization should be formalized separately.  If any normalization
+fails, it may already yield a smaller counterexample or a Frankl element.
+
+\section{Formalization Roadmap}
+
+The Lean project currently proves the singleton-containing case.  The next
+formal targets should be low-risk statements that clarify the attack:
+\begin{enumerate}
+  \item Define the split families $L_i$ and $R_i$ and prove
+  $i$ is Frankl iff $|L_i|\leq |R_i|$.
+  \item Define the bipartite graph $G_i$ and prove the matching certificate
+  using a finite Hall theorem from Mathlib, or first prove the fractional
+  version via finite sums.
+  \item Define coordinate maps $\chi_i$ as join-homomorphisms to `Bool' or
+  `Fin 2', and prove they separate points after reducing the ground set.
+  \item Formalize the entropy identity
+  \[
+    \Ent(Z)-\Ent(X)
+    =
+    \sum_i(h(q_i)-h(p_i))-(\TC(Z)-\TC(X))
+  \]
+  in a separate finite-probability file, likely before connecting it to
+  Frankl.
+  \item Experiment computationally with small union-closed families, solving
+  the coupled OR window as a linear feasibility problem.
+\end{enumerate}
+
+\section{What Would Count as Progress?}
+
+We do not need the full dichotomy immediately.  Any of the following would be
+meaningful progress:
+\begin{enumerate}
+  \item Find a natural class of sparse families where the coupled OR window
+  exists and beats correlation growth.
+  \item Derive an explicit dual certificate for failure of the OR window.
+  \item Show that the dual certificate implies one of the known structural
+  special cases.
+  \item Prove that minimal counterexamples must have a strong collision
+  profile under the OR map.
+  \item Connect OR-collision fibers to Hall defects in one nontrivial family
+  class.
+\end{enumerate}
+
+\section{First Computational Probe}
+
+The companion script
+\[
+  \texttt{window\_experiment.py}
+\]
+tests the coupled-OR window on small union-closed families.  For exact small
+families it uses the Birkhoff-von Neumann theorem: every uniform coupling of
+two uniform samples from $\mathcal{F}$ is a convex combination of permutation
+couplings.  The script enumerates the corresponding OR-marginal vectors
+\[
+  q(\sigma)_i
+  =
+  \frac{1}{|\mathcal{F}|}
+  \left|\{A\in\mathcal{F}: i\in A\cup\sigma(A)\}\right|
+\]
+and solves the low-dimensional convex-hull LP
+\[
+  \max \gamma
+  \quad\text{subject to}\quad
+  p_i+\gamma\le q_i\le 1-p_i-\gamma.
+\]
+
+Two coordinate modes are useful:
+\begin{enumerate}
+  \item \texttt{nonheavy}: coordinates with $p_i\le 1/2$;
+  \item \texttt{light}: coordinates with $p_i<1/2$.
+\end{enumerate}
+The first mode exposes exact boundary obstructions.  The second mode tests
+whether strictly light coordinates can be pushed into the entropy window.
+
+For all union-closed families on three ground elements, the exact
+\texttt{light} scan found no obstruction: every tested light-coordinate window
+had positive margin.  The smallest margin occurred at $p=3/7$, where the
+solver found $q=1/2$ and $\gamma=1/14$.  For rarer coordinates the optimum is
+often $q=2p$ rather than $q=1/2$, exactly as predicted by the
+single-coordinate range.  In \texttt{nonheavy} mode, the smallest margins are
+exactly zero and occur at the expected sharp boundary $p_i=1/2$, including the
+Boolean cube itself.
+
+For all union-closed families on four ground elements, with exact permutation
+couplings for $|\mathcal{F}|\le 8$ and sampled permutation couplings for larger
+families, the same pattern persisted.  In a critical-coordinate scan
+($1/4\le p_i<1/2$), all 1988 exact checks were center-feasible, and the sampled
+larger cases also found centers.  The hardest light-coordinate examples had
+$p=7/15$ and sampled couplings reaching $q=1/2$, giving $\gamma=1/30$.
+
+The script now also has a stronger \texttt{--scan-subsets} mode: instead of
+testing only the highest-frequency eligible coordinates, it tests every
+eligible coordinate subset of size at most three.  In the exhaustive
+four-coordinate critical scan, this produced 4468 center checks:
+\[
+  2924\text{ exact-feasible},\qquad
+  1544\text{ sampled-feasible},\qquad
+  0\text{ center misses}.
+\]
+This is better evidence for the ``obstruction-critical subcollection''
+phrasing of the conjecture than the earlier top-coordinate scan.  Two small
+random subset scans also found no misses: 56 critical subset checks from 40
+random five-coordinate generated families, and 37 critical subset checks from
+30 random six-coordinate generated families.
+
+The direct signed-weight stress test reinforces the face-stripping picture.
+With \texttt{--lambda-stress}, the script samples signed vectors $\lambda$ and
+solves the exact assignment problem for each one.  It now also reports the two
+necessary cone quantities from the diagonal and random-permutation baselines,
+so small raw slack is not mistaken for a genuine candidate obstruction.  On
+the exhaustive four-coordinate critical subset scan, no sampled direction
+separated the center.  Before normalization, many zero-slack directions were
+explained by clone coordinates or by coordinate-order faces $i\preceq j$,
+where $q_i\leq q_j$ is forced for every coupling.  After imposing both
+\texttt{--reduced-only} and \texttt{--maximal-only}, the exhaustive
+four-coordinate scan had 628 center checks and no misses; the hardest sampled
+dual slack was
+\[
+  \frac1{30},
+\]
+coming from a single maximal coordinate with $p=7/15$.  A reduced, maximal
+random six-coordinate scan produced only three maximal critical coordinate
+sets in the sample, again all single-coordinate, with hardest slack
+$1/38$.  A broader random seven-coordinate scan produced 31 reduced/maximal
+critical checks, including a two-coordinate maximal critical case, again with
+no misses and no sampled separating direction; the hardest slack was $1/70$.
+This suggests that a large part of the apparent signed-dual difficulty is
+caused by forced faces rather than genuine transport obstructions.
+
+A targeted search for remaining-cone geometry found mixed two-coordinate
+examples.  One reduced six-coordinate family has maximal critical coordinates
+with frequencies
+\[
+  (p_i,p_j)=\left(\frac8{29},\frac{14}{29}\right).
+\]
+The best cone direction found had one positive low-critical weight on $i$ and
+one negative high-critical weight on $j$.  The exact assignment still had
+positive slack, and the maximizing permutation achieved
+\[
+  q_i=\frac{16}{29}=2p_i,
+  \qquad
+  q_j=\frac{14}{29}=p_j.
+\]
+In other words, it boosted the rare positive coordinate all the way to its
+single-coordinate maximum while preserving the negative coordinate at the
+diagonal value.  The protected-block condition explains this: inside the two
+$j$-trace blocks, the conditional frequencies of $i$ were $2/15$ and $6/14$,
+both at most $1/2$.
+
+The stronger partial-boost lemma is needed because the protected-block
+condition is not automatic.  A later search found a one-positive cone
+direction with
+\[
+  (p_j,p_i)=\left(\frac{19}{39},\frac{17}{39}\right),
+\]
+where $j$ has negative weight and $i$ has positive weight.  In the
+$j=1$ trace block, the conditional frequency of $i$ was $13/19>1/2$, so full
+boosting while preserving $j$ was impossible.  Nevertheless the
+trace-preserving boost size was
+\[
+  \Delta_{i|j}=\frac{10}{39},
+\]
+and the exact assignment achieved
+\[
+  q_j=\frac{19}{39}=p_j,
+  \qquad
+  q_i=\frac{27}{39}=p_i+\Delta_{i|j}.
+\]
+For the tested cone direction the required boost was only about $0.0033$,
+so the partial boost had large slack.  This suggests that the right local
+quantity is not whether every block has conditional frequency at most $1/2$,
+but whether the aggregate trace-preserving boost $\Delta_{i|J}$ exceeds the
+signed demand imposed by the negative coordinates.
+
+A broader eight-coordinate reduced/maximal scan produced four remaining-cone
+candidate directions.  All four were handled by the trace-preserving positive
+assignment.  In the hardest one, the critical frequencies were
+\[
+  (p_i,p_j)=\left(\frac{21}{47},\frac{23}{47}\right),
+\]
+with positive weight on $i$ and negative weight on $j$.  The trace-preserving
+assignment kept
+\[
+  q_j=p_j
+\]
+and boosted
+\[
+  q_i=\frac{42}{47}=2p_i.
+\]
+The required boost was only about $0.005$, while the available
+trace-preserving boost was $21/47$.  This shows why the trace-preserving
+criterion remains valuable: many remaining-cone directions have tiny diagonal
+slack, but the available positive boost can still be enormous.  The later
+controlled-leakage example shows that this criterion is not universal.
+
+For random generated families on six ground elements, the sampled search again
+found positive window margins on the most critical light coordinates.  Exact
+centering was usually found as the sampled permutation hull became denser, but
+some sampled ``not seen feasible'' cases remained.  These are not certificates
+of failure; they are candidate stress tests for either a genuine dual
+obstruction or a more systematic sampling/LP method.  The script can print the
+first such families with \texttt{--show-misses}.
+
+For a sampled center miss, the script extracts a separating coordinate weight
+vector $\lambda$ from the sampled $q$-hull.  It then checks this separator
+against the full permutation-coupling polytope by solving the exact assignment
+problem
+\[
+  \max_{\sigma\in S_{\mathcal{F}}}
+  \frac1{|\mathcal{F}|}
+  \sum_{A\in\mathcal{F}}\sum_{i\in I}
+  \lambda_i\,\mathbf{1}_{i\in A\cup\sigma(A)}.
+\]
+If this exact maximum is still below
+\[
+  \sum_{i\in I}\lambda_i/2,
+\]
+then the separator is a genuine obstruction to simultaneous centering for the
+chosen coordinate set.  In the first printed six-coordinate stress cases, the
+assignment check beat the sampled separator, so those misses were sampling
+weakness rather than real obstructions.  This is encouraging: it suggests that
+many apparent misses are caused by a thin sampled hull, while also giving a
+clear route for recognizing a true obstruction if one appears.
+
+The script also implements a column-generation version of this idea.  Starting
+from sampled permutation couplings, it repeats:
+\[
+\begin{array}{ll}
+  \text{(1)} & \text{if }(1/2,\dots,1/2)\text{ is in the current hull, stop;}\\
+  \text{(2)} & \text{otherwise extract a separating }\lambda;\\
+  \text{(3)} & \text{solve the exact assignment problem for }\lambda;\\
+  \text{(4)} & \text{if the exact optimum still separates, certify obstruction;}\\
+  \text{(5)} & \text{otherwise add the maximizing permutation as a new column.}
+\end{array}
+\]
+On a stress run of 120 random six-coordinate generated families, using only
+300 sampled permutations as the initial hull, all sampled critical-center
+misses were resolved by column generation.  The resulting status counts were
+\[
+  3\text{ exact-feasible},\quad
+  77\text{ sampled-feasible},\quad
+  10\text{ generated-feasible},\quad
+  0\text{ verified obstructions}.
+\]
+In the hardest printed case, the center was certified after adding just one
+exact assignment column.  This strengthens the experimental evidence for
+critical-coordinate centering and gives a concrete finite procedure for
+searching for genuine obstructions.
+
+These computations do not prove the coupled window lemma.  They do suggest a
+sharper experimental conjecture:
+
+\begin{conjecture}[Critical light-coordinate centering]
+Let $\mathcal{F}$ be finite and union-closed.  For every set of light
+coordinates in the critical range
+\[
+  I=\{i:1/4\le p_i<1/2\},
+\]
+or at least for every obstruction-critical subcollection of them, there exists
+a uniform coupling of $X,Y$ such that
+\[
+  \Prb[(X\vee Y)_i=1]=\frac12
+  \qquad\text{for all } i\in I.
+\]
+\end{conjecture}
+
+For lighter coordinates $p_i<1/4$, the right target is not $1/2$ but some
+value in the interval
+\[
+  p_i<q_i\le 2p_i<1/2,
+\]
+which still gives positive coordinate entropy gain.  If the critical
+centering conjecture is true, then the iid entropy barrier is removed exactly
+where iid OR fails.  The remaining obstruction would be entirely the
+total-correlation term
+\[
+  \TC(X\vee Y)-\TC(X),
+\]
+which strengthens the case for connecting entropy loss with OR-collision and
+Hall-defect structure.
+
+\section{References}
+
+\begin{thebibliography}{9}
+
+\bibitem{Poonen}
+B. Poonen,
+\emph{Union-closed families},
+Journal of Combinatorial Theory, Series A 59(2), 253--268, 1992.
+
+\bibitem{BruhnSchaudt}
+H. Bruhn and O. Schaudt,
+\emph{The journey of the union-closed sets conjecture},
+Graphs and Combinatorics 31, 2043--2074, 2015.
+
+\bibitem{Gilmer}
+J. Gilmer,
+\emph{A constant lower bound for the union-closed sets conjecture},
+arXiv:2211.09055, 2022.
+
+\bibitem{AlweissHuangSellke}
+R. Alweiss, B. Huang, and M. Sellke,
+\emph{Improved lower bound for the union-closed sets conjecture},
+Electronic Journal of Combinatorics 31(3), P3.35, 2024.
+
+\bibitem{VuckovicZivkovic}
+B. Vuckovic and M. Zivkovic,
+\emph{Formalizing Frankl's Conjecture: FC-families},
+arXiv:1207.3604, 2012.
+
+\end{thebibliography}
+
+\end{document}
