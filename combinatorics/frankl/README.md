@@ -42,10 +42,15 @@ lattice `L` with `|L| ≥ 2` has a join-irreducible element `j` (Mathlib's
   Birkhoff-free argument: a maximal join-irreducible `j` with the map
   `x ↦ ⨆ {y ≤ x : ¬ j ≤ y}` injects the up-set of `j` into its complement.
   Finite chains follow (`franklLattice_of_linearOrder`).
-- **Modular lattices** (`franklLattice_of_modular`, Abe–Nakano), strictly
-  generalising the distributive case: take `m` maximal among proper elements and
-  a join-irreducible `x ⊄ m`; then `x ⊔ m = ⊤`, and `α ↦ m ⊓ α` injects `↑x`
-  into its complement (injective by the modular law `x ⊔ m ⊓ α = (x ⊔ m) ⊓ α`).
+- **Lattices with a left-modular coatom** (`franklLattice_of_leftModular_coatom`,
+  Woodroofe) — the "master" case covering modular, dually (lower) semimodular,
+  and supersolvable lattices.  Pick a join-irreducible `x ⊄ m`; since the coatom
+  `m` satisfies `x ⊔ m = ⊤`, the map `α ↦ m ⊓ α` injects `↑x` into its
+  complement (injective by left-modularity `x ⊔ m ⊓ α = (x ⊔ m) ⊓ α`).
+- **Modular lattices** (`franklLattice_of_modular`, Abe–Nakano) follow as a
+  corollary: every element of a modular lattice is left-modular, and a finite
+  nontrivial lattice has a coatom.  This strictly generalises the distributive
+  case.
 
 **Poonen's equivalence is fully proved**: `franklConjecture_iff_franklLattice`
 shows `FranklConjecture ↔ FranklLattice` (sorry-free, axiom-clean).

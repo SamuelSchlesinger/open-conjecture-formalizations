@@ -137,49 +137,42 @@ theorem franklLattice_of_linearOrder
     ∃ j : L, SupIrred j ∧ 2 * Nat.card {x : L // j ≤ x} ≤ Nat.card L :=
   franklLattice_of_distribLattice hL
 
-/-- The **modular case** of the lattice form of Frankl's conjecture (Abe–Nakano),
-which strictly generalises the distributive case.
+/-- `m` is **left-modular** if `a ⊔ (m ⊓ b) = (a ⊔ m) ⊓ b` whenever `a ≤ b`.
+In a modular lattice every element is left-modular; in a (dually) lower
+semimodular lattice every coatom is. -/
+def LeftModular {L : Type*} [Lattice L] (m : L) : Prop :=
+  ∀ a b : L, a ≤ b → a ⊔ m ⊓ b = (a ⊔ m) ⊓ b
 
-Take `m` maximal among the proper elements (so `m < z` forces `z = ⊤`) and a
-join-irreducible `x ⊄ m` (one exists because `⊤` is the join of the
-join-irreducibles).  Then `x ⊔ m = ⊤`, and the map `α ↦ m ⊓ α` injects the
-up-set `↑x` into its complement: it is injective because modularity gives
-`x ⊔ (m ⊓ α) = (x ⊔ m) ⊓ α = α` for `α ≥ x`, and its image avoids `↑x` since
-`m ⊓ α ≤ m ⊉ x`.  Hence `2 |↑x| ≤ |L|`. -/
-theorem franklLattice_of_modular
-    {L : Type*} [Lattice L] [IsModularLattice L] [Finite L] (hL : 2 ≤ Nat.card L) :
+/-- **Frankl's conjecture for a lattice with a left-modular coatom** (Woodroofe).
+This is the "master" case: it covers modular, dually (lower) semimodular, and
+supersolvable lattices.
+
+Pick a join-irreducible `x ⊄ m` (one exists because `⊤` is the join of the
+join-irreducibles).  Since `m` is a coatom and `x ⊄ m`, `x ⊔ m = ⊤`.  The map
+`α ↦ m ⊓ α` injects the up-set `↑x` into its complement: left-modularity gives
+`x ⊔ (m ⊓ α) = (x ⊔ m) ⊓ α = α` for `α ≥ x` (so it is injective), and the image
+avoids `↑x` since `m ⊓ α ≤ m ⊉ x`.  Hence `2 |↑x| ≤ |L|`. -/
+theorem franklLattice_of_leftModular_coatom
+    {L : Type*} [Lattice L] [Finite L] [BoundedOrder L] {m : L}
+    (hco : IsCoatom m) (hlm : LeftModular m) :
     ∃ x : L, SupIrred x ∧ 2 * Nat.card {z : L // x ≤ z} ≤ Nat.card L := by
   classical
   haveI : Fintype L := Fintype.ofFinite L
   have hcard : Fintype.card L = Nat.card L := Nat.card_eq_fintype_card.symm
-  have hL' : 2 ≤ Fintype.card L := by rw [hcard]; exact hL
-  haveI : Nontrivial L := Fintype.one_lt_card_iff_nontrivial.mp hL'
-  haveI : BoundedOrder L := Fintype.toBoundedOrder L
-  -- a maximal proper element `m`
-  have hpropne : (univ.filter (fun z : L => z ≠ ⊤)).Nonempty :=
-    ⟨⊥, mem_filter.mpr ⟨mem_univ _, bot_ne_top⟩⟩
-  obtain ⟨m, hmmax⟩ := Finset.exists_maximal hpropne
-  have hmne : m ≠ ⊤ := (mem_filter.mp hmmax.1).2
-  have hmtop : ∀ z : L, m < z → z = ⊤ := by
-    intro z hz
-    by_contra hzne
-    exact absurd (le_antisymm hz.le (hmmax.2 (mem_filter.mpr ⟨mem_univ _, hzne⟩) hz.le))
-      (ne_of_lt hz)
-  -- a join-irreducible `x` not below `m`
   obtain ⟨s, hs, hsi⟩ := exists_supIrred_decomposition (⊤ : L)
   have hxex : ∃ x ∈ s, ¬ x ≤ m := by
     by_contra hall
     push_neg at hall
     have htop : (⊤ : L) ≤ m := by
       rw [← hs]; exact Finset.sup_le fun x hx => by simpa using hall x hx
-    exact hmne (top_le_iff.mp htop)
+    exact hco.1 (top_le_iff.mp htop)
   obtain ⟨x, hxs, hxm⟩ := hxex
   have hmx : x ⊔ m = ⊤ :=
-    hmtop _ (lt_of_le_of_ne le_sup_right fun he => hxm (le_sup_left.trans he.ge))
+    hco.2 _ (lt_of_le_of_ne le_sup_right fun he => hxm (le_sup_left.trans he.ge))
   refine ⟨x, hsi hxs, ?_⟩
   -- the injection `α ↦ m ⊓ α` of `↑x` into its complement
   have hrec : ∀ α : L, x ≤ α → x ⊔ m ⊓ α = α := by
-    intro α hα; rw [← sup_inf_assoc_of_le m hα, hmx, top_inf_eq]
+    intro α hα; rw [hlm x α hα, hmx, top_inf_eq]
   have hmaps : Set.MapsTo (fun α => m ⊓ α)
       (univ.filter (fun z => x ≤ z)) (univ.filter (fun z => ¬ x ≤ z)) := by
     intro α _
@@ -203,6 +196,20 @@ theorem franklLattice_of_modular
     rw [Nat.card_eq_fintype_card, Fintype.card_subtype]
   rw [hconv, ← hcard]
   omega
+
+/-- The **modular case** (Abe–Nakano), a corollary of the left-modular coatom
+theorem: in a modular lattice every element is left-modular, and a finite
+nontrivial lattice has a coatom. -/
+theorem franklLattice_of_modular
+    {L : Type*} [Lattice L] [IsModularLattice L] [Finite L] (hL : 2 ≤ Nat.card L) :
+    ∃ x : L, SupIrred x ∧ 2 * Nat.card {z : L // x ≤ z} ≤ Nat.card L := by
+  haveI : Fintype L := Fintype.ofFinite L
+  haveI : Nontrivial L :=
+    Fintype.one_lt_card_iff_nontrivial.mp (by rwa [← Nat.card_eq_fintype_card])
+  haveI : BoundedOrder L := Fintype.toBoundedOrder L
+  obtain ⟨m, hco⟩ := IsCoatomic.exists_coatom (α := L)
+  exact franklLattice_of_leftModular_coatom hco
+    (fun a b hab => (sup_inf_assoc_of_le m hab).symm)
 
 open Classical in
 /-- In a finite lattice every element is the join of the join-irreducible
