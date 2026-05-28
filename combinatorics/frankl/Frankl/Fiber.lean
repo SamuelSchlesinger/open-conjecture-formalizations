@@ -134,4 +134,34 @@ theorem mem_maximum_of_mem_of_union_mem {G : Finset (Finset α)} {A M : Finset �
     x ∈ M :=
   subset_maximum_of_union_mem hM hUnion hxA
 
+/-- Horn-style propagation: if every member of an output family contains `x`,
+then whenever `A ∪ B` lies in that family, at least one of `A` or `B`
+contains `x`.  This is the set-theoretic core of the propagation certificate
+used in the research note. -/
+theorem mem_left_or_mem_right_of_union_mem_all {G : Finset (Finset α)}
+    {A B : Finset α} {x : α}
+    (hAll : ∀ C ∈ G, x ∈ C) (hUnion : A ∪ B ∈ G) :
+    x ∈ A ∨ x ∈ B := by
+  have hxUnion : x ∈ A ∪ B := hAll (A ∪ B) hUnion
+  simpa using hxUnion
+
+/-- If every member of an output family contains `x`, and `A ∪ B` lies in that
+family while `A` omits `x`, then `B` must contain `x`. -/
+theorem mem_right_of_union_mem_all_of_not_mem_left {G : Finset (Finset α)}
+    {A B : Finset α} {x : α}
+    (hAll : ∀ C ∈ G, x ∈ C) (hUnion : A ∪ B ∈ G) (hxA : x ∉ A) :
+    x ∈ B := by
+  rcases mem_left_or_mem_right_of_union_mem_all hAll hUnion with hxA' | hxB
+  · exact False.elim (hxA hxA')
+  · exact hxB
+
+/-- Symmetric form of `mem_right_of_union_mem_all_of_not_mem_left`. -/
+theorem mem_left_of_union_mem_all_of_not_mem_right {G : Finset (Finset α)}
+    {A B : Finset α} {x : α}
+    (hAll : ∀ C ∈ G, x ∈ C) (hUnion : A ∪ B ∈ G) (hxB : x ∉ B) :
+    x ∈ A := by
+  rcases mem_left_or_mem_right_of_union_mem_all hAll hUnion with hxA | hxB'
+  · exact hxA
+  · exact False.elim (hxB hxB')
+
 end Frankl

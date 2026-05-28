@@ -1,0 +1,15 @@
+{
+  "coord_mode": "critical",
+  "entries": [],
+  "entry_count": 0,
+  "max_exact_size": 8,
+  "maximal_only": true,
+  "mode": "random",
+  "n": 7,
+  "name": "critical center column-generation certificates",
+  "reduced_only": true,
+  "samples": 120,
+  "scan_subsets": false,
+  "seed": 11,
+  "status": "sampled_hull_plus_assignment_columns"
+}

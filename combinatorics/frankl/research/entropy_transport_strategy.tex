@@ -142,6 +142,160 @@ which gives
 This is the natural barrier faced by iid OR-sampling: above that threshold,
 OR pushes the coordinate past the entropy peak at $1/2$.
 
+\subsection{The Gilmer--AHS Entropy Hinge}
+
+Gilmer's breakthrough isolates a one-coordinate conditional entropy
+inequality.  After revealing a history $C$, write
+\[
+  p_C=\Prb[X_i=1\mid C],
+  \qquad
+  x_C=1-p_C.
+\]
+For independent histories $C,C'$, the probability that the OR bit is zero is
+$x_Cx_{C'}$, so the conditional entropy contribution is
+\[
+  \E_{C,C'} h(x_Cx_{C'}).
+\]
+Alweiss--Huang--Sellke reduce the sharp version of Gilmer's lemma to the
+following optimization over probability measures $\mu$ on $[0,1]$ with mean
+$\phi$:
+\[
+  F(\mu)=\E_{x,y\sim\mu\times\mu} h(xy)-\E_{x\sim\mu}h(x).
+\]
+They prove that the minimum is attained on a measure supported on
+$\{0,x\}$, so the hinge is the one-variable inequality
+\[
+  \phi h(x^2)\ge xh(x)\qquad (x\in[\phi,1]).
+\]
+For
+\[
+  \phi=\frac{\sqrt5-1}{2},
+\]
+this inequality holds, with equality at $x=\phi$ and $x=1$.  Therefore the
+iid entropy method reaches the constant
+\[
+  1-\phi=\frac{3-\sqrt5}{2}.
+\]
+
+The companion script
+\[
+  \texttt{gilmer\_ahs\_verification.py}
+\]
+reproduces the finite numerical part of this hinge proof.  In particular,
+\[
+  \texttt{--verify-ahs}
+\]
+checks the $I_1$ convexity table, the $I_2$ monotone chain, and the final
+$I_3$ analytic margin from the Alweiss--Huang--Sellke appendix.  This is an
+audit scaffold rather than a Lean certificate, but the checks are deliberately
+separated into the finite inequalities that should eventually be replaced by
+interval arithmetic or Lean proofs.
+The same script can also write
+\[
+  \texttt{ahs\_hinge\_certificate.json}
+\]
+with the rational grid points and high-precision margins for the finite
+$I_1$ and $I_2$ checks.  The payload now also includes mpmath interval
+enclosures and conservative rational floors for each finite row.  This is the
+bridge format for the Lean checker: it separates the finite row checking from
+the still-open task of formalizing the transcendental interval enclosures.
+
+This also marks the exact point where our technique must diverge from iid
+entropy.  The product measure $\mu\times\mu$ is forced by independent samples.
+A first, weak coupled analogue would replace it by a transport plan $\kappa$
+with the same marginals, and ask whether one can make
+\[
+  \E_{(x,y)\sim\kappa}h(xy)-\E_{x\sim\mu}h(x)
+\]
+positive even in regimes where the product plan has already crossed the
+golden-ratio barrier.  But the genuine coupled problem is stronger still:
+after choosing a pair of histories with conditional zero probabilities
+$x$ and $y$, the conditional coupling of the two fibers may choose a
+zero-zero mass
+\[
+  t\in[\max(0,x+y-1),\min(x,y)]
+\]
+rather than being forced to use $t=xy$.  Thus the coupled hinge should be an
+optimization of $\E h(t)$ over both a history transport plan and Frechet
+feasible conditional kernels.
+
+At the raw one-coordinate level this is plausible:
+the script's
+\[
+  \texttt{--coupled-coordinate-probe}
+\]
+shows that centering an OR coordinate at entropy $1/2$ keeps positive
+coordinate entropy gain for every $p<1/2$, while iid OR becomes negative
+above $(3-\sqrt5)/2$.  The remaining problem is global: such coordinatewise
+transport must be made compatible across all histories and all coordinates,
+and its total-correlation cost must be paid by the fiber/Hall certificates
+developed below.
+
+\begin{proposition}[One-coordinate coupled OR window]
+Let $X_i$ and $Y_i$ be Bernoulli random variables with the same marginal
+$p=\Prb[X_i=1]=\Prb[Y_i=1]$, coupled arbitrarily.  If
+\[
+  r=\Prb[X_i=1,\ Y_i=1],
+\]
+then the OR marginal is
+\[
+  q=\Prb[X_i\vee Y_i=1]=2p-r.
+\]
+As $r$ ranges over the Frechet interval
+\[
+  \max(0,2p-1)\le r\le p,
+\]
+the attainable OR marginals are exactly
+\[
+  p\le q\le \min(2p,1).
+\]
+Consequently every coordinate with $1/4\le p\le 1/2$ can be centered at
+$q=1/2$, by taking $r=2p-1/2$; and every coordinate with $0<p<1/4$ can still
+be moved upward inside the entropy-increasing region, by taking $r=0$ and
+$q=2p$.
+\end{proposition}
+
+\begin{proof}
+The identity $q=2p-r$ is inclusion--exclusion.  The bounds on $r$ are the
+two-marginal Frechet bounds.  Substituting $r=2p-q$ gives
+$p\le q\le\min(2p,1)$.  The two displayed choices of $r$ are then immediate.
+The algebraic feasibility part of this proposition is formalized in the Lean
+file \texttt{CoupledOr.lean}.
+\end{proof}
+
+The companion script also has a
+\[
+  \texttt{--one-coordinate-frontier}
+\]
+mode which prints this interval next to the iid value.  This makes the
+strategy's intended constant improvement precise: at the one-coordinate level
+there is no golden-ratio barrier left.  The whole difficulty has moved into
+the existence of one global coupling whose coordinate shadows satisfy these
+local demands simultaneously.
+
+\begin{problem}[Frechet-kernel replacement for the AHS hinge]
+Find structural hypotheses, coming from union-closure rather than from a
+single coordinate alone, under which the following coupled hinge is positive.
+Given a distribution $\mu$ of conditional zero probabilities, choose a
+transport plan $\kappa$ with both marginals $\mu$, and for each pair $(x,y)$
+choose
+\[
+  t(x,y)\in[\max(0,x+y-1),\min(x,y)].
+\]
+When can one force
+\[
+  \E_{(x,y)\sim\kappa} h(t(x,y))>\E_{x\sim\mu}h(x),
+\]
+after subtracting the total-correlation cost needed to realize these
+coordinatewise kernels simultaneously?
+\end{problem}
+
+This is the precise formal target suggested by the computation.  The AHS
+paper proves that the product specialization $t=xy$ cannot pass the
+golden-ratio constant.  Our coupled program asks whether union-closure supplies
+enough transport structure to choose better $t$ values without paying more
+dependence than the marginal entropy gain earns.
+
 \subsection{Average-Size Bounds Lose Dimension}
 
 Average-size methods estimate
@@ -1233,9 +1387,9 @@ in at least two members.
 The following local bounds hold for finite union-closed families of auxiliary
 sets:
 \[
-\begin{array}{c|cccc}
-|G| & 4 & 5 & 6 & 7\\ \hline
-\max_h |\{g\in G:h\in g\}| & \geq2 & \geq3 & \geq4 & \geq4.
+\begin{array}{c|ccccc}
+|G| & 4 & 5 & 6 & 7 & 8\\ \hline
+\max_h |\{g\in G:h\in g\}| & \geq2 & \geq3 & \geq4 & \geq4 & \geq4.
 \end{array}
 \]
 The six-set bound is deliberately stronger than the ordinary half bound.
@@ -1243,8 +1397,10 @@ The six-set bound is deliberately stronger than the ordinary half bound.
 
 \begin{proof}
 For $|G|=4$, the preceding four-set local Frankl lemma proves the claim.  For
-the other three cases we use a finite incidence-pattern reduction, which is
-also the intended Lean proof route.
+sizes $5$, $6$, and $7$ we use a finite incidence-pattern reduction, which is
+also the intended Lean proof route.  The size-$8$ line is the ordinary
+small-family half bound and is included as a separate small-case input; the
+naive incidence enumeration for it is substantially larger.
 
 Assume $G$ has $m$ members and no element reaches the claimed threshold $t$.
 Let $M$ be the maximum member of $G$, and label its row by $m-1$.  Every
@@ -1291,6 +1447,45 @@ in the $(u\vee v)$-fiber, a contradiction.  Hence one of the two input
 fibers must consist entirely of members containing $h$.
 \end{proof}
 
+\begin{proposition}[Unique-top symbolic propagation]
+Let $\mathcal{F}$ be a union-closed lift of a three-coordinate trace profile
+whose nonzero support consists of four traces $B,C,D,T$ satisfying
+\[
+  B\vee C=T,\qquad B\vee D=T,\qquad C\vee D=D,
+\]
+and suppose the $T$-fiber has exactly one member.  Let the fiber sizes be
+\[
+  |A|=z,\qquad |B|=b,\qquad |C|=c,\qquad |D|=d,\qquad |T|=1,
+\]
+where $A$ is the zero fiber.  If an auxiliary coordinate $h$ appears in
+$r$ members of $A$, then $h$ appears in at least
+\[
+  r+\min(b+3,\;c+d+2)
+\]
+members of $\mathcal{F}$.
+\end{proposition}
+
+\begin{proof}
+By bottom-fiber propagation, $h$ appears in the maximum member of each
+nonzero fiber $B,C,D,T$.  If every member of $B$ contains $h$, then together
+with one occurrence in each of $C,D,T$ we get at least
+\[
+  r+b+3
+\]
+occurrences.
+
+Otherwise choose $b_0\in B$ with $h\notin b_0$.  Since $B\vee C=T$ and the
+$T$-fiber is a singleton, $b_0\cup c$ is the unique member of $T$ for every
+$c\in C$.  The unique member of $T$ contains $h$ by bottom-fiber propagation,
+so every member of $C$ contains $h$.  The same argument using
+$B\vee D=T$ shows that every member of $D$ contains $h$.  Together with one
+member of $B$ and the unique member of $T$, this gives at least
+\[
+  r+c+d+2
+\]
+occurrences.  Taking the worse of the two cases proves the claim.
+\end{proof}
+
 \begin{proposition}[The parametric obstruction forces a hidden witness]
 Let $k\geq2$.
 Let $\mathcal{F}$ be a union-closed family whose projection onto three
@@ -1312,25 +1507,15 @@ $\mathcal{F}$.  In particular, it is a Frankl witness.
 Let $A$ be the $000$ fiber.  Since $000\vee000=000$, the four auxiliary sets
 in $A$ form a union-closed family.  By the four-set local Frankl lemma, this
 fiber has an element $h$ which appears in at least two members of $A$.
-
-Let $B,C,D,T$ be the $110$, $001$, $011$, and $111$ fibers respectively.
-Every finite union-closed fiber has a maximum auxiliary set, so bottom-fiber
-propagation already shows that $h$ appears in the maxima of all four nonzero
-fibers.  If $h$ appears in every member of $B$, then $h$ appears in at least
+Apply the unique-top symbolic propagation proposition with
 \[
-  2+k+1+1+1=k+5
+  r=2,\qquad b=k,\qquad c=k,\qquad d=2.
 \]
-members of the original family.
-
-Otherwise choose $b\in B$ with $h\notin b$.  Since $110\vee001=111$, for
-every $c\in C$ the union $b\cup c$ is the unique member of the $111$ fiber;
-therefore $h\in c$.  Similarly, since $110\vee011=111$, every member of
-$D$ contains $h$.  Together with one occurrence in the maximum of $B$, this
-gives at least
+It gives at least
 \[
-  2+1+k+2+1=k+6
+  2+\min(k+3,k+4)=k+5
 \]
-occurrences.  In either case $h$ appears at least $k+5$ times, while
+occurrences, while
 \[
   \frac{|\mathcal{F}|}{2}=\frac{2k+7}{2}<k+5.
 \]
@@ -1353,15 +1538,129 @@ bottom-fiber propagation, and the Horn implications above.  In every case of
 total size at most $16$, the minimum is at least half the total family size.
 \end{proof}
 
-At total size $17$, the same scan reports the first unpaid classes: $66$
-sign-separated trace counts, of which $48$ are paid by propagation and four
-canonical classes remain unpaid.  Three of these have zero-fiber size $8$,
-where the local zero-fiber bound has not yet been added.  The remaining class
+At total size $17$, the same scan reports the first unpaid classes.  With the
+size-$8$ local bound included, the four canonical unpaid classes are
 \[
-  (6,0,0,3,3,0,3,2)
+  (6,0,0,3,3,0,3,2),
 \]
-has propagation lower bound $8$, exactly one occurrence short of half.  This
-is the current next obstruction layer.
+\[
+  (8,0,1,0,1,0,1,6),\quad
+  (8,0,1,0,1,0,2,5),\quad
+  (8,0,1,0,2,0,1,5).
+\]
+Each has propagation lower bound $8$, exactly one occurrence short of half.
+Starting the hidden element in a nonzero fiber does not improve this bound.
+This was the next obstruction layer for the one-coordinate propagation
+certificate.  It is closed by a slightly more fiber-sensitive shadow
+certificate.
+
+A tempting strengthening would be: if the zero fiber has six members and
+$h$ appears in four of them, then any three-member fiber preserved by the
+zero fiber must contain $h$ in at least two members.  This is false in
+isolation.  For example, with auxiliary bit masks
+\[
+  A=\{0,1,3,7,11,15\},
+  \qquad
+  X=\{12,13,15\},
+\]
+the family $A$ is union-closed, the coordinate corresponding to bit $1$
+appears in four members of $A$, the three-set family $X$ is union-closed and
+is preserved by union with $A$, but that bit appears in only one member of
+$X$.  Hence the missing size-$17$ occurrence cannot be forced by a
+single-fiber action lemma alone; it must use the simultaneous constraints
+among the several nonzero fibers, or else a different transport idea.
+
+\begin{definition}[Zero-fiber shadow]
+Let $A$ be the zero fiber and let $J$ be a set of auxiliary coordinates that
+separates the members of $A$, after quotienting clone coordinates.  For any
+other fiber $F_u$, its $J$-shadow is the multiset of restrictions
+\[
+  \{\,x|_J:x\in F_u\,\}.
+\]
+We allow repeated shadows, because members which agree on $J$ may still be
+separated by auxiliary coordinates outside $J$.
+\end{definition}
+
+The point of this relaxation is that it can only make counterexamples easier
+to build.  The zero fiber acts on every nonzero fiber by union, so every
+$J$-shadow must be preserved by union with the $J$-shadow of $A$.  Also, if
+$u\vee v=w$, then every union of a member of the $u$-shadow with a member of
+the $v$-shadow must lie in the support of the $w$-shadow.  These are only
+necessary conditions for a genuine lift, but they remember simultaneous
+constraints between the nonzero fibers.
+
+\begin{proposition}[The size-$17$ frontier is shadow-paid]
+For each of the four size-$17$ unpaid trace-count classes above, every
+union-closed lift has an auxiliary coordinate, already visible in the zero
+fiber, which appears in at least $9$ of the $17$ members.
+\end{proposition}
+
+\begin{proof}
+First suppose the zero fiber contains an auxiliary coordinate appearing in at
+least five zero-fiber members.  In all four frontier classes there are four
+nonzero trace fibers.  Bottom-fiber propagation puts that coordinate in the
+maximum of each nonzero fiber, so it appears at least $5+4=9$ times.
+
+It remains to handle the equality cases where every zero-fiber coordinate has
+frequency at most four.  For a six-member zero fiber, the reduced
+union-closed shadows with maximum frequency at most four are finite; the
+script enumerates the $13$ canonical shadows.  For an eight-member zero
+fiber, the relevant equality shadow, after quotienting clone coordinates, is
+the Boolean three-cube.  For each zero shadow the script enumerates every
+multiset shadow of the nonzero fibers which is preserved by the zero fiber
+and satisfies all trace-join support constraints.
+
+The command
+\[
+  \texttt{--trace-three-frontier-shadow}
+\]
+reports the following minimum, over this relaxed shadow model, of the largest
+frequency among zero-fiber coordinates:
+\[
+\begin{array}{c|c}
+\text{trace counts} & \text{forced zero-coordinate frequency}\\ \hline
+(6,0,0,3,3,0,3,2) & 12\\
+(8,0,1,0,1,0,1,6) & 11\\
+(8,0,1,0,1,0,2,5) & 11\\
+(8,0,1,0,2,0,1,5) & 11.
+\end{array}
+\]
+All four lower bounds exceed $9$.  Since the shadow model permits repeated
+shadows and forgets all auxiliary coordinates outside the zero fiber, every
+genuine lift is a special case of the relaxation.  Therefore each frontier
+class has a hidden Frankl witness.
+\end{proof}
+
+The integrated scan
+\[
+  \texttt{--trace-three-propagation-scan-size N}
+\]
+now runs this as a second layer after the Horn propagation certificate and
+prints the first remaining frontier, if any.  At size $17$ it reports $48$
+propagation-paid separated counts and four shadow-paid canonical classes.  A
+run through size $18$ finds no remaining frontier.
+
+The symbolic task is now organized by support templates rather than by total
+size.  The command
+\[
+  \texttt{--trace-three-template-scan-size 18}
+\]
+finds five canonical three-coordinate support templates among all separated
+critical trace counts through size $18$:
+\[
+\begin{gathered}
+  \{0,1,2,3,7\},\quad
+  \{0,1,3,6,7\},\quad
+  \{0,3,5,6,7\},\\
+  \{0,1,2,3,5,7\},\quad
+  \{0,1,3,5,6,7\}.
+\end{gathered}
+\]
+The unique-top symbolic propagation proposition covers one recurring
+five-trace template whenever the top fiber is a singleton.  The next
+symbolic objective is to prove comparable parametric certificates for the
+remaining support templates, with finite shadow checks reserved only for
+their small equality cases.
 
 The refined target is therefore not a pure trace-count theorem.  It is a
 fiber-sensitive statement: if a projected three-coordinate obstruction of
@@ -1382,14 +1681,17 @@ small reusable API:
   \item Bottom-fiber propagation: if a zero-trace auxiliary coordinate appears
   in a bottom fiber, then it appears in the maximum member of every nonzero
   fiber.
-  \item Small local Frankl bounds for zero fibers of sizes $4$, $5$, $6$, and
-  $7$.
+  \item Small local Frankl bounds for zero fibers of sizes $4$ through $8$.
   \item The Horn propagation certificate for fibers whose joins land in
   all-$h$ fibers.
+  \item The unique-top symbolic propagation proposition, which turns a whole
+  parametric trace family into one inequality.
   \item The parametric three-coordinate trace obstruction is separated by the
   explicit assignment-dual potential above.
   \item Every union-closed lift of that parametric obstruction has a hidden
   Frankl witness.
+  \item The four size-$17$ frontier classes are paid by the zero-fiber shadow
+  certificate.
 \end{enumerate}
 These are local, finite, and do not depend on any unproved global form of
 Frankl's conjecture.  They are therefore good candidates for the next Lean
@@ -1685,9 +1987,89 @@ fails, it may already yield a smaller counterexample or a Frankl element.
 
 \section{Formalization Roadmap}
 
-The Lean project currently proves the singleton-containing case.  The next
-formal targets should be low-risk statements that clarify the attack:
+The Lean project now has a small checked spine for the first obstruction
+layer.  The following table separates kernel-checked content from the remaining
+mathematical bridge lemmas.
+
+\begin{center}
+\begin{tabular}{p{0.22\linewidth}p{0.24\linewidth}p{0.44\linewidth}}
+\textbf{Layer} & \textbf{Lean artifact} & \textbf{Current status} \\
+\hline
+Basic Frankl reductions &
+\texttt{Frankl.Basic}, \texttt{Frankl.Split} &
+Singleton-containing families and the split-family witness equivalence are
+checked. \\
+Coupled one-coordinate algebra &
+\texttt{Frankl.CoupledOr}, \texttt{Frankl.Probability},
+\texttt{Frankl.Entropy}, \texttt{Frankl.EntropyGain},
+\texttt{Frankl.TotalCorrelation}, \texttt{Frankl.CoupledHinge} &
+The Frechet interval, critical centering, finite two-Bernoulli couplings, and
+the entropy gain/total-correlation accounting formats are checked. \\
+AHS hinge payload &
+\texttt{Frankl.AHSFormula}, \texttt{Frankl.AHSData},
+\texttt{Frankl.Certificates}, \texttt{Frankl.AHSInterval} &
+The formulae, rational finite-row checks, and interval-row assembly lemmas are
+in Lean; the logarithmic interval enclosures and derivative identity remain
+open. \\
+Trace frontier certificates &
+\texttt{Frankl.Trace}, \texttt{Frankl.Fiber},
+\texttt{Frankl.FrontierData} &
+Trace-fiber propagation and the finite size-$17$ relaxed shadow predicates are
+checked; realizing the full shadow search from first principles remains open. \\
+Symbolic propagation &
+\texttt{Frankl.Boost}, \texttt{Frankl.UniqueTop} &
+The arithmetic boost core and a five-fiber unique-top propagation theorem are
+checked; connecting arbitrary projected families to this profile API remains a
+formalization target. \\
+Global coupled-kernel program &
+\texttt{Frankl.CoupledHinge}, \texttt{Frankl.GlobalCoupling} &
+Uniform global couplings, OR marginals, and the formal criterion are stated,
+but existence of compatible global kernels and the total-correlation bound
+remain the main frontier. \\
+\end{tabular}
+\end{center}
+
+The computational artifacts are synchronized by the following lightweight
+commands.
+
+\begin{center}
+\begin{tabular}{p{0.24\linewidth}p{0.34\linewidth}p{0.32\linewidth}}
+\textbf{Artifact} & \textbf{Command} & \textbf{Status} \\
+\hline
+\texttt{ahs\_hinge\_certificate.json} &
+\texttt{gilmer\_ahs\_verification.py --check-ahs-certificate
+research/ahs\_hinge\_certificate.json} &
+Checks the deterministic mpmath interval audit payload; not yet a
+kernel-checked transcendental proof. \\
+\texttt{center\_generation\_certificate.json} &
+\texttt{window\_experiment.py --check-center-certificate
+research/center\_generation\_certificate.json} &
+Checks stored generated-feasible assignment-column payloads. \\
+\texttt{reduced\_maximal\_center\_generation\_certificate.json} &
+\texttt{window\_experiment.py --check-center-certificate
+research/reduced\_maximal\_center\_generation\_certificate.json} &
+Checks the reduced/maximal scan payload. \\
+Size-$17$ frontier shadows &
+\texttt{window\_experiment.py --campaign frontier-shadow} &
+Regenerates the four relaxed zero-shadow frontier certificates now mirrored in
+\texttt{Frankl.FrontierData}. \\
+Total-correlation accounting &
+\texttt{window\_experiment.py --campaign tc-exact-n4} &
+Runs exact permutation TC accounting for small critical-center cases through
+$n=4$, bounded to $|\mathcal{F}|\leq7$; the full size-$8$ exact pass is a
+longer campaign. \\
+Campaign presets &
+\texttt{window\_experiment.py --list-campaigns} &
+Lists reproducible computational campaigns used by the note. \\
+\end{tabular}
+\end{center}
+
+The next formal targets should be low-risk statements that clarify the attack:
 \begin{enumerate}
+  \item Continue the one-coordinate coupled-OR algebra now started in
+  \texttt{Frankl/CoupledOr.lean}: promote the Frechet interval calculation
+  from raw real algebra to a finite probability statement about two
+  Bernoulli coordinates with equal marginals.
   \item Define the split families $L_i$ and $R_i$ and prove
   $i$ is Frankl iff $|L_i|\leq |R_i|$.
   \item Define the bipartite graph $G_i$ and prove the matching certificate

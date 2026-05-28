@@ -1,0 +1,49 @@
+{
+  "entry": {
+    "assignment": [
+      0,
+      1,
+      2,
+      5,
+      4,
+      3
+    ],
+    "coordinate_entropy_x": 1.966175517149571,
+    "coordinate_entropy_z": 2.0228085294147036,
+    "coords": [
+      2
+    ],
+    "entropy_gain": -0.2310490601866484,
+    "entropy_x": 1.7917594692280547,
+    "entropy_z": 1.5607104090414063,
+    "family_bits": [
+      "000",
+      "100",
+      "010",
+      "110",
+      "101",
+      "111"
+    ],
+    "family_masks": [
+      0,
+      1,
+      2,
+      3,
+      5,
+      7
+    ],
+    "n": 3,
+    "q": [
+      0.6666666666666666,
+      0.5,
+      0.5
+    ],
+    "raw_coordinate_gain": 0.05663301226513262,
+    "total_correlation_growth": 0.287682072451781,
+    "total_correlation_x": 0.17441604792151622,
+    "total_correlation_z": 0.4620981203732972
+  },
+  "name": "centered permutation where total-correlation growth dominates",
+  "selection": "global_best_centered from tc_exact_n4_size7_summary.json",
+  "source": "../tc_exact_n4_size7_summary.json"
+}

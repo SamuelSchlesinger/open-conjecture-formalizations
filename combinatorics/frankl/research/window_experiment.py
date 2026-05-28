@@ -35,9 +35,11 @@ from __future__ import annotations
 
 import argparse
 import itertools
+import json
 import math
 import random
 from dataclasses import dataclass, replace
+from pathlib import Path
 from typing import Iterable, Sequence
 
 import numpy as np
@@ -48,6 +50,55 @@ Family = tuple[Mask, ...]
 
 
 TOL = 1e-9
+
+CAMPAIGN_PRESETS: dict[str, tuple[str, dict[str, object]]] = {
+    "critical-n6-generated": (
+        "random six-coordinate critical-centering run that emits the current generated-feasible examples",
+        {
+            "n": 6,
+            "mode": "random",
+            "coord_mode": "critical",
+            "random": 300,
+            "generators": 6,
+            "seed": 7,
+            "samples": 300,
+            "max_exact_size": 8,
+            "center_generate": True,
+        },
+    ),
+    "frontier-shadow": (
+        "relaxed zero-shadow certificate for the remaining size-17 frontier classes",
+        {"trace_three_frontier_shadow": True},
+    ),
+    "local-frankl": (
+        "finite incidence checks for the local Frankl bounds used by the obstruction scan",
+        {"local_frankl_checks": True},
+    ),
+    "reduced-maximal-n7": (
+        "random seven-coordinate reduced/maximal critical-centering stress run",
+        {
+            "n": 7,
+            "mode": "random",
+            "coord_mode": "critical",
+            "random": 400,
+            "generators": 7,
+            "seed": 17,
+            "samples": 300,
+            "max_exact_size": 8,
+            "center_generate": True,
+            "reduced_only": True,
+            "maximal_only": True,
+        },
+    ),
+    "trace-three-through-18": (
+        "three-coordinate hidden-element propagation scan through total size 18",
+        {"trace_three_propagation_scan_size": 18},
+    ),
+    "tc-exact-n4": (
+        "exact permutation total-correlation accounting through n=4, bounded at |F|<=7",
+        {"tc_exact_max_n": 4, "max_exact_size": 7},
+    ),
+}
 
 
 @dataclass(frozen=True)
@@ -65,6 +116,7 @@ class WindowResult:
     center_status: str | None = None
     center_iterations: int | None = None
     center_generation_points: int | None = None
+    center_added_qs: tuple[tuple[float, ...], ...] = ()
 
 
 @dataclass(frozen=True)
@@ -74,6 +126,7 @@ class CenterGenerationResult:
     iterations: int
     point_count: int
     certificate: "CenterCertificate | None" = None
+    added_qs: tuple[tuple[float, ...], ...] = ()
 
 
 @dataclass(frozen=True)
@@ -104,6 +157,21 @@ class LambdaStressSummary:
     raw_best: LambdaStressResult
     cone_best: LambdaStressResult | None
     cone_trace_worst: LambdaStressResult | None
+
+
+@dataclass(frozen=True)
+class PermutationEntropyAccounting:
+    assignment: tuple[int, ...]
+    q: tuple[float, ...]
+    entropy_x: float
+    entropy_z: float
+    coordinate_entropy_x: float
+    coordinate_entropy_z: float
+    total_correlation_x: float
+    total_correlation_z: float
+    raw_coordinate_gain: float
+    total_correlation_growth: float
+    entropy_gain: float
 
 
 def bits(mask: Mask, n: int) -> str:
@@ -155,6 +223,51 @@ def is_coordinate_reduced(F: Family, n: int) -> bool:
 def frequencies(F: Family, n: int) -> tuple[float, ...]:
     m = len(F)
     return tuple(sum(1 for A in F if (A >> i) & 1) / m for i in range(n))
+
+
+def binary_entropy_value(p: float) -> float:
+    if p <= 0.0 or p >= 1.0:
+        return 0.0
+    return -p * math.log(p) - (1.0 - p) * math.log(1.0 - p)
+
+
+def entropy_from_counts(counts: Sequence[int]) -> float:
+    total = sum(counts)
+    if total == 0:
+        return 0.0
+    entropy = 0.0
+    for count in counts:
+        if count == 0:
+            continue
+        p = count / total
+        entropy -= p * math.log(p)
+    return entropy
+
+
+def coordinate_entropy_sum(ps: Sequence[float]) -> float:
+    return sum(binary_entropy_value(p) for p in ps)
+
+
+def mask_distribution_counts(values: Sequence[Mask]) -> dict[Mask, int]:
+    counts: dict[Mask, int] = {}
+    for value in values:
+        counts[value] = counts.get(value, 0) + 1
+    return counts
+
+
+def distribution_frequencies(counts: dict[Mask, int], n: int) -> tuple[float, ...]:
+    total = sum(counts.values())
+    if total == 0:
+        return tuple(0.0 for _ in range(n))
+    return tuple(
+        sum(count for mask, count in counts.items() if (mask >> i) & 1) / total
+        for i in range(n)
+    )
+
+
+def total_correlation_from_distribution(counts: dict[Mask, int], n: int) -> float:
+    entropy = entropy_from_counts(tuple(counts.values()))
+    return coordinate_entropy_sum(distribution_frequencies(counts, n)) - entropy
 
 
 def single_coordinate_q_range(F: Family, i: int) -> tuple[float, float]:
@@ -218,6 +331,43 @@ def support_union_closed(counts: Sequence[int]) -> bool:
     return all((u | v) in support_set for u in support for v in support)
 
 
+def mask_frequencies(F: Sequence[Mask], coord_count: int) -> tuple[int, ...]:
+    return tuple(
+        sum(1 for A in F if (A >> coord) & 1)
+        for coord in range(coord_count)
+    )
+
+
+def mask_family_union_closed(F: Sequence[Mask]) -> bool:
+    S = set(F)
+    return all((A | B) in S for A in F for B in F)
+
+
+def mask_coordinate_reduced(F: Sequence[Mask], coord_count: int) -> bool:
+    signatures = [
+        tuple((A >> coord) & 1 for A in F)
+        for coord in range(coord_count)
+    ]
+    return all(any(signature) for signature in signatures) and len(signatures) == len(
+        set(signatures)
+    )
+
+
+def permute_mask(mask: Mask, permutation: Sequence[int]) -> Mask:
+    permuted = 0
+    for old_bit, new_bit in enumerate(permutation):
+        if (mask >> old_bit) & 1:
+            permuted |= 1 << new_bit
+    return permuted
+
+
+def canonical_mask_family(F: Sequence[Mask], coord_count: int) -> tuple[Mask, ...]:
+    candidates = []
+    for permutation in itertools.permutations(range(coord_count)):
+        candidates.append(tuple(sorted(permute_mask(A, permutation) for A in F)))
+    return min(candidates)
+
+
 def permute_trace(trace: int, permutation: Sequence[int]) -> int:
     permuted = 0
     for old_bit, new_bit in enumerate(permutation):
@@ -234,6 +384,17 @@ def canonical_trace_counts(counts: Sequence[int], coord_count: int) -> tuple[int
             permuted[permute_trace(trace, permutation)] = count
         candidates.append(tuple(permuted))
     return min(candidates)
+
+
+def canonical_trace_support(counts: Sequence[int], coord_count: int) -> tuple[int, ...]:
+    supports = []
+    for permutation in itertools.permutations(range(coord_count)):
+        support = []
+        for trace, count in enumerate(counts):
+            if count > 0:
+                support.append(permute_trace(trace, permutation))
+        supports.append(tuple(sorted(support)))
+    return min(supports)
 
 
 def trace_counts(F: Family, coords: Sequence[int]) -> tuple[int, ...]:
@@ -633,6 +794,66 @@ def assignment_q(F: Family, coords: Sequence[int], assignment: Sequence[int]) ->
     return tuple(vals)
 
 
+def permutation_entropy_accounting(
+    F: Family,
+    n: int,
+    assignment: Sequence[int],
+) -> PermutationEntropyAccounting:
+    """Exact entropy/total-correlation accounting for one permutation coupling."""
+    x_counts = mask_distribution_counts(F)
+    z_values = tuple(F[row] | F[col] for row, col in enumerate(assignment))
+    z_counts = mask_distribution_counts(z_values)
+    p = distribution_frequencies(x_counts, n)
+    q = distribution_frequencies(z_counts, n)
+    entropy_x = entropy_from_counts(tuple(x_counts.values()))
+    entropy_z = entropy_from_counts(tuple(z_counts.values()))
+    coordinate_entropy_x = coordinate_entropy_sum(p)
+    coordinate_entropy_z = coordinate_entropy_sum(q)
+    total_correlation_x = coordinate_entropy_x - entropy_x
+    total_correlation_z = coordinate_entropy_z - entropy_z
+    raw_coordinate_gain = coordinate_entropy_z - coordinate_entropy_x
+    total_correlation_growth = total_correlation_z - total_correlation_x
+    entropy_gain = entropy_z - entropy_x
+    return PermutationEntropyAccounting(
+        assignment=tuple(int(i) for i in assignment),
+        q=q,
+        entropy_x=entropy_x,
+        entropy_z=entropy_z,
+        coordinate_entropy_x=coordinate_entropy_x,
+        coordinate_entropy_z=coordinate_entropy_z,
+        total_correlation_x=total_correlation_x,
+        total_correlation_z=total_correlation_z,
+        raw_coordinate_gain=raw_coordinate_gain,
+        total_correlation_growth=total_correlation_growth,
+        entropy_gain=entropy_gain,
+    )
+
+
+def entropy_accounting_payload(
+    accounting: PermutationEntropyAccounting,
+    F: Family,
+    coords: Sequence[int],
+    n: int,
+) -> dict[str, object]:
+    return {
+        "n": n,
+        "family_masks": list(F),
+        "family_bits": [bits(A, n) for A in F],
+        "coords": list(coords),
+        "assignment": list(accounting.assignment),
+        "q": list(accounting.q),
+        "entropy_x": accounting.entropy_x,
+        "entropy_z": accounting.entropy_z,
+        "coordinate_entropy_x": accounting.coordinate_entropy_x,
+        "coordinate_entropy_z": accounting.coordinate_entropy_z,
+        "total_correlation_x": accounting.total_correlation_x,
+        "total_correlation_z": accounting.total_correlation_z,
+        "raw_coordinate_gain": accounting.raw_coordinate_gain,
+        "total_correlation_growth": accounting.total_correlation_growth,
+        "entropy_gain": accounting.entropy_gain,
+    }
+
+
 def exact_assignment_certificate(
     F: Family,
     coords: Sequence[int],
@@ -945,6 +1166,7 @@ def generate_center_certificate(
     target = np.full(len(coords), 0.5)
     points = [tuple(float(x) for x in q) for q in initial_q_points]
     point_keys = {q_key(q) for q in points}
+    added_qs: list[tuple[float, ...]] = []
 
     for iteration in range(max_iterations + 1):
         point_array = np.array(points, dtype=float)
@@ -954,10 +1176,17 @@ def generate_center_certificate(
                 True,
                 iteration,
                 len(points),
+                added_qs=tuple(added_qs),
             )
         separated = separating_lambda(point_array, target)
         if separated is None:
-            return CenterGenerationResult("unknown-no-separator", None, iteration, len(points))
+            return CenterGenerationResult(
+                "unknown-no-separator",
+                None,
+                iteration,
+                len(points),
+                added_qs=tuple(added_qs),
+            )
         lambdas, sample_bound, target_value = separated
         cert = exact_assignment_certificate(
             F,
@@ -973,6 +1202,7 @@ def generate_center_certificate(
                 iteration,
                 len(points),
                 cert,
+                tuple(added_qs),
             )
         key = q_key(cert.best_q)
         if key in point_keys:
@@ -982,11 +1212,19 @@ def generate_center_certificate(
                 iteration,
                 len(points),
                 cert,
+                tuple(added_qs),
             )
         points.append(cert.best_q)
+        added_qs.append(cert.best_q)
         point_keys.add(key)
 
-    return CenterGenerationResult("unknown-iteration-limit", None, max_iterations, len(points))
+    return CenterGenerationResult(
+        "unknown-iteration-limit",
+        None,
+        max_iterations,
+        len(points),
+        added_qs=tuple(added_qs),
+    )
 
 
 def eligible_coords_for_mode(
@@ -1063,6 +1301,7 @@ def run_family_window_for_coords(
                     center_status=generated.status,
                     center_iterations=generated.iterations,
                     center_generation_points=generated.point_count,
+                    center_added_qs=generated.added_qs,
                     center_separator=None,
                     center_sample_bound=None,
                     center_target_value=None,
@@ -1074,6 +1313,7 @@ def run_family_window_for_coords(
                     center_status=generated.status,
                     center_iterations=generated.iterations,
                     center_generation_points=generated.point_count,
+                    center_added_qs=generated.added_qs,
                     center_separator=cert.lambdas,
                     center_sample_bound=cert.exact_max,
                     center_target_value=cert.target_value,
@@ -1083,6 +1323,7 @@ def run_family_window_for_coords(
                 center_status=generated.status,
                 center_iterations=generated.iterations,
                 center_generation_points=generated.point_count,
+                center_added_qs=generated.added_qs,
             )
         return replace(result, center_status="sampled-miss")
     return result
@@ -1207,6 +1448,8 @@ def summarize_exhaustive(args: argparse.Namespace) -> None:
     print(f"maximal only:         {args.maximal_only}")
     print(f"window results:       {len(results)} ({exact_count} exact), skipped {skipped}")
     print_center_summary(results)
+    if args.emit_center_certificate is not None:
+        emit_center_generation_certificates(args.emit_center_certificate, args, results)
     print_lambda_stress_summary(results, args.n, args.lambda_stress, args.seed + 2, args.show)
     if not results:
         return
@@ -1272,6 +1515,8 @@ def summarize_random(args: argparse.Namespace) -> None:
     print(f"maximal only: {args.maximal_only}")
     print(f"window results: {len(results)}")
     print_center_summary(results)
+    if args.emit_center_certificate is not None:
+        emit_center_generation_certificates(args.emit_center_certificate, args, results)
     print_lambda_stress_summary(results, args.n, args.lambda_stress, args.seed + 2, args.show)
     if not results:
         return
@@ -1358,6 +1603,133 @@ def print_center_summary(results: Sequence[tuple[WindowResult, Family]]) -> None
         if statuses:
             status_text = ", ".join(f"{k}={v}" for k, v in sorted(statuses.items()))
             print(f"  statuses: {status_text}")
+
+
+def emit_center_generation_certificates(
+    path: Path,
+    args: argparse.Namespace,
+    results: Sequence[tuple[WindowResult, Family]],
+) -> None:
+    """Write reusable payloads for successful column-generation resolutions."""
+    entries = []
+    for result, F in results:
+        if result.center_status != "generated-feasible":
+            continue
+        entries.append(
+            {
+                "family_masks": list(F),
+                "family_bits": [bits(A, args.n) for A in F],
+                "coords": list(result.coords),
+                "status": result.center_status,
+                "iterations": result.center_iterations,
+                "initial_point_count": (
+                    None
+                    if result.center_iterations is None
+                    or result.center_generation_points is None
+                    else result.center_generation_points - len(result.center_added_qs)
+                ),
+                "final_point_count": result.center_generation_points,
+                "added_qs": [list(q) for q in result.center_added_qs],
+                "target": [0.5 for _ in result.coords],
+            }
+        )
+    payload = {
+        "name": "critical center column-generation certificates",
+        "status": "sampled_hull_plus_assignment_columns",
+        "n": args.n,
+        "mode": args.mode,
+        "coord_mode": args.coord_mode,
+        "scan_subsets": args.scan_subsets,
+        "reduced_only": args.reduced_only,
+        "maximal_only": args.maximal_only,
+        "max_exact_size": args.max_exact_size,
+        "samples": args.samples,
+        "seed": args.seed,
+        "entry_count": len(entries),
+        "entries": entries,
+    }
+    path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n")
+    print(f"wrote center generation certificate payload: {path} ({len(entries)} entries)")
+
+
+def check_center_generation_certificates(path: Path) -> bool:
+    payload = json.loads(path.read_text())
+    if payload["status"] != "sampled_hull_plus_assignment_columns":
+        raise ValueError("unexpected center certificate status")
+    entries = payload["entries"]
+    if payload["entry_count"] != len(entries):
+        raise ValueError("entry_count does not match entries")
+    n = int(payload["n"])
+    for entry in entries:
+        if entry["status"] != "generated-feasible":
+            raise ValueError("center entry is not generated-feasible")
+        coords = entry["coords"]
+        if any(coord < 0 or coord >= n for coord in coords):
+            raise ValueError("coordinate out of range")
+        if len(set(coords)) != len(coords):
+            raise ValueError("duplicate coordinates in entry")
+        target = entry["target"]
+        if target != [0.5 for _ in coords]:
+            raise ValueError("unexpected center target")
+        added_qs = entry["added_qs"]
+        if entry["iterations"] is None or entry["iterations"] < 1:
+            raise ValueError("generated-feasible entry has no positive iteration count")
+        if len(added_qs) > entry["iterations"]:
+            raise ValueError("more added columns than iterations")
+        for q in added_qs:
+            if len(q) != len(coords):
+                raise ValueError("added q-vector has wrong dimension")
+            if any(value < -TOL or value > 1 + TOL for value in q):
+                raise ValueError("q-vector coordinate outside [0,1]")
+        family = entry["family_masks"]
+        if sorted(family) != family:
+            raise ValueError("family masks are not sorted")
+        if not is_union_closed(tuple(int(x) for x in family)):
+            raise ValueError("family is not union-closed")
+    return True
+
+
+def check_total_correlation_summary(path: Path) -> bool:
+    payload = json.loads(path.read_text())
+    if payload["status"] != "exact_permutation_scan_bounded_by_family_size":
+        raise ValueError("unexpected total-correlation summary status")
+    if payload["max_n"] < 1:
+        raise ValueError("max_n must be positive")
+    if payload["max_exact_size"] < 1:
+        raise ValueError("max_exact_size must be positive")
+
+    def check_entry(entry: dict[str, object]) -> None:
+        n = int(entry["n"])
+        family = tuple(int(x) for x in entry["family_masks"])
+        if not is_union_closed(family):
+            raise ValueError("TC entry family is not union-closed")
+        coords = [int(x) for x in entry["coords"]]
+        if any(coord < 0 or coord >= n for coord in coords):
+            raise ValueError("TC entry coordinate out of range")
+        raw = float(entry["raw_coordinate_gain"])
+        tc_growth = float(entry["total_correlation_growth"])
+        entropy_gain = float(entry["entropy_gain"])
+        if abs(entropy_gain - (raw - tc_growth)) > 1e-8:
+            raise ValueError("TC accounting identity failed")
+        q = entry["q"]
+        if len(q) != n:
+            raise ValueError("TC q-vector has wrong dimension")
+        if any(float(value) < -TOL or float(value) > 1 + TOL for value in q):
+            raise ValueError("TC q-vector coordinate outside [0,1]")
+
+    for per_n in payload["per_n"]:
+        for key in ["best", "worst", "best_centered", "worst_centered"]:
+            if key in per_n:
+                check_entry(per_n[key])
+    for key in [
+        "global_best",
+        "global_worst",
+        "global_best_centered",
+        "global_worst_centered",
+    ]:
+        if key in payload:
+            check_entry(payload[key])
+    return True
 
 
 def print_center_misses(
@@ -1501,6 +1873,201 @@ def print_lambda_stress_case(
     )
 
 
+def summarize_total_correlation_exact(args: argparse.Namespace) -> None:
+    """Compare coordinate entropy gain and TC growth on exact small cases."""
+    max_n = args.tc_exact_max_n
+    rng = random.Random(args.seed + 11)
+    print(
+        "total-correlation exact scan: "
+        f"max_n={max_n}, max_exact_size={args.max_exact_size}"
+    )
+    global_best: tuple[PermutationEntropyAccounting, Family, tuple[int, ...], int] | None = None
+    global_worst: tuple[PermutationEntropyAccounting, Family, tuple[int, ...], int] | None = None
+    global_best_centered: tuple[
+        PermutationEntropyAccounting, Family, tuple[int, ...], int
+    ] | None = None
+    global_worst_centered: tuple[
+        PermutationEntropyAccounting, Family, tuple[int, ...], int
+    ] | None = None
+    per_n_payload: list[dict[str, object]] = []
+    for n in range(1, max_n + 1):
+        cases = 0
+        skipped_large = 0
+        permutations_checked = 0
+        centered_permutations = 0
+        best: tuple[PermutationEntropyAccounting, Family, tuple[int, ...]] | None = None
+        worst: tuple[PermutationEntropyAccounting, Family, tuple[int, ...]] | None = None
+        best_centered: tuple[PermutationEntropyAccounting, Family, tuple[int, ...]] | None = None
+        worst_centered: tuple[PermutationEntropyAccounting, Family, tuple[int, ...]] | None = None
+        for F in all_union_closed_families(n):
+            if len(F) > args.max_exact_size:
+                skipped_large += 1
+                continue
+            coords = eligible_coords_for_mode(F, n, "critical", args.maximal_only)
+            if not coords:
+                continue
+            q_pts, exact = permutation_q_points(F, coords, args.max_exact_size, args.samples, rng)
+            if not exact:
+                continue
+            p_selected = [frequencies(F, n)[i] for i in coords]
+            window = max_window_margin(q_pts, p_selected, True, coords)
+            if window is None or window.center_feasible is not True:
+                continue
+            cases += 1
+            center = tuple(0.5 for _ in coords)
+            for assignment in itertools.permutations(range(len(F))):
+                accounting = permutation_entropy_accounting(F, n, assignment)
+                q_selected = tuple(accounting.q[i] for i in coords)
+                centered = all(
+                    abs(q_selected[i] - center[i]) <= 1e-9 for i in range(len(coords))
+                )
+                if centered:
+                    centered_permutations += 1
+                    if (
+                        best_centered is None
+                        or accounting.entropy_gain > best_centered[0].entropy_gain
+                    ):
+                        best_centered = (accounting, F, tuple(coords))
+                    if (
+                        worst_centered is None
+                        or accounting.entropy_gain < worst_centered[0].entropy_gain
+                    ):
+                        worst_centered = (accounting, F, tuple(coords))
+                permutations_checked += 1
+                if best is None or accounting.entropy_gain > best[0].entropy_gain:
+                    best = (accounting, F, tuple(coords))
+                if worst is None or accounting.entropy_gain < worst[0].entropy_gain:
+                    worst = (accounting, F, tuple(coords))
+        if best is not None:
+            global_candidate = (best[0], best[1], best[2], n)
+            if global_best is None or best[0].entropy_gain > global_best[0].entropy_gain:
+                global_best = global_candidate
+        if worst is not None:
+            global_candidate = (worst[0], worst[1], worst[2], n)
+            if global_worst is None or worst[0].entropy_gain < global_worst[0].entropy_gain:
+                global_worst = global_candidate
+        if best_centered is not None:
+            global_candidate = (best_centered[0], best_centered[1], best_centered[2], n)
+            if (
+                global_best_centered is None
+                or best_centered[0].entropy_gain > global_best_centered[0].entropy_gain
+            ):
+                global_best_centered = global_candidate
+        if worst_centered is not None:
+            global_candidate = (worst_centered[0], worst_centered[1], worst_centered[2], n)
+            if (
+                global_worst_centered is None
+                or worst_centered[0].entropy_gain < global_worst_centered[0].entropy_gain
+            ):
+                global_worst_centered = global_candidate
+        print(
+            "  n={n}: cases={cases}, skipped_large={skipped}, "
+            "permutations={perms}, centered_permutations={centered}".format(
+                n=n,
+                cases=cases,
+                skipped=skipped_large,
+                perms=permutations_checked,
+                centered=centered_permutations,
+            )
+        )
+        n_payload: dict[str, object] = {
+            "n": n,
+            "cases": cases,
+            "skipped_large": skipped_large,
+            "permutations_checked": permutations_checked,
+            "centered_permutations": centered_permutations,
+        }
+        if best is not None:
+            print(
+                "    best entropy gain: "
+                f"{best[0].entropy_gain:+.6f}, raw={best[0].raw_coordinate_gain:+.6f}, "
+                f"tc_growth={best[0].total_correlation_growth:+.6f}, "
+                f"coords={best[2]}, family={family_str(best[1], n)}"
+            )
+            n_payload["best"] = entropy_accounting_payload(best[0], best[1], best[2], n)
+        if worst is not None:
+            print(
+                "    worst entropy gain: "
+                f"{worst[0].entropy_gain:+.6f}, raw={worst[0].raw_coordinate_gain:+.6f}, "
+                f"tc_growth={worst[0].total_correlation_growth:+.6f}, "
+                f"coords={worst[2]}, family={family_str(worst[1], n)}"
+            )
+            n_payload["worst"] = entropy_accounting_payload(worst[0], worst[1], worst[2], n)
+        if best_centered is not None:
+            print(
+                "    best centered permutation: "
+                f"{best_centered[0].entropy_gain:+.6f}, "
+                f"raw={best_centered[0].raw_coordinate_gain:+.6f}, "
+                f"tc_growth={best_centered[0].total_correlation_growth:+.6f}, "
+                f"coords={best_centered[2]}, family={family_str(best_centered[1], n)}"
+            )
+            n_payload["best_centered"] = entropy_accounting_payload(
+                best_centered[0], best_centered[1], best_centered[2], n
+            )
+        if worst_centered is not None:
+            print(
+                "    worst centered permutation: "
+                f"{worst_centered[0].entropy_gain:+.6f}, "
+                f"raw={worst_centered[0].raw_coordinate_gain:+.6f}, "
+                f"tc_growth={worst_centered[0].total_correlation_growth:+.6f}, "
+                f"coords={worst_centered[2]}, family={family_str(worst_centered[1], n)}"
+            )
+            n_payload["worst_centered"] = entropy_accounting_payload(
+                worst_centered[0], worst_centered[1], worst_centered[2], n
+            )
+        per_n_payload.append(n_payload)
+    payload: dict[str, object] = {
+        "name": "bounded exact total-correlation accounting",
+        "status": "exact_permutation_scan_bounded_by_family_size",
+        "max_n": max_n,
+        "max_exact_size": args.max_exact_size,
+        "per_n": per_n_payload,
+    }
+    if global_best is not None:
+        accounting, F, coords, n = global_best
+        print(
+            "global best: "
+            f"n={n}, entropy_gain={accounting.entropy_gain:+.6f}, "
+            f"raw={accounting.raw_coordinate_gain:+.6f}, "
+            f"tc_growth={accounting.total_correlation_growth:+.6f}, "
+            f"coords={coords}, family={family_str(F, n)}"
+        )
+        payload["global_best"] = entropy_accounting_payload(accounting, F, coords, n)
+    if global_worst is not None:
+        accounting, F, coords, n = global_worst
+        print(
+            "global worst: "
+            f"n={n}, entropy_gain={accounting.entropy_gain:+.6f}, "
+            f"raw={accounting.raw_coordinate_gain:+.6f}, "
+            f"tc_growth={accounting.total_correlation_growth:+.6f}, "
+            f"coords={coords}, family={family_str(F, n)}"
+        )
+        payload["global_worst"] = entropy_accounting_payload(accounting, F, coords, n)
+    if global_best_centered is not None:
+        accounting, F, coords, n = global_best_centered
+        print(
+            "global best centered: "
+            f"n={n}, entropy_gain={accounting.entropy_gain:+.6f}, "
+            f"raw={accounting.raw_coordinate_gain:+.6f}, "
+            f"tc_growth={accounting.total_correlation_growth:+.6f}, "
+            f"coords={coords}, family={family_str(F, n)}"
+        )
+        payload["global_best_centered"] = entropy_accounting_payload(accounting, F, coords, n)
+    if global_worst_centered is not None:
+        accounting, F, coords, n = global_worst_centered
+        print(
+            "global worst centered: "
+            f"n={n}, entropy_gain={accounting.entropy_gain:+.6f}, "
+            f"raw={accounting.raw_coordinate_gain:+.6f}, "
+            f"tc_growth={accounting.total_correlation_growth:+.6f}, "
+            f"coords={coords}, family={family_str(F, n)}"
+        )
+        payload["global_worst_centered"] = entropy_accounting_payload(accounting, F, coords, n)
+    if args.emit_tc_summary is not None:
+        args.emit_tc_summary.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n")
+        print(f"wrote total-correlation summary: {args.emit_tc_summary}")
+
+
 def summarize_two_trace_counts(max_size: int) -> None:
     checked, misses, max_points = summarize_trace_counts(
         coord_count=2,
@@ -1617,11 +2184,13 @@ def local_zero_fiber_bound(size: int) -> int | None:
     """Certified lower bounds for a zero fiber of the given size.
 
     These are small local union-closed facts used only by the obstruction
-    experiments: 4 -> 2, 5 -> 3, 6 -> 4, 7 -> 4.  The 6-set bound is stronger
-    than the ordinary half bound and is verified by the finite incidence
-    search below.
+    experiments: 4 -> 2, 5 -> 3, 6 -> 4, 7 -> 4, 8 -> 4.  The 6-set bound is
+    stronger than the ordinary half bound.  The finite incidence check below
+    verifies the bounds through size 7; the size-8 half bound is kept as a
+    separate small-case input because the naive incidence enumeration is much
+    larger.
     """
-    bounds = {0: 0, 1: 1, 2: 1, 3: 2, 4: 2, 5: 3, 6: 4, 7: 4}
+    bounds = {0: 0, 1: 1, 2: 1, 3: 2, 4: 2, 5: 3, 6: 4, 7: 4, 8: 4}
     return bounds.get(size)
 
 
@@ -1718,6 +2287,193 @@ def summarize_local_frankl_checks() -> None:
         )
 
 
+def zero_shadow_types(size: int) -> list[tuple[int, tuple[Mask, ...]]]:
+    """Reduced zero-fiber shadows used by the size-17 certificate.
+
+    For size 6 we enumerate the small reduced shadows directly.  For size 8
+    we use the equality case of the small local bound: after quotienting clone
+    coordinates, the only half-light zero shadow needed here is the Boolean
+    three-cube.  This is intentionally recorded as a finite certificate input,
+    just like the size-8 local Frankl bound above.
+    """
+    if size == 8:
+        return [(3, tuple(range(8)))]
+    if size != 6:
+        raise ValueError(f"unsupported zero-shadow size {size}")
+
+    seen: set[tuple[int, tuple[Mask, ...]]] = set()
+    types: list[tuple[int, tuple[Mask, ...]]] = []
+    for coord_count in range(1, 6):
+        full = (1 << coord_count) - 1
+        for F in itertools.combinations(range(1 << coord_count), size):
+            if max(F) != full:
+                continue
+            if not mask_family_union_closed(F):
+                continue
+            if not mask_coordinate_reduced(F, coord_count):
+                continue
+            if max(mask_frequencies(F, coord_count)) > 4:
+                continue
+            canonical = canonical_mask_family(F, coord_count)
+            key = (coord_count, canonical)
+            if key in seen:
+                continue
+            seen.add(key)
+            types.append((coord_count, canonical))
+    return types
+
+
+def shadow_support_union_closed(support: set[Mask]) -> bool:
+    return all((A | B) in support for A in support for B in support)
+
+
+def zero_invariant_shadow(zero: Sequence[Mask], support: set[Mask]) -> bool:
+    return all((A | X) in support for A in zero for X in support)
+
+
+def fiber_shadow_options(
+    zero: Sequence[Mask],
+    coord_count: int,
+    size: int,
+) -> list[tuple[Mask, ...]]:
+    """Multiset shadows for a fiber preserved by the zero fiber.
+
+    We allow repeated shadows because extra auxiliary coordinates may split
+    members that have the same projection to the zero-fiber coordinates.  This
+    makes the certificate a relaxation: if even these relaxed shadows force a
+    heavy zero coordinate, then every genuine lift does too.
+    """
+    options = []
+    for multiset in itertools.combinations_with_replacement(range(1 << coord_count), size):
+        support = set(multiset)
+        if not shadow_support_union_closed(support):
+            continue
+        if not zero_invariant_shadow(zero, support):
+            continue
+        options.append(multiset)
+    return options
+
+
+def shadows_join_into(
+    left: Sequence[Mask],
+    right: Sequence[Mask],
+    target: Sequence[Mask],
+) -> bool:
+    target_support = set(target)
+    return all((A | B) in target_support for A in set(left) for B in set(right))
+
+
+@dataclass(frozen=True)
+class FrontierShadowCertificate:
+    counts: tuple[int, ...]
+    zero_type_count: int
+    best_forced_max: int
+    zero_coord_count: int
+    zero_shadow: tuple[Mask, ...]
+    fiber_shadows: tuple[tuple[int, tuple[Mask, ...]], ...]
+    zero_coordinate_totals: tuple[int, ...]
+    arrangements_checked: int
+
+
+def frontier_shadow_certificate(counts: Sequence[int]) -> FrontierShadowCertificate:
+    """Minimize the best zero-coordinate frequency over relaxed fiber shadows."""
+    counts = tuple(counts)
+    if len(counts) != 8 or counts[0] not in (6, 8):
+        raise ValueError("frontier shadow certificates are implemented for the size-17 classes")
+    support = tuple(u for u, count in enumerate(counts) if count > 0)
+    nonzero_support = tuple(u for u in support if u != 0)
+    joins = tuple((u, v, u | v) for u in support for v in support)
+    zero_types = zero_shadow_types(counts[0])
+
+    best_forced_max = math.inf
+    best_certificate: FrontierShadowCertificate | None = None
+    total_arrangements = 0
+
+    for coord_count, zero in zero_types:
+        options_by_size = {
+            size: fiber_shadow_options(zero, coord_count, size)
+            for size in sorted(set(counts[u] for u in nonzero_support))
+        }
+        fibers: dict[int, tuple[Mask, ...]] = {0: zero}
+        zero_freqs = mask_frequencies(zero, coord_count)
+        arrangements_for_zero = 0
+
+        def go(index: int) -> None:
+            nonlocal best_forced_max, best_certificate
+            nonlocal arrangements_for_zero, total_arrangements
+            if index == len(nonzero_support):
+                for u, v, w in joins:
+                    if not shadows_join_into(fibers[u], fibers[v], fibers[w]):
+                        return
+                arrangements_for_zero += 1
+                total_arrangements += 1
+                totals = list(zero_freqs)
+                for u in nonzero_support:
+                    fiber_freqs = mask_frequencies(fibers[u], coord_count)
+                    totals = [totals[j] + fiber_freqs[j] for j in range(coord_count)]
+                forced_max = max(totals)
+                if forced_max < best_forced_max:
+                    best_forced_max = forced_max
+                    best_certificate = FrontierShadowCertificate(
+                        counts=counts,
+                        zero_type_count=len(zero_types),
+                        best_forced_max=forced_max,
+                        zero_coord_count=coord_count,
+                        zero_shadow=zero,
+                        fiber_shadows=tuple((u, fibers[u]) for u in nonzero_support),
+                        zero_coordinate_totals=tuple(totals),
+                        arrangements_checked=total_arrangements,
+                    )
+                return
+
+            u = nonzero_support[index]
+            for option in options_by_size[counts[u]]:
+                fibers[u] = option
+                assigned = set(fibers)
+                ok = True
+                for a, b, w in joins:
+                    if a in assigned and b in assigned and w in assigned:
+                        if not shadows_join_into(fibers[a], fibers[b], fibers[w]):
+                            ok = False
+                            break
+                if ok:
+                    go(index + 1)
+                del fibers[u]
+
+        go(0)
+        if arrangements_for_zero == 0:
+            continue
+
+    if best_certificate is None:
+        raise ValueError(f"no relaxed shadow arrangements for counts {counts}")
+    return replace(best_certificate, arrangements_checked=total_arrangements)
+
+
+def summarize_frontier_shadow_certificates() -> None:
+    frontier = [
+        (6, 0, 0, 3, 3, 0, 3, 2),
+        (8, 0, 1, 0, 1, 0, 1, 6),
+        (8, 0, 1, 0, 1, 0, 2, 5),
+        (8, 0, 1, 0, 2, 0, 1, 5),
+    ]
+    for counts in frontier:
+        cert = frontier_shadow_certificate(counts)
+        print(
+            "frontier shadow certificate: "
+            f"counts={cert.counts}, zero_types={cert.zero_type_count}, "
+            f"arrangements={cert.arrangements_checked}, "
+            f"forced_zero_coord_max={cert.best_forced_max}, "
+            f"half_target={math.ceil(sum(counts) / 2)}"
+        )
+        print(
+            "  witness relaxation: "
+            f"zero_d={cert.zero_coord_count}, zero={cert.zero_shadow}, "
+            f"totals={cert.zero_coordinate_totals}"
+        )
+        for trace, shadow in cert.fiber_shadows:
+            print(f"    fiber {trace:03b}: {shadow}")
+
+
 def summarize_three_sign_obstructions(max_size: int) -> None:
     for m in range(1, max_size + 1):
         critical = 0
@@ -1754,13 +2510,62 @@ def summarize_three_sign_obstructions(max_size: int) -> None:
             )
 
 
+def summarize_three_template_scan(max_size: int) -> None:
+    templates: dict[tuple[int, ...], set[tuple[int, ...]]] = {}
+    examples: dict[tuple[int, ...], tuple[tuple[int, ...], tuple[int, ...], float, float]] = {}
+    by_size: dict[int, dict[tuple[int, ...], int]] = {}
+    for m in range(1, max_size + 1):
+        by_size[m] = {}
+        for counts in count_vectors(m, 8):
+            if not support_union_closed(counts):
+                continue
+            ps = tuple(
+                sum(counts[u] for u in range(8) if (u >> bit) & 1) / m
+                for bit in range(3)
+            )
+            if not all(0.25 - TOL <= p < 0.5 - TOL for p in ps):
+                continue
+            separator = first_sign_separator(counts, 3)
+            if separator is None:
+                continue
+            template = canonical_trace_support(counts, 3)
+            key = canonical_trace_counts(counts, 3)
+            templates.setdefault(template, set()).add(key)
+            examples.setdefault(template, (counts, *separator))
+            by_size[m][template] = by_size[m].get(template, 0) + 1
+
+    print(
+        "three-coordinate template scan: "
+        f"max_size={max_size}, templates={len(templates)}, "
+        f"canonical_classes={sum(len(classes) for classes in templates.values())}"
+    )
+    for template in sorted(templates, key=lambda t: (len(t), t)):
+        first_sizes = [
+            f"{m}:{by_size[m][template]}"
+            for m in sorted(by_size)
+            if template in by_size[m]
+        ][:8]
+        counts, lambdas, value, target = examples[template]
+        print(
+            "  template: "
+            f"support={template}, classes={len(templates[template])}, "
+            f"sizes={','.join(first_sizes)}, example={counts}, "
+            f"lambda={lambdas}, gap={value - target:+.6f}"
+        )
+
+
 def summarize_three_propagation_obstructions(max_size: int) -> None:
+    shadow_cache: dict[tuple[int, ...], FrontierShadowCertificate | None] = {}
+    first_frontier_size: int | None = None
+    first_frontier: list[tuple[tuple[int, ...], tuple[int, ...] | None, int | None, str]] = []
+
     for m in range(1, max_size + 1):
         critical = 0
         separated = 0
-        paid = 0
-        unpaid: list[tuple[tuple[int, ...], tuple[int, ...] | None, int | None]] = []
-        seen_unpaid: set[tuple[int, ...]] = set()
+        propagation_paid = 0
+        shadow_paid: list[tuple[tuple[int, ...], FrontierShadowCertificate]] = []
+        frontier: list[tuple[tuple[int, ...], tuple[int, ...] | None, int | None, str]] = []
+        seen_frontier_candidates: set[tuple[int, ...]] = set()
         for counts in count_vectors(m, 8):
             if not support_union_closed(counts):
                 continue
@@ -1776,23 +2581,89 @@ def summarize_three_propagation_obstructions(max_size: int) -> None:
             separated += 1
             lower, witness_counts = propagation_lower_bound(counts)
             if lower is not None and 2 * lower >= m:
-                paid += 1
+                propagation_paid += 1
                 continue
             key = canonical_trace_counts(counts, 3)
-            if key not in seen_unpaid:
-                seen_unpaid.add(key)
-                unpaid.append((key, witness_counts, lower))
+            if key in seen_frontier_candidates:
+                continue
+            seen_frontier_candidates.add(key)
+            if key not in shadow_cache:
+                try:
+                    shadow_cache[key] = frontier_shadow_certificate(key)
+                except ValueError:
+                    shadow_cache[key] = None
+            shadow_cert = shadow_cache[key]
+            if shadow_cert is not None and 2 * shadow_cert.best_forced_max >= m:
+                shadow_paid.append((key, shadow_cert))
+                continue
+            reason = "shadow-unsupported"
+            if shadow_cert is not None:
+                reason = f"shadow-forces-{shadow_cert.best_forced_max}"
+            frontier.append((key, witness_counts, lower, reason))
         print(
             "three-coordinate propagation scan: "
             f"m={m}, critical={critical}, separated={separated}, "
-            f"paid={paid}, unpaid_classes={len(unpaid)}"
+            f"propagation_paid={propagation_paid}, "
+            f"shadow_paid_classes={len(shadow_paid)}, "
+            f"frontier_classes={len(frontier)}"
         )
-        for key, witness_counts, lower in unpaid:
-            print(f"  unpaid: canonical={key}, lower={lower}, y={witness_counts}")
+        for key, cert in shadow_paid:
+            print(
+                "  shadow-paid: "
+                f"canonical={key}, forced={cert.best_forced_max}, "
+                f"arrangements={cert.arrangements_checked}"
+            )
+        for key, witness_counts, lower, reason in frontier:
+            print(
+                "  frontier: "
+                f"canonical={key}, lower={lower}, y={witness_counts}, "
+                f"reason={reason}"
+            )
+        if frontier and first_frontier_size is None:
+            first_frontier_size = m
+            first_frontier = frontier
+
+    if first_frontier_size is None:
+        print(f"first remaining frontier: none through m={max_size}")
+    else:
+        print(f"first remaining frontier: m={first_frontier_size}")
+        for key, witness_counts, lower, reason in first_frontier:
+            print(
+                "  frontier: "
+                f"canonical={key}, lower={lower}, y={witness_counts}, "
+                f"reason={reason}"
+            )
+
+
+def apply_campaign_preset(args: argparse.Namespace) -> None:
+    """Mutate parsed args with one of the named reproducible research presets."""
+    if args.campaign is None:
+        return
+    _, preset = CAMPAIGN_PRESETS[args.campaign]
+    for key, value in preset.items():
+        setattr(args, key, value)
+
+
+def print_campaigns() -> None:
+    print("available campaigns:")
+    for name in sorted(CAMPAIGN_PRESETS):
+        description, _ = CAMPAIGN_PRESETS[name]
+        print(f"  {name}: {description}")
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--campaign",
+        choices=sorted(CAMPAIGN_PRESETS),
+        default=None,
+        help="apply a named reproducible research preset before dispatch",
+    )
+    parser.add_argument(
+        "--list-campaigns",
+        action="store_true",
+        help="print available campaign presets and exit",
+    )
     parser.add_argument("--n", type=int, default=3, help="ground-set size")
     parser.add_argument(
         "--mode",
@@ -1864,10 +2735,43 @@ def main() -> None:
         help="maximum assignment columns to add for each center-generation attempt",
     )
     parser.add_argument(
+        "--emit-center-certificate",
+        type=Path,
+        default=None,
+        help="write generated-feasible column-generation payloads as JSON",
+    )
+    parser.add_argument(
+        "--check-center-certificate",
+        type=Path,
+        default=None,
+        help="check a generated center column-generation payload and exit",
+    )
+    parser.add_argument(
+        "--check-tc-summary",
+        type=Path,
+        default=None,
+        help="check a bounded total-correlation summary JSON file and exit",
+    )
+    parser.add_argument(
         "--lambda-stress",
         type=int,
         default=0,
         help="random signed assignment-dual directions to test for each result",
+    )
+    parser.add_argument(
+        "--tc-exact-max-n",
+        type=int,
+        default=0,
+        help=(
+            "run exact permutation total-correlation accounting for all critical-center "
+            "cases through this ground-set size"
+        ),
+    )
+    parser.add_argument(
+        "--emit-tc-summary",
+        type=Path,
+        default=None,
+        help="write the bounded total-correlation accounting summary as JSON",
     )
     parser.add_argument(
         "--trace-two-max-size",
@@ -1904,14 +2808,42 @@ def main() -> None:
         help="scan sign obstructions and test the hidden-element propagation certificate",
     )
     parser.add_argument(
+        "--trace-three-template-scan-size",
+        type=int,
+        default=0,
+        help="group separated three-coordinate trace counts by canonical support template",
+    )
+    parser.add_argument(
         "--local-frankl-checks",
         action="store_true",
         help="run finite incidence checks for the small local Frankl bounds",
     )
+    parser.add_argument(
+        "--trace-three-frontier-shadow",
+        action="store_true",
+        help="run the relaxed zero-shadow certificate for the size-17 frontier classes",
+    )
     args = parser.parse_args()
+
+    if args.list_campaigns:
+        print_campaigns()
+        return
+    apply_campaign_preset(args)
+
+    if args.check_center_certificate is not None:
+        ok = check_center_generation_certificates(args.check_center_certificate)
+        print(f"center_certificate_checked={ok}")
+        return
+    if args.check_tc_summary is not None:
+        ok = check_total_correlation_summary(args.check_tc_summary)
+        print(f"tc_summary_checked={ok}")
+        return
 
     if args.trace_three_obstruction:
         summarize_three_trace_obstruction()
+        return
+    if args.tc_exact_max_n > 0:
+        summarize_total_correlation_exact(args)
         return
     if args.trace_three_sign_scan_size > 0:
         summarize_three_sign_obstructions(args.trace_three_sign_scan_size)
@@ -1919,8 +2851,14 @@ def main() -> None:
     if args.trace_three_propagation_scan_size > 0:
         summarize_three_propagation_obstructions(args.trace_three_propagation_scan_size)
         return
+    if args.trace_three_template_scan_size > 0:
+        summarize_three_template_scan(args.trace_three_template_scan_size)
+        return
     if args.local_frankl_checks:
         summarize_local_frankl_checks()
+        return
+    if args.trace_three_frontier_shadow:
+        summarize_frontier_shadow_certificates()
         return
     if args.trace_two_max_size > 0:
         summarize_two_trace_counts(args.trace_two_max_size)

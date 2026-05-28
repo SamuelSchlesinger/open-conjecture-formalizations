@@ -1,0 +1,617 @@
+{
+  "global_best": {
+    "assignment": [
+      0,
+      1,
+      2
+    ],
+    "coordinate_entropy_x": 1.2730283365896256,
+    "coordinate_entropy_z": 1.2730283365896256,
+    "coords": [
+      1
+    ],
+    "entropy_gain": 0.0,
+    "entropy_x": 1.0986122886681096,
+    "entropy_z": 1.0986122886681096,
+    "family_bits": [
+      "00",
+      "10",
+      "11"
+    ],
+    "family_masks": [
+      0,
+      1,
+      3
+    ],
+    "n": 2,
+    "q": [
+      0.6666666666666666,
+      0.3333333333333333
+    ],
+    "raw_coordinate_gain": 0.0,
+    "total_correlation_growth": 0.0,
+    "total_correlation_x": 0.174416047921516,
+    "total_correlation_z": 0.174416047921516
+  },
+  "global_best_centered": {
+    "assignment": [
+      0,
+      1,
+      2,
+      5,
+      4,
+      3
+    ],
+    "coordinate_entropy_x": 1.966175517149571,
+    "coordinate_entropy_z": 2.0228085294147036,
+    "coords": [
+      2
+    ],
+    "entropy_gain": -0.2310490601866484,
+    "entropy_x": 1.7917594692280547,
+    "entropy_z": 1.5607104090414063,
+    "family_bits": [
+      "000",
+      "100",
+      "010",
+      "110",
+      "101",
+      "111"
+    ],
+    "family_masks": [
+      0,
+      1,
+      2,
+      3,
+      5,
+      7
+    ],
+    "n": 3,
+    "q": [
+      0.6666666666666666,
+      0.5,
+      0.5
+    ],
+    "raw_coordinate_gain": 0.05663301226513262,
+    "total_correlation_growth": 0.287682072451781,
+    "total_correlation_x": 0.17441604792151622,
+    "total_correlation_z": 0.4620981203732972
+  },
+  "global_worst": {
+    "assignment": [
+      0,
+      5,
+      4,
+      6,
+      2,
+      1,
+      3
+    ],
+    "coordinate_entropy_x": 2.048724314101415,
+    "coordinate_entropy_z": 1.2303489548652273,
+    "coords": [
+      2
+    ],
+    "entropy_gain": -1.5357938307669041,
+    "entropy_x": 1.945910149055313,
+    "entropy_z": 0.410116318288409,
+    "family_bits": [
+      "000",
+      "100",
+      "010",
+      "110",
+      "101",
+      "011",
+      "111"
+    ],
+    "family_masks": [
+      0,
+      1,
+      2,
+      3,
+      5,
+      6,
+      7
+    ],
+    "n": 3,
+    "q": [
+      0.8571428571428571,
+      0.8571428571428571,
+      0.8571428571428571
+    ],
+    "raw_coordinate_gain": -0.8183753592361878,
+    "total_correlation_growth": 0.7174184715307163,
+    "total_correlation_x": 0.10281416504610208,
+    "total_correlation_z": 0.8202326365768183
+  },
+  "global_worst_centered": {
+    "assignment": [
+      3,
+      2,
+      1,
+      4,
+      5,
+      0
+    ],
+    "coordinate_entropy_x": 1.966175517149571,
+    "coordinate_entropy_z": 0.6931471805599453,
+    "coords": [
+      2
+    ],
+    "entropy_gain": -1.0986122886681096,
+    "entropy_x": 1.7917594692280547,
+    "entropy_z": 0.6931471805599453,
+    "family_bits": [
+      "000",
+      "100",
+      "010",
+      "110",
+      "101",
+      "111"
+    ],
+    "family_masks": [
+      0,
+      1,
+      2,
+      3,
+      5,
+      7
+    ],
+    "n": 3,
+    "q": [
+      1.0,
+      1.0,
+      0.5
+    ],
+    "raw_coordinate_gain": -1.2730283365896256,
+    "total_correlation_growth": -0.17441604792151622,
+    "total_correlation_x": 0.17441604792151622,
+    "total_correlation_z": 0.0
+  },
+  "max_exact_size": 7,
+  "max_n": 4,
+  "name": "bounded exact total-correlation accounting",
+  "per_n": [
+    {
+      "cases": 0,
+      "centered_permutations": 0,
+      "n": 1,
+      "permutations_checked": 0,
+      "skipped_large": 0
+    },
+    {
+      "best": {
+        "assignment": [
+          0,
+          1,
+          2
+        ],
+        "coordinate_entropy_x": 1.2730283365896256,
+        "coordinate_entropy_z": 1.2730283365896256,
+        "coords": [
+          1
+        ],
+        "entropy_gain": 0.0,
+        "entropy_x": 1.0986122886681096,
+        "entropy_z": 1.0986122886681096,
+        "family_bits": [
+          "00",
+          "10",
+          "11"
+        ],
+        "family_masks": [
+          0,
+          1,
+          3
+        ],
+        "n": 2,
+        "q": [
+          0.6666666666666666,
+          0.3333333333333333
+        ],
+        "raw_coordinate_gain": 0.0,
+        "total_correlation_growth": 0.0,
+        "total_correlation_x": 0.174416047921516,
+        "total_correlation_z": 0.174416047921516
+      },
+      "cases": 2,
+      "centered_permutations": 0,
+      "n": 2,
+      "permutations_checked": 12,
+      "skipped_large": 0,
+      "worst": {
+        "assignment": [
+          0,
+          2,
+          1
+        ],
+        "coordinate_entropy_x": 1.2730283365896256,
+        "coordinate_entropy_z": 1.2730283365896256,
+        "coords": [
+          1
+        ],
+        "entropy_gain": -0.4620981203732968,
+        "entropy_x": 1.0986122886681096,
+        "entropy_z": 0.6365141682948128,
+        "family_bits": [
+          "00",
+          "10",
+          "11"
+        ],
+        "family_masks": [
+          0,
+          1,
+          3
+        ],
+        "n": 2,
+        "q": [
+          0.6666666666666666,
+          0.6666666666666666
+        ],
+        "raw_coordinate_gain": 0.0,
+        "total_correlation_growth": 0.4620981203732968,
+        "total_correlation_x": 0.174416047921516,
+        "total_correlation_z": 0.6365141682948128
+      }
+    },
+    {
+      "best": {
+        "assignment": [
+          0,
+          1,
+          2
+        ],
+        "coordinate_entropy_x": 1.2730283365896256,
+        "coordinate_entropy_z": 1.2730283365896256,
+        "coords": [
+          1
+        ],
+        "entropy_gain": 0.0,
+        "entropy_x": 1.0986122886681096,
+        "entropy_z": 1.0986122886681096,
+        "family_bits": [
+          "000",
+          "100",
+          "110"
+        ],
+        "family_masks": [
+          0,
+          1,
+          3
+        ],
+        "n": 3,
+        "q": [
+          0.6666666666666666,
+          0.3333333333333333,
+          0.0
+        ],
+        "raw_coordinate_gain": 0.0,
+        "total_correlation_growth": 0.0,
+        "total_correlation_x": 0.174416047921516,
+        "total_correlation_z": 0.174416047921516
+      },
+      "best_centered": {
+        "assignment": [
+          0,
+          1,
+          2,
+          5,
+          4,
+          3
+        ],
+        "coordinate_entropy_x": 1.966175517149571,
+        "coordinate_entropy_z": 2.0228085294147036,
+        "coords": [
+          2
+        ],
+        "entropy_gain": -0.2310490601866484,
+        "entropy_x": 1.7917594692280547,
+        "entropy_z": 1.5607104090414063,
+        "family_bits": [
+          "000",
+          "100",
+          "010",
+          "110",
+          "101",
+          "111"
+        ],
+        "family_masks": [
+          0,
+          1,
+          2,
+          3,
+          5,
+          7
+        ],
+        "n": 3,
+        "q": [
+          0.6666666666666666,
+          0.5,
+          0.5
+        ],
+        "raw_coordinate_gain": 0.05663301226513262,
+        "total_correlation_growth": 0.287682072451781,
+        "total_correlation_x": 0.17441604792151622,
+        "total_correlation_z": 0.4620981203732972
+      },
+      "cases": 51,
+      "centered_permutations": 2466,
+      "n": 3,
+      "permutations_checked": 21564,
+      "skipped_large": 1,
+      "worst": {
+        "assignment": [
+          0,
+          5,
+          4,
+          6,
+          2,
+          1,
+          3
+        ],
+        "coordinate_entropy_x": 2.048724314101415,
+        "coordinate_entropy_z": 1.2303489548652273,
+        "coords": [
+          2
+        ],
+        "entropy_gain": -1.5357938307669041,
+        "entropy_x": 1.945910149055313,
+        "entropy_z": 0.410116318288409,
+        "family_bits": [
+          "000",
+          "100",
+          "010",
+          "110",
+          "101",
+          "011",
+          "111"
+        ],
+        "family_masks": [
+          0,
+          1,
+          2,
+          3,
+          5,
+          6,
+          7
+        ],
+        "n": 3,
+        "q": [
+          0.8571428571428571,
+          0.8571428571428571,
+          0.8571428571428571
+        ],
+        "raw_coordinate_gain": -0.8183753592361878,
+        "total_correlation_growth": 0.7174184715307163,
+        "total_correlation_x": 0.10281416504610208,
+        "total_correlation_z": 0.8202326365768183
+      },
+      "worst_centered": {
+        "assignment": [
+          3,
+          2,
+          1,
+          4,
+          5,
+          0
+        ],
+        "coordinate_entropy_x": 1.966175517149571,
+        "coordinate_entropy_z": 0.6931471805599453,
+        "coords": [
+          2
+        ],
+        "entropy_gain": -1.0986122886681096,
+        "entropy_x": 1.7917594692280547,
+        "entropy_z": 0.6931471805599453,
+        "family_bits": [
+          "000",
+          "100",
+          "010",
+          "110",
+          "101",
+          "111"
+        ],
+        "family_masks": [
+          0,
+          1,
+          2,
+          3,
+          5,
+          7
+        ],
+        "n": 3,
+        "q": [
+          1.0,
+          1.0,
+          0.5
+        ],
+        "raw_coordinate_gain": -1.2730283365896256,
+        "total_correlation_growth": -0.17441604792151622,
+        "total_correlation_x": 0.17441604792151622,
+        "total_correlation_z": 0.0
+      }
+    },
+    {
+      "best": {
+        "assignment": [
+          0,
+          1,
+          2
+        ],
+        "coordinate_entropy_x": 1.2730283365896256,
+        "coordinate_entropy_z": 1.2730283365896256,
+        "coords": [
+          1
+        ],
+        "entropy_gain": 0.0,
+        "entropy_x": 1.0986122886681096,
+        "entropy_z": 1.0986122886681096,
+        "family_bits": [
+          "0000",
+          "1000",
+          "1100"
+        ],
+        "family_masks": [
+          0,
+          1,
+          3
+        ],
+        "n": 4,
+        "q": [
+          0.6666666666666666,
+          0.3333333333333333,
+          0.0,
+          0.0
+        ],
+        "raw_coordinate_gain": 0.0,
+        "total_correlation_growth": 0.0,
+        "total_correlation_x": 0.174416047921516,
+        "total_correlation_z": 0.174416047921516
+      },
+      "best_centered": {
+        "assignment": [
+          0,
+          1,
+          2,
+          5,
+          4,
+          3
+        ],
+        "coordinate_entropy_x": 1.966175517149571,
+        "coordinate_entropy_z": 2.0228085294147036,
+        "coords": [
+          2
+        ],
+        "entropy_gain": -0.2310490601866484,
+        "entropy_x": 1.7917594692280547,
+        "entropy_z": 1.5607104090414063,
+        "family_bits": [
+          "0000",
+          "1000",
+          "0100",
+          "1100",
+          "1010",
+          "1110"
+        ],
+        "family_masks": [
+          0,
+          1,
+          2,
+          3,
+          5,
+          7
+        ],
+        "n": 4,
+        "q": [
+          0.6666666666666666,
+          0.5,
+          0.5,
+          0.0
+        ],
+        "raw_coordinate_gain": 0.05663301226513262,
+        "total_correlation_growth": 0.287682072451781,
+        "total_correlation_x": 0.17441604792151622,
+        "total_correlation_z": 0.4620981203732972
+      },
+      "cases": 1556,
+      "centered_permutations": 130572,
+      "n": 4,
+      "permutations_checked": 3496404,
+      "skipped_large": 2355,
+      "worst": {
+        "assignment": [
+          0,
+          5,
+          4,
+          6,
+          2,
+          1,
+          3
+        ],
+        "coordinate_entropy_x": 2.048724314101415,
+        "coordinate_entropy_z": 1.2303489548652273,
+        "coords": [
+          2
+        ],
+        "entropy_gain": -1.5357938307669041,
+        "entropy_x": 1.945910149055313,
+        "entropy_z": 0.410116318288409,
+        "family_bits": [
+          "0000",
+          "1000",
+          "0100",
+          "1100",
+          "1010",
+          "0110",
+          "1110"
+        ],
+        "family_masks": [
+          0,
+          1,
+          2,
+          3,
+          5,
+          6,
+          7
+        ],
+        "n": 4,
+        "q": [
+          0.8571428571428571,
+          0.8571428571428571,
+          0.8571428571428571,
+          0.0
+        ],
+        "raw_coordinate_gain": -0.8183753592361878,
+        "total_correlation_growth": 0.7174184715307163,
+        "total_correlation_x": 0.10281416504610208,
+        "total_correlation_z": 0.8202326365768183
+      },
+      "worst_centered": {
+        "assignment": [
+          3,
+          2,
+          1,
+          4,
+          5,
+          0
+        ],
+        "coordinate_entropy_x": 1.966175517149571,
+        "coordinate_entropy_z": 0.6931471805599453,
+        "coords": [
+          2
+        ],
+        "entropy_gain": -1.0986122886681096,
+        "entropy_x": 1.7917594692280547,
+        "entropy_z": 0.6931471805599453,
+        "family_bits": [
+          "0000",
+          "1000",
+          "0100",
+          "1100",
+          "1010",
+          "1110"
+        ],
+        "family_masks": [
+          0,
+          1,
+          2,
+          3,
+          5,
+          7
+        ],
+        "n": 4,
+        "q": [
+          1.0,
+          1.0,
+          0.5,
+          0.0
+        ],
+        "raw_coordinate_gain": -1.2730283365896256,
+        "total_correlation_growth": -0.17441604792151622,
+        "total_correlation_x": 0.17441604792151622,
+        "total_correlation_z": 0.0
+      }
+    }
+  ],
+  "status": "exact_permutation_scan_bounded_by_family_size"
+}
