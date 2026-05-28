@@ -42,7 +42,11 @@ elementary Birkhoff-free argument: a maximal join-irreducible `j` together with
 the map `x ↦ ⨆ {y ≤ x : ¬ j ≤ y}` injects the up-set of `j` into its complement.
 Finite chains follow as a corollary (`franklLattice_of_linearOrder`).
 
-The equivalence `FranklConjecture ↔ FranklLattice` and the
+One direction of the equivalence is proved: `franklConjecture_imp_franklLattice`
+shows `FranklConjecture → FranklLattice`.  Given a finite lattice `L`, the members
+`f a = {j join-irreducible : ¬ j ≤ a}` (`a ∈ L`) form a union-closed family on the
+join-irreducibles whose Frankl element is a join-irreducible `j₀` with
+`2 |↑j₀| ≤ |L|`.  The reverse implication and the
 semimodular/modular/geometric cases are future work.
 
 The active research program is tracked in `research/checklist.md`.  It focuses

@@ -2,6 +2,7 @@ import Mathlib.Order.Irreducible
 import Mathlib.Order.Preorder.Finite
 import Mathlib.Data.Fintype.Order
 import Mathlib.Tactic
+import Frankl.Basic
 
 /-!
 # The lattice form of Frankl's union-closed sets conjecture
@@ -135,5 +136,116 @@ theorem franklLattice_of_linearOrder
     {L : Type*} [LinearOrder L] [Finite L] (hL : 2 ≤ Nat.card L) :
     ∃ j : L, SupIrred j ∧ 2 * Nat.card {x : L // j ≤ x} ≤ Nat.card L :=
   franklLattice_of_distribLattice hL
+
+open Classical in
+/-- In a finite lattice every element is the join of the join-irreducible
+elements below it. -/
+theorem sup_filter_supIrred_le {L : Type*} [Lattice L] [Fintype L] [OrderBot L]
+    (a : L) :
+    (Finset.univ.filter (fun j : L => SupIrred j ∧ j ≤ a)).sup id = a := by
+  refine le_antisymm (Finset.sup_le fun j hj => (mem_filter.mp hj).2.2) ?_
+  obtain ⟨s, hs, hsi⟩ := exists_supIrred_decomposition a
+  calc a = s.sup id := hs.symm
+    _ ≤ (Finset.univ.filter (fun j : L => SupIrred j ∧ j ≤ a)).sup id := by
+        refine Finset.sup_le fun k hk => ?_
+        have hka : k ≤ a := (Finset.le_sup (f := id) hk).trans hs.le
+        exact Finset.le_sup (f := id) (mem_filter.mpr ⟨mem_univ _, hsi hk, hka⟩)
+
+/-- **The set conjecture implies the lattice conjecture.**
+
+Given a finite lattice `L` with `|L| ≥ 2`, build the union-closed family on the
+ground set `J(L)` of join-irreducibles whose members are
+`f a = {j ∈ J(L) : ¬ j ≤ a}` for `a ∈ L`.  Since `f a ∪ f b = f (a ⊓ b)` this is
+union-closed, `f` is injective (an element is the join of the join-irreducibles
+below it), so `|family| = |L|`, and a join-irreducible `j₀` lies in `f a` for
+exactly `|L| − |↑j₀|` values of `a`.  A Frankl element of this family is thus a
+join-irreducible `j₀` with `2 |↑j₀| ≤ |L|`. -/
+theorem franklConjecture_imp_franklLattice (h : FranklConjecture) : FranklLattice := by
+  intro L _ _ hL
+  classical
+  haveI : Fintype L := Fintype.ofFinite L
+  have hcard : Fintype.card L = Nat.card L := Nat.card_eq_fintype_card.symm
+  have hL' : 2 ≤ Fintype.card L := by rw [hcard]; exact hL
+  haveI : Nontrivial L := Fintype.one_lt_card_iff_nontrivial.mp hL'
+  haveI : OrderBot L := Fintype.toOrderBot L
+  -- the family `f a = {j join-irreducible : ¬ j ≤ a}` on ground set `J(L)`
+  set J := {j : L // SupIrred j} with hJ
+  let f : L → Finset J := fun a => univ.filter (fun j => ¬ (j : L) ≤ a)
+  have hfmem : ∀ (a : L) (j : J), j ∈ f a ↔ ¬ (j : L) ≤ a := by
+    intro a j; simp only [f, mem_filter, mem_univ, true_and]
+  -- `f` turns meet into union
+  have hf_union : ∀ a b : L, f a ∪ f b = f (a ⊓ b) := by
+    intro a b
+    ext j
+    simp only [Finset.mem_union, hfmem, le_inf_iff, not_and_or]
+  -- `f` is injective
+  have hf_inj : Function.Injective f := by
+    intro a b hab
+    have hiff : ∀ j : L, SupIrred j → (j ≤ a ↔ j ≤ b) := by
+      intro j hj
+      have hmem : (⟨j, hj⟩ : J) ∈ f a ↔ (⟨j, hj⟩ : J) ∈ f b := by rw [hab]
+      rw [hfmem, hfmem] at hmem
+      exact not_iff_not.mp hmem
+    have : (univ.filter (fun j : L => SupIrred j ∧ j ≤ a)) =
+        (univ.filter (fun j : L => SupIrred j ∧ j ≤ b)) := by
+      ext j
+      simp only [mem_filter, mem_univ, true_and]
+      exact and_congr_right fun hj => hiff j hj
+    have ha := sup_filter_supIrred_le a
+    have hb := sup_filter_supIrred_le b
+    rw [← ha, ← hb, this]
+  -- a join-irreducible exists, so the `⊥`-member is nonempty
+  obtain ⟨a₀, ha₀⟩ := exists_ne (⊥ : L)
+  obtain ⟨s, hs, hsi⟩ := exists_supIrred_decomposition a₀
+  have hbot_irred : ∃ j₀ : J, True := by
+    by_cases hse : s.Nonempty
+    · obtain ⟨b, hb⟩ := hse
+      exact ⟨⟨b, hsi hb⟩, trivial⟩
+    · rw [Finset.not_nonempty_iff_eq_empty] at hse
+      rw [hse, Finset.sup_empty] at hs
+      exact absurd hs.symm ha₀
+  obtain ⟨j₀, -⟩ := hbot_irred
+  -- the union-closed family
+  set 𝓕 : Finset (Finset J) := univ.image f with h𝓕
+  have huc : IsUnionClosed 𝓕 := by
+    intro A hA B hB
+    simp only [h𝓕, mem_image, mem_univ, true_and] at hA hB ⊢
+    obtain ⟨a, rfl⟩ := hA
+    obtain ⟨b, rfl⟩ := hB
+    exact ⟨a ⊓ b, (hf_union a b).symm⟩
+  have hne : HasNonemptyMember 𝓕 := by
+    refine ⟨f ⊥, ?_, ?_⟩
+    · simp only [h𝓕, mem_image, mem_univ, true_and]; exact ⟨⊥, rfl⟩
+    · refine ⟨j₀, ?_⟩
+      rw [hfmem]
+      exact fun hle => j₀.2.ne_bot (le_bot_iff.mp hle)
+  -- apply the set conjecture
+  obtain ⟨x, -, hxcard⟩ := h 𝓕 huc hne
+  refine ⟨x, x.2, ?_⟩
+  -- compute `memberCount x 𝓕 = |{a : ¬ x ≤ a}|`
+  have hmember : memberCount x 𝓕 = (univ.filter (fun a : L => ¬ (x : L) ≤ a)).card := by
+    have hset : memberSubfamily x 𝓕 = (univ.filter (fun a : L => x ∈ f a)).image f := by
+      ext A
+      simp only [memberSubfamily, h𝓕, mem_filter, mem_image, mem_univ, true_and]
+      constructor
+      · rintro ⟨⟨a, rfl⟩, hx⟩; exact ⟨a, hx, rfl⟩
+      · rintro ⟨a, hx, rfl⟩; exact ⟨⟨a, rfl⟩, hx⟩
+    rw [memberCount, hset, Finset.card_image_of_injective _ hf_inj]
+    congr 1
+    ext a
+    simp only [mem_filter, mem_univ, true_and, hfmem]
+  -- `|𝓕| = |L|`
+  have hcardF : 𝓕.card = Fintype.card L := by
+    rw [h𝓕, Finset.card_image_of_injective _ hf_inj, Finset.card_univ]
+  -- split and conclude
+  have hsplit : (univ.filter (fun a : L => ¬ (x : L) ≤ a)).card +
+      (univ.filter (fun a : L => (x : L) ≤ a)).card = Fintype.card L := by
+    rw [add_comm, Finset.card_filter_add_card_filter_not, Finset.card_univ]
+  have hconv : Nat.card {y : L // (x : L) ≤ y} =
+      (univ.filter (fun a : L => (x : L) ≤ a)).card := by
+    rw [Nat.card_eq_fintype_card, Fintype.card_subtype]
+  rw [hconv, ← hcard]
+  rw [hmember, hcardF] at hxcard
+  omega
 
 end Frankl
