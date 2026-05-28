@@ -42,17 +42,26 @@ elementary Birkhoff-free argument: a maximal join-irreducible `j` together with
 the map `x ↦ ⨆ {y ≤ x : ¬ j ≤ y}` injects the up-set of `j` into its complement.
 Finite chains follow as a corollary (`franklLattice_of_linearOrder`).
 
-One direction of the equivalence is proved: `franklConjecture_imp_franklLattice`
-shows `FranklConjecture → FranklLattice`.  Given a finite lattice `L`, the members
-`f a = {j join-irreducible : ¬ j ≤ a}` (`a ∈ L`) form a union-closed family on the
-join-irreducibles whose Frankl element is a join-irreducible `j₀` with
-`2 |↑j₀| ≤ |L|`.
+**Poonen's equivalence is fully proved**: `franklConjecture_iff_franklLattice`
+shows `FranklConjecture ↔ FranklLattice` (sorry-free, axiom-clean).
+
+- *Forward* (`franklConjecture_imp_franklLattice`): given a finite lattice `L`,
+  the members `f a = {j join-irreducible : ¬ j ≤ a}` (`a ∈ L`) form a union-closed
+  family on the join-irreducibles whose Frankl element is a join-irreducible `j₀`
+  with `2 |↑j₀| ≤ |L|`.
+- *Reverse* (`franklLattice_imp_franklConjecture`, in `Frankl.LatticeReverse`):
+  given a union-closed family `F` (with `∅ ∈ F`), the poset `(F, ⊆)` is a finite
+  lattice; a meet-irreducible `m` has a least strict upper bound `m⁺`, and any
+  `x ∈ m⁺ ∖ m` makes `m` the largest `x`-free member, so `↓m` is exactly the
+  `x`-free members.  The dual lattice bound `2 |↓m| ≤ |F|` then makes `x`
+  abundant.  Supporting results: `InfIrred.exists_least_gt` (a meet-irreducible
+  in a finite lattice has a unique upper cover) and `ucLattice` (the lattice
+  structure on a union-closed family).
 
 The meet-irreducible (dual) form `FranklLatticeMeet` — the formulation Poonen
 proved equivalent to the conjecture — is shown equivalent to `FranklLattice` by
-order duality (`franklLattice_iff_franklLatticeMeet`).  The reverse implication
-`FranklLattice → FranklConjecture` and the semimodular/modular/geometric cases
-are future work.
+order duality (`franklLattice_iff_franklLatticeMeet`).  The
+semimodular/modular/geometric lattice cases are future work.
 
 The active research program is tracked in `research/checklist.md`.  It focuses
 on formalizing the Gilmer/AHS entropy hinge, testing a coupled-OR replacement,
@@ -82,7 +91,8 @@ and migrating stable finite certificates into Lean.
 | `Frankl.Boost` | Arithmetic core of trace-preserving boost certificates | 0 |
 | `Frankl.UniqueTop` | Arithmetic core of the unique-top propagation bound | 0 |
 | `Frankl.SmallCases` | Empty and one-member family sanity checks | 0 |
-| `Frankl.Lattice` | Lattice (Poonen) form of the conjecture; distributive and chain cases proved | 0 |
+| `Frankl.Lattice` | Lattice (Poonen) form; distributive/chain cases; `Conjecture → Lattice`; dual form | 0 |
+| `Frankl.LatticeReverse` | `Lattice → Conjecture`; full equivalence `Conjecture ↔ Lattice` | 0 |
 | `Frankl.Conjecture` | Main open global statement and expanded form | 1 |
 
 ## Building

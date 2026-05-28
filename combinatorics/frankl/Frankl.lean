@@ -19,4 +19,5 @@ import Frankl.Boost
 import Frankl.UniqueTop
 import Frankl.SmallCases
 import Frankl.Lattice
+import Frankl.LatticeReverse
 import Frankl.Conjecture
