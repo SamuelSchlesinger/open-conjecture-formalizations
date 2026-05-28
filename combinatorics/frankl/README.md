@@ -31,6 +31,20 @@ These are the standard "a member-set of size ≤ 2 forces the conjecture" result
 (Bruhn–Schaudt survey); they are formalized as known territory, independent of
 the entropy program.
 
+### Lattice (Poonen) reformulation
+
+`Frankl.Lattice` states the equivalent lattice form (Poonen 1992): every finite
+lattice `L` with `|L| ≥ 2` has a join-irreducible element `j` (Mathlib's
+`SupIrred`) below at most half of the elements, `2 * |{x : j ≤ x}| ≤ |L|`
+(`FranklLattice`).  The **distributive case** is proved completely and sorry-free
+(`franklLattice_of_distribLattice`), a known class for the conjecture, by an
+elementary Birkhoff-free argument: a maximal join-irreducible `j` together with
+the map `x ↦ ⨆ {y ≤ x : ¬ j ≤ y}` injects the up-set of `j` into its complement.
+Finite chains follow as a corollary (`franklLattice_of_linearOrder`).
+
+The equivalence `FranklConjecture ↔ FranklLattice` and the
+semimodular/modular/geometric cases are future work.
+
 The active research program is tracked in `research/checklist.md`.  It focuses
 on formalizing the Gilmer/AHS entropy hinge, testing a coupled-OR replacement,
 and migrating stable finite certificates into Lean.
@@ -59,6 +73,7 @@ and migrating stable finite certificates into Lean.
 | `Frankl.Boost` | Arithmetic core of trace-preserving boost certificates | 0 |
 | `Frankl.UniqueTop` | Arithmetic core of the unique-top propagation bound | 0 |
 | `Frankl.SmallCases` | Empty and one-member family sanity checks | 0 |
+| `Frankl.Lattice` | Lattice (Poonen) form of the conjecture; distributive and chain cases proved | 0 |
 | `Frankl.Conjecture` | Main open global statement and expanded form | 1 |
 
 ## Building
