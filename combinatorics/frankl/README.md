@@ -36,11 +36,16 @@ the entropy program.
 `Frankl.Lattice` states the equivalent lattice form (Poonen 1992): every finite
 lattice `L` with `|L| ≥ 2` has a join-irreducible element `j` (Mathlib's
 `SupIrred`) below at most half of the elements, `2 * |{x : j ≤ x}| ≤ |L|`
-(`FranklLattice`).  The **distributive case** is proved completely and sorry-free
-(`franklLattice_of_distribLattice`), a known class for the conjecture, by an
-elementary Birkhoff-free argument: a maximal join-irreducible `j` together with
-the map `x ↦ ⨆ {y ≤ x : ¬ j ≤ y}` injects the up-set of `j` into its complement.
-Finite chains follow as a corollary (`franklLattice_of_linearOrder`).
+(`FranklLattice`).  Two known classes are proved completely and sorry-free:
+
+- **Distributive lattices** (`franklLattice_of_distribLattice`), by an elementary
+  Birkhoff-free argument: a maximal join-irreducible `j` with the map
+  `x ↦ ⨆ {y ≤ x : ¬ j ≤ y}` injects the up-set of `j` into its complement.
+  Finite chains follow (`franklLattice_of_linearOrder`).
+- **Modular lattices** (`franklLattice_of_modular`, Abe–Nakano), strictly
+  generalising the distributive case: take `m` maximal among proper elements and
+  a join-irreducible `x ⊄ m`; then `x ⊔ m = ⊤`, and `α ↦ m ⊓ α` injects `↑x`
+  into its complement (injective by the modular law `x ⊔ m ⊓ α = (x ⊔ m) ⊓ α`).
 
 **Poonen's equivalence is fully proved**: `franklConjecture_iff_franklLattice`
 shows `FranklConjecture ↔ FranklLattice` (sorry-free, axiom-clean).
@@ -91,7 +96,7 @@ and migrating stable finite certificates into Lean.
 | `Frankl.Boost` | Arithmetic core of trace-preserving boost certificates | 0 |
 | `Frankl.UniqueTop` | Arithmetic core of the unique-top propagation bound | 0 |
 | `Frankl.SmallCases` | Empty and one-member family sanity checks | 0 |
-| `Frankl.Lattice` | Lattice (Poonen) form; distributive/chain cases; `Conjecture → Lattice`; dual form | 0 |
+| `Frankl.Lattice` | Lattice (Poonen) form; distributive/chain/modular cases; `Conjecture → Lattice`; dual form | 0 |
 | `Frankl.LatticeReverse` | `Lattice → Conjecture`; full equivalence `Conjecture ↔ Lattice` | 0 |
 | `Frankl.Conjecture` | Main open global statement and expanded form | 1 |
 

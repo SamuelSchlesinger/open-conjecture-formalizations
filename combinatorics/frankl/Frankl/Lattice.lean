@@ -137,6 +137,73 @@ theorem franklLattice_of_linearOrder
     ∃ j : L, SupIrred j ∧ 2 * Nat.card {x : L // j ≤ x} ≤ Nat.card L :=
   franklLattice_of_distribLattice hL
 
+/-- The **modular case** of the lattice form of Frankl's conjecture (Abe–Nakano),
+which strictly generalises the distributive case.
+
+Take `m` maximal among the proper elements (so `m < z` forces `z = ⊤`) and a
+join-irreducible `x ⊄ m` (one exists because `⊤` is the join of the
+join-irreducibles).  Then `x ⊔ m = ⊤`, and the map `α ↦ m ⊓ α` injects the
+up-set `↑x` into its complement: it is injective because modularity gives
+`x ⊔ (m ⊓ α) = (x ⊔ m) ⊓ α = α` for `α ≥ x`, and its image avoids `↑x` since
+`m ⊓ α ≤ m ⊉ x`.  Hence `2 |↑x| ≤ |L|`. -/
+theorem franklLattice_of_modular
+    {L : Type*} [Lattice L] [IsModularLattice L] [Finite L] (hL : 2 ≤ Nat.card L) :
+    ∃ x : L, SupIrred x ∧ 2 * Nat.card {z : L // x ≤ z} ≤ Nat.card L := by
+  classical
+  haveI : Fintype L := Fintype.ofFinite L
+  have hcard : Fintype.card L = Nat.card L := Nat.card_eq_fintype_card.symm
+  have hL' : 2 ≤ Fintype.card L := by rw [hcard]; exact hL
+  haveI : Nontrivial L := Fintype.one_lt_card_iff_nontrivial.mp hL'
+  haveI : BoundedOrder L := Fintype.toBoundedOrder L
+  -- a maximal proper element `m`
+  have hpropne : (univ.filter (fun z : L => z ≠ ⊤)).Nonempty :=
+    ⟨⊥, mem_filter.mpr ⟨mem_univ _, bot_ne_top⟩⟩
+  obtain ⟨m, hmmax⟩ := Finset.exists_maximal hpropne
+  have hmne : m ≠ ⊤ := (mem_filter.mp hmmax.1).2
+  have hmtop : ∀ z : L, m < z → z = ⊤ := by
+    intro z hz
+    by_contra hzne
+    exact absurd (le_antisymm hz.le (hmmax.2 (mem_filter.mpr ⟨mem_univ _, hzne⟩) hz.le))
+      (ne_of_lt hz)
+  -- a join-irreducible `x` not below `m`
+  obtain ⟨s, hs, hsi⟩ := exists_supIrred_decomposition (⊤ : L)
+  have hxex : ∃ x ∈ s, ¬ x ≤ m := by
+    by_contra hall
+    push_neg at hall
+    have htop : (⊤ : L) ≤ m := by
+      rw [← hs]; exact Finset.sup_le fun x hx => by simpa using hall x hx
+    exact hmne (top_le_iff.mp htop)
+  obtain ⟨x, hxs, hxm⟩ := hxex
+  have hmx : x ⊔ m = ⊤ :=
+    hmtop _ (lt_of_le_of_ne le_sup_right fun he => hxm (le_sup_left.trans he.ge))
+  refine ⟨x, hsi hxs, ?_⟩
+  -- the injection `α ↦ m ⊓ α` of `↑x` into its complement
+  have hrec : ∀ α : L, x ≤ α → x ⊔ m ⊓ α = α := by
+    intro α hα; rw [← sup_inf_assoc_of_le m hα, hmx, top_inf_eq]
+  have hmaps : Set.MapsTo (fun α => m ⊓ α)
+      (univ.filter (fun z => x ≤ z)) (univ.filter (fun z => ¬ x ≤ z)) := by
+    intro α _
+    exact mem_filter.mpr ⟨mem_univ _, fun hxle => hxm (le_trans hxle inf_le_left)⟩
+  have hinj : Set.InjOn (fun α => m ⊓ α) (univ.filter (fun z => x ≤ z)) := by
+    intro α hα β hβ hαβ
+    have hxα : x ≤ α := (mem_filter.mp (Finset.mem_coe.mp hα)).2
+    have hxβ : x ≤ β := (mem_filter.mp (Finset.mem_coe.mp hβ)).2
+    have hαβ' : m ⊓ α = m ⊓ β := hαβ
+    calc α = x ⊔ m ⊓ α := (hrec α hxα).symm
+      _ = x ⊔ m ⊓ β := by rw [hαβ']
+      _ = β := hrec β hxβ
+  have hcard_le :
+      (univ.filter (fun z => x ≤ z)).card ≤ (univ.filter (fun z => ¬ x ≤ z)).card :=
+    Finset.card_le_card_of_injOn _ hmaps hinj
+  have hsplit :
+      (univ.filter (fun z => x ≤ z)).card + (univ.filter (fun z => ¬ x ≤ z)).card =
+        Fintype.card L := by
+    rw [Finset.card_filter_add_card_filter_not, Finset.card_univ]
+  have hconv : Nat.card {z : L // x ≤ z} = (univ.filter (fun z => x ≤ z)).card := by
+    rw [Nat.card_eq_fintype_card, Fintype.card_subtype]
+  rw [hconv, ← hcard]
+  omega
+
 open Classical in
 /-- In a finite lattice every element is the join of the join-irreducible
 elements below it. -/
