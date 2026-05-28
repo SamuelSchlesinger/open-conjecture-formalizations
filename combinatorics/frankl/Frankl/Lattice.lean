@@ -248,4 +248,24 @@ theorem franklConjecture_imp_franklLattice (h : FranklConjecture) : FranklLattic
   rw [hmember, hcardF] at hxcard
   omega
 
+/-- **Meet-irreducible (dual) form of the lattice conjecture.**  Every finite
+lattice with at least two elements has a meet-irreducible element above at most
+half of the elements.  This is the formulation Poonen proved equivalent to the
+union-closed conjecture; it is the order dual of `FranklLattice`. -/
+def FranklLatticeMeet : Prop :=
+  ∀ (L : Type) [Lattice L] [Finite L],
+    2 ≤ Nat.card L →
+      ∃ m : L, InfIrred m ∧ 2 * Nat.card {x : L // x ≤ m} ≤ Nat.card L
+
+/-- The join-irreducible and meet-irreducible forms of the lattice conjecture are
+equivalent, by order duality. -/
+theorem franklLattice_iff_franklLatticeMeet : FranklLattice ↔ FranklLatticeMeet := by
+  constructor
+  · intro h L _ _ hL
+    obtain ⟨j, hj, hcard⟩ := h Lᵒᵈ hL
+    exact ⟨OrderDual.ofDual j, infIrred_ofDual.mpr hj, hcard⟩
+  · intro h L _ _ hL
+    obtain ⟨m, hm, hcard⟩ := h Lᵒᵈ hL
+    exact ⟨OrderDual.ofDual m, supIrred_ofDual.mpr hm, hcard⟩
+
 end Frankl

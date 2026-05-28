@@ -46,8 +46,13 @@ One direction of the equivalence is proved: `franklConjecture_imp_franklLattice`
 shows `FranklConjecture → FranklLattice`.  Given a finite lattice `L`, the members
 `f a = {j join-irreducible : ¬ j ≤ a}` (`a ∈ L`) form a union-closed family on the
 join-irreducibles whose Frankl element is a join-irreducible `j₀` with
-`2 |↑j₀| ≤ |L|`.  The reverse implication and the
-semimodular/modular/geometric cases are future work.
+`2 |↑j₀| ≤ |L|`.
+
+The meet-irreducible (dual) form `FranklLatticeMeet` — the formulation Poonen
+proved equivalent to the conjecture — is shown equivalent to `FranklLattice` by
+order duality (`franklLattice_iff_franklLatticeMeet`).  The reverse implication
+`FranklLattice → FranklConjecture` and the semimodular/modular/geometric cases
+are future work.
 
 The active research program is tracked in `research/checklist.md`.  It focuses
 on formalizing the Gilmer/AHS entropy hinge, testing a coupled-OR replacement,
