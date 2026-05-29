@@ -81,6 +81,16 @@ proved equivalent to the conjecture — is shown equivalent to `FranklLattice` b
 order duality (`franklLattice_iff_franklLatticeMeet`).  The
 semimodular/modular/geometric lattice cases are future work.
 
+**Reduction to indecomposables** (`Frankl.LatticeProduct`): a join-irreducible
+witness in one factor lifts to a product — if `2|↑j₁| ≤ |L₁|` then
+`2|↑(j₁,⊥)| ≤ |L₁ × L₂|`, since `↑(j₁,⊥) ≃ ↑j₁ × L₂`
+(`franklLattice_witness_prod_left`, `franklLattice_prod_left`).  Hence a
+nontrivial direct product is automatically a Frankl lattice, and by induction on
+`Nat.card` the conjecture **reduces to the directly-indecomposable lattices**
+(Boolean lattices, being products of two-element chains, are handled for free).
+This is a structural reduction, obtained without any local witness-selection —
+see `research/frankl_negative_space_round.md`.
+
 ### Extremal / balanced families (`Frankl.Coatom`)
 
 A self-contained study of **every-half** families — union-closed families in
