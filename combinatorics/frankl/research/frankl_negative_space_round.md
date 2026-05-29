@@ -110,6 +110,47 @@ stays below the `0.382` barrier).
 indecomposable (`Frankl.LatticeProduct`) **and** vertically indecomposable
 (`Frankl.LatticeCut`); geometric lattices are a fully-understood solved subclass.
 
+## Workflow round 3: attacking the indecomposable core directly
+
+Having reduced (in Lean) to lattices that are directly- and vertically-
+indecomposable, we characterized the **residual core** = those, additionally not
+covered by any proven case (distributive / modular / upper- & lower-semimodular /
+large-coatom-ideal), and hunted a witness rule for it.
+
+**The core is thin (exhaustive + sampled, verified):**
+- Zero core lattices below `|L| = 7`.  At `k = 4`, only **37 / 2479 (1.5%)**;
+  `k = 2, 3` leave none.  The smallest are exactly **190 seven-element lattices**
+  on `[5]`, all non-modular (N₅-containing), doubly-irreducible-rich, with 5
+  join-irreducibles.
+- **Strict slack ≥ 2** throughout: every core lattice has `max_j(|L| − 2·up(j)) ≥ 2`
+  — a comfortable Frankl witness.
+- **No tight lattice in the core**, confirming the structural bet: tight = Boolean
+  = product of chains = decomposable, so the product/cut reductions already
+  remove every extremal lattice.
+
+*(Methodology note: the first probe mis-defined witness-slack as `min_j` instead
+of the correct `max_j` over join-irreducibles; an adversarial agent caught the
+contradiction, verified the apparent counterexamples were artifacts, and
+corrected it before the structural facts were confirmed.)*
+
+**Witness-rule hunt: no survivor.**  Six candidate rules tested *on the core* and
+each adversarially verified — all failed or were refuted (`has_provable_rule =
+false`):
+- *min-up join-irreducible* and its dual *min-down meet-irreducible*: failure-free
+  empirically but **no uniform injection** — the natural `x ↦ x ∧ a` map collides
+  on the 3 rank-symmetric `k=4` specimens, and the selected join-irreducible is a
+  *non-atom* in 25% of `k=5` core lattices (so atom-based constructions are a `k=4`
+  artifact).  The "prove one, get the dual free" route breaks: `large-coatom-ideal`
+  is not self-dual, so the order-dual leaves the core.
+- *atom-min-up* and *doubly-irreducible-on-core*: genuinely **fail** (counterexamples).
+- *coatom-engine* and *global potential/weighting*: inconclusive, refuted.
+
+**Honest verdict.**  The thin, slack-≥2 core **still re-encodes the full
+difficulty** — stripping away 98.5% of lattices does not yield a provable witness
+rule.  The non-locality obstruction persists at the frontier.  No new formalizable
+theorem emerged this round; the gain is a precisely-localized hard family (the
+~190 seven-element non-modular specimens) and four more closed dead ends.
+
 ## Reproduce
 
 ```sh
