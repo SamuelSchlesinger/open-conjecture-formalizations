@@ -108,6 +108,23 @@ conjecture also reduces to the **vertically-indecomposable** lattices; combined
 with the product reduction, to those that are both directly and vertically
 indecomposable.
 
+**Relatively-complemented atoms** (`Frankl.LatticeRelComplement`).  The mechanism
+behind the geometric-lattice case, isolated with *no* semimodularity:
+
+- `franklLattice_witness_of_atom_relComplemented` — if `a` is an atom and every
+  `x ≥ a` has a relative complement of `a` in `[⊥, x]` (`a ⊓ y = ⊥`, `a ⊔ y = x`),
+  then `a` is a join-irreducible Frankl witness (`2|↑a| ≤ |L|`).  Proof: `x ↦ y`
+  injects `↑a` into its complement (`a ≰ y`, and `x = a ⊔ y` recovers `x`).
+- `franklLattice_witness_of_atom_complementedModular` — a concrete instantiation:
+  complemented modular lattices are relatively complemented
+  (`IsModularLattice.exists_disjoint_and_sup_eq`), so every atom is a witness.
+
+This captures the operative content of the geometric (atomistic upper-semimodular)
+case verified in `research/frankl_negative_space_round.md`.  The genuinely new
+*non-modular* geometric lattices (e.g. partition lattices) are not yet a named
+instance: that needs a semimodular/geometric-lattice class, absent from Mathlib
+`v4.28.0` — flagged as future infrastructure work rather than claimed.
+
 ### Extremal / balanced families (`Frankl.Coatom`)
 
 A self-contained study of **every-half** families — union-closed families in

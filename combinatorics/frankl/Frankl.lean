@@ -22,6 +22,7 @@ import Frankl.Lattice
 import Frankl.LatticeReverse
 import Frankl.LatticeProduct
 import Frankl.LatticeCut
+import Frankl.LatticeRelComplement
 import Frankl.FamilyTwinFree
 import Frankl.Coatom
 import Frankl.Conjecture

@@ -82,8 +82,12 @@ it cannot confirm).  Honest outcomes:
   irreducibles are the atoms, and *every atom* `a` has `2|↑a| ≤ |L|` — 0 failures
   over 139 exhaustive + 1649 sampled + matroid lattices.  Frankl holds with any
   atom as witness (Reinhold's semimodular case; the atom rule is explicit).
-  Formalizable, but needs a semimodular/geometric class not yet in Mathlib —
-  *deferred*.
+  **MECHANISM FORMALIZED**: `Frankl/LatticeRelComplement.lean` —
+  `franklLattice_witness_of_atom_relComplemented` (atom + relative complements ⟹
+  witness, via the injection `x ↦` relative complement; no semimodularity) and
+  the concrete `franklLattice_witness_of_atom_complementedModular`.  The literal
+  *non-modular* geometric instance (partition lattices) still needs a
+  semimodular/geometric class absent from Mathlib — honest future work.
 - **Vertical / ordinal-sum cut**: a cut element `c` gives `Frankl(↑c) ⟹ Frankl(L)`.
   **FORMALIZED**: `Frankl/LatticeCut.lean` (`franklLattice_witness_of_cut`,
   `supIrred_val_of_cut`, `upSetCutEquiv`), sorry-free, axiom-clean.
