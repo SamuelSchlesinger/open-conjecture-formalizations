@@ -131,7 +131,12 @@ points and all are present** — the dual refinement of the already-proved
 **Formalized (sorry-free, axiom-clean):** `Frankl/Coatom.lean` —
 `coatom_mem_of_everyHalf_twinFree` (with `IsEveryHalf`, `IsTwinFree`,
 `biUnion_id_mem_of_nonempty_subset`, and the incomparability lemma
-`exists_mem_of_everyHalf_twinFree`).  Depends only on
+`exists_mem_of_everyHalf_twinFree`).  Its payoff is also formalized:
+`everyHalf_field_iff_powerset` — a nonempty twin-free family that is both `∪`-
+and `∩`-closed and every-half **iff** it is the full power set (forward via
+coatoms + intersection-closure; reverse `isEveryHalf_powerset` shows the power
+set hits Frankl's `½` with equality everywhere — sharpness).  Dropping `∩`-
+closure is precisely the open residual.  Depends only on
 `propext, Classical.choice, Quot.sound`.
 
 **The residual gap is now exact.**  Having all coatoms, `F = 2^U` would follow

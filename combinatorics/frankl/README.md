@@ -81,6 +81,29 @@ proved equivalent to the conjecture — is shown equivalent to `FranklLattice` b
 order duality (`franklLattice_iff_franklLatticeMeet`).  The
 semimodular/modular/geometric lattice cases are future work.
 
+### Extremal / balanced families (`Frankl.Coatom`)
+
+A self-contained study of **every-half** families — union-closed families in
+which every ground element lies in exactly half the member-sets
+(`2 * memberCount x F = |F|`), the set-side image of the *Frankl-extremal* case
+(see `research/frankl_tight_boolean.md`).  All sorry-free and axiom-clean.
+
+- **Coatom lemma** (`coatom_mem_of_everyHalf_twinFree`): a *twin-free*
+  every-half union-closed family contains every coatom `(familyUnion F).erase i`.
+  The member-subfamilies `{A ∈ F : i ∈ A}` are distinct (twin-free) and all of
+  size `|F|/2` (every-half), hence pairwise incomparable; so for `i ≠ j` some
+  member separates them, and the union of all `i`-avoiding members is exactly
+  `U ∖ {i}`.  Supporting: `biUnion_id_mem_of_nonempty_subset` and the
+  incomparability lemma `exists_mem_of_everyHalf_twinFree`.
+- **Field-of-sets characterization** (`everyHalf_field_iff_powerset`): a nonempty
+  twin-free family that is **both** union- and intersection-closed and every-half
+  is exactly the full power set `(familyUnion F).powerset`.  Forward direction is
+  the coatom-lemma payoff (intersection-closure generates every subset from the
+  coatoms); the reverse (`isEveryHalf_powerset` &c.) shows the power set realizes
+  all hypotheses, so Frankl's `½` bound is **sharp** — attained with equality at
+  every element.  Dropping intersection-closure is exactly the open,
+  conjecture-equivalent residual.
+
 The active research program is tracked in `research/checklist.md`.  It focuses
 on formalizing the Gilmer/AHS entropy hinge, testing a coupled-OR replacement,
 and migrating stable finite certificates into Lean.
