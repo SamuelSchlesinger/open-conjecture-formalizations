@@ -31,6 +31,13 @@ These are the standard "a member-set of size ≤ 2 forces the conjecture" result
 (Bruhn–Schaudt survey); they are formalized as known territory, independent of
 the entropy program.
 
+- **Twin-free reduction** (`Frankl.FamilyTwinFree`).  Elements `i, j` are *twins*
+  if every member contains both or neither.  Deleting one twin —
+  `F ↦ F.image (·.erase j)` — preserves union-closure (`isUnionClosed_image_erase`),
+  the family size, and every non-`j` element's count, and transports a Frankl
+  element back to `F` (`franklConjectureFor_of_erase_twin`).  So the conjecture
+  reduces to **twin-free (separating)** families.  Sorry-free, axiom-clean.
+
 ### Lattice (Poonen) reformulation
 
 `Frankl.Lattice` states the equivalent lattice form (Poonen 1992): every finite

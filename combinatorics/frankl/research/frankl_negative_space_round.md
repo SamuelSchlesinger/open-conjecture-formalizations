@@ -89,8 +89,11 @@ it cannot confirm).  Honest outcomes:
   `supIrred_val_of_cut`, `upSetCutEquiv`), sorry-free, axiom-clean.
 - **Twin-free reduction** (set form): deleting one of a pair of twin elements
   preserves union-closure, `|F|`, and lifts a Frankl element ⟹ reduces to
-  separating families.  Exhaustive `k≤4`, 0 failures.  Formalization in progress
-  (`Frankl/FamilyTwinFree.lean`).
+  separating families.  Exhaustive `k≤4`, 0 failures.  **FORMALIZED**:
+  `Frankl/FamilyTwinFree.lean` (`franklConjectureFor_of_erase_twin`,
+  `isUnionClosed_image_erase`, and supporting `injOn_erase_of_twin`,
+  `card_image_erase_of_twin`, `memberCount_image_erase_of_twin`, …), sorry-free,
+  axiom-clean.
 
 **Partial:** Möbius `μ(⊥,⊤)=0 ⟹ a strict Frankl witness exists` (0 violations,
 but this is the already-known *easy side* — `μ≠0` non-spheres also slack).
