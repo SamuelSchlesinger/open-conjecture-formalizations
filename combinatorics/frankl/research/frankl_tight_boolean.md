@@ -59,6 +59,23 @@ tight ──(A)──▶ all-half ──(B)──▶ distributive ──┐
   not apparent.  Verified empirically (19 518 all-half lattices, 0
   non-distributive).  *Open.*
 
+## Crux B in Fourier language (a new angle, not a proof)
+
+Identify the closure system `C ⊆ 2^A` with its indicator `c : 2^A → {0,1}`.
+"Every atom `i` lies in exactly `|C|/2` closed sets" means
+`Σ_S c(S)·(2·[i∈S] − 1) = 0`.  Since `2·[i∈S] − 1 = −φ_{{i}}(S)` where
+`φ_T(S) = (−1)^{|S∩T|}` is the Walsh–Fourier basis, this is exactly
+`ĉ({i}) = 0`.  Hence:
+
+> **Crux B (Fourier form).**  An intersection-closed Boolean function with every
+> singleton "closed" (`c({i}) = 1`) and *all degree-1 Fourier coefficients zero*
+> must be the constant `1` (i.e. `C = 2^A`).
+
+This recasts the obstruction in the language of analysis of Boolean functions:
+`all-half` kills the *linear* (degree-1) Fourier mass, and intersection-closure
+must then force the function to be constant.  A genuinely different toolkit;
+still open.
+
 ## Reading
 
 This is the first genuinely *non-conjecture-equivalent* target the campaign
