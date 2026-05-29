@@ -78,12 +78,44 @@ believe it proves Frankl.**  Reasons:
 
 So the rigorous deliverables are the **engine** and the **large-coatom-ideal**
 theorem (both in `Frankl.Lattice`, sorry-free, axiom-clean).  Condition (★) is
-recorded as an intriguing, empirically-robust, *unproven* line — a good target
-for an adversarial search over non-closure-system lattices, which is the honest
-next step rather than a claimed proof.
+recorded as an intriguing, empirically-robust, *unproven* line.
+
+## Adversarial search (`lattice_frankl_adversarial.py`)
+
+To avoid the "nice lattice" bias, (★) was attacked on deliberately hard
+structures, tracking the **slack** `max_{join-irred x}(|⋃ ↓m| − |↑x|)`
+(slack `< 0` ⟺ (★) fails):
+
+| structure | result |
+|-----------|--------|
+| subgroup lattices `S₃, D₄, A₄, S₄, D₅, D₆` | (★) holds, slack `2…23` |
+| ~7000 random height-3 bipartite lattices (`p,q ≤ 6`) | (★) holds; min slack `0` (tight at `p=q=3`) but never negative |
+| balanced bouquets (`k` chains joined at `⊤`) | (★) holds, slack grows with `k` |
+| engineered "chain-vs-fan" (large trapped gap by design) | (★) holds, slack `4…10` |
+| partition lattices `Π₃…Π₅`, subspace lattice `𝔽₂³` | (★) holds, slack `> 0` |
+
+**No counterexample to (★) was found anywhere.**
+
+## Why (★) resists — and the honest verdict
+
+The search revealed a **self-balancing** mechanism.  To break (★) at a
+join-irreducible `x` one needs few/small coatoms `⊉ x`, i.e. `x` below *most*
+coatoms — but those coatoms then lie in `↑x`, inflating `|↑x|` and making `x` a
+poor witness.  Conversely the good witnesses (high, small `↑x`) sit above few
+coatoms, so many coatoms miss them and the union `⋃ ↓m` is large.  Witness
+quality and union size are inversely coupled, keeping the slack `≥ 0`.
+
+Crucially, making this rigorous for the *optimal* witness would prove (★), and
+(★) ⟹ Frankl — **so proving (★) is equivalent in difficulty to the open
+conjecture itself.**  That is the honest status: (★) is a sound sufficient
+condition, empirically unbreakable, with a heuristic for its robustness, but it
+is *not* a theorem and proving it = solving Frankl.  The verified, sorry-free
+outputs of this whole line are the two `Frankl.Lattice` lemmas; (★) is an
+honestly-labelled conjecture-equivalent observation, not a proof.
 
 ## Reproduce
 
 ```sh
-python3 research/lattice_frankl_attack.py
+python3 research/lattice_frankl_attack.py        # nice lattices + condition (★)
+python3 research/lattice_frankl_adversarial.py   # subgroup/bouquet/chain-fan stress tests
 ```
