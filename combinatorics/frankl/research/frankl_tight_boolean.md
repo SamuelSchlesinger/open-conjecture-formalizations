@@ -128,6 +128,12 @@ In closure-system language this says **all-half ⟹ the atoms are exactly the `m
 points and all are present** — the dual refinement of the already-proved
 "all-half ⟹ join-irreducibles are atoms".
 
+**Formalized (sorry-free, axiom-clean):** `Frankl/Coatom.lean` —
+`coatom_mem_of_everyHalf_twinFree` (with `IsEveryHalf`, `IsTwinFree`,
+`biUnion_id_mem_of_nonempty_subset`, and the incomparability lemma
+`exists_mem_of_everyHalf_twinFree`).  Depends only on
+`propext, Classical.choice, Quot.sound`.
+
 **The residual gap is now exact.**  Having all coatoms, `F = 2^U` would follow
 from `∩`-closure (then `⋂_{i∈T}(U∖{i}) = U∖T` gives every subset).  Equivalently,
 recursing into `F_i := {A∈F : i∉A}` (union-closed, top `U∖{i}`) needs `F_i` to be
