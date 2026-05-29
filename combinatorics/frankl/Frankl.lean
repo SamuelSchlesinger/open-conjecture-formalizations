@@ -21,5 +21,6 @@ import Frankl.SmallCases
 import Frankl.Lattice
 import Frankl.LatticeReverse
 import Frankl.LatticeProduct
+import Frankl.LatticeCut
 import Frankl.Coatom
 import Frankl.Conjecture

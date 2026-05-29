@@ -91,6 +91,16 @@ nontrivial direct product is automatically a Frankl lattice, and by induction on
 This is a structural reduction, obtained without any local witness-selection —
 see `research/frankl_negative_space_round.md`.
 
+**Reduction along a cut element** (`Frankl.LatticeCut`): a *cut element* `c`
+(comparable to every element) splits `L` vertically into `↓c` and the filter
+`↑c = Set.Ici c`.  A join-irreducible Frankl witness of `↑c` lifts to `L`
+(`franklLattice_witness_of_cut`): such a witness `j` is `≠ c` (so it is
+join-irreducible in `L` too — its lower covers all lie `≥ c` by the cut
+property), its up-set is unchanged (`↑j ≃ ↑j ∩ ↑c`), and `|↑c| ≤ |L|`.  Hence the
+conjecture also reduces to the **vertically-indecomposable** lattices; combined
+with the product reduction, to those that are both directly and vertically
+indecomposable.
+
 ### Extremal / balanced families (`Frankl.Coatom`)
 
 A self-contained study of **every-half** families — union-closed families in

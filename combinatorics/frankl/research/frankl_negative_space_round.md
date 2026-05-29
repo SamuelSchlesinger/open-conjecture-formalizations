@@ -71,6 +71,42 @@ This is a real narrowing of the problem obtained without any witness-selection,
 which is exactly why the non-locality obstruction (every *local* selector is
 conjecture-equivalent) does not apply to it.
 
+## Workflow round 2: decomposition axes & fresh registers
+
+A 10-idea multi-agent campaign (each idea investigated by a probe, then
+adversarially verified by an independent skeptic that defaults to *refuted* when
+it cannot confirm).  Honest outcomes:
+
+**Confirmed (verified, high confidence):**
+- **Geometric lattices** (atomistic + upper-semimodular = matroid flats): join-
+  irreducibles are the atoms, and *every atom* `a` has `2|↑a| ≤ |L|` — 0 failures
+  over 139 exhaustive + 1649 sampled + matroid lattices.  Frankl holds with any
+  atom as witness (Reinhold's semimodular case; the atom rule is explicit).
+  Formalizable, but needs a semimodular/geometric class not yet in Mathlib —
+  *deferred*.
+- **Vertical / ordinal-sum cut**: a cut element `c` gives `Frankl(↑c) ⟹ Frankl(L)`.
+  **FORMALIZED**: `Frankl/LatticeCut.lean` (`franklLattice_witness_of_cut`,
+  `supIrred_val_of_cut`, `upSetCutEquiv`), sorry-free, axiom-clean.
+- **Twin-free reduction** (set form): deleting one of a pair of twin elements
+  preserves union-closure, `|F|`, and lifts a Frankl element ⟹ reduces to
+  separating families.  Exhaustive `k≤4`, 0 failures.  Formalization in progress
+  (`Frankl/FamilyTwinFree.lean`).
+
+**Partial:** Möbius `μ(⊥,⊤)=0 ⟹ a strict Frankl witness exists` (0 violations,
+but this is the already-known *easy side* — `μ≠0` non-spheres also slack).
+Subdirect-product lift: only the trivial-witness case survives.
+
+**Refuted / failed (with explicit counterexamples, e.g. the `[0,1,2,3,7]`
+closure system):** doubly-irreducible witness (M3 etc. have none), meet-
+irreducible global counting (all aggregates break — barriered like averaging),
+congruence-quotient reduction (no clean lift), and a conditioned descent-coupling
+entropy retry on indecomposables (single-step descent gain evaporates by `k=4`,
+stays below the `0.382` barrier).
+
+**Net:** the conjecture's lattice form now reduces to lattices that are directly
+indecomposable (`Frankl.LatticeProduct`) **and** vertically indecomposable
+(`Frankl.LatticeCut`); geometric lattices are a fully-understood solved subclass.
+
 ## Reproduce
 
 ```sh
