@@ -51,6 +51,14 @@ lattice `L` with `|L| ≥ 2` has a join-irreducible element `j` (Mathlib's
   corollary: every element of a modular lattice is left-modular, and a finite
   nontrivial lattice has a coatom.  This strictly generalises the distributive
   case.
+- **Large-coatom-ideal lattices** (`franklLattice_of_large_coatom_ideal`), found
+  while attacking the open frontier: if some coatom `m` lies above at least half
+  the elements then any join-irreducible `x ⊄ m` satisfies `↑x ⊆ L ∖ ↓m`, so
+  `|↑x| ≤ |L|/2`.  No modularity needed; incomparable to the modular case.  Its
+  engine `two_mul_card_upset_le_of_disjoint_finset` (any finset disjoint from
+  `↑x` of size `≥ |↑x|` certifies `x`) underlies the experimental condition (★)
+  explored in `research/lattice_frankl_attack.md` — which survives all testing
+  but is **not** a proof.
 
 **Poonen's equivalence is fully proved**: `franklConjecture_iff_franklLattice`
 shows `FranklConjecture ↔ FranklLattice` (sorry-free, axiom-clean).

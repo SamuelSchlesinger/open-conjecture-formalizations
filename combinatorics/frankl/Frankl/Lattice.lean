@@ -197,6 +197,73 @@ theorem franklLattice_of_leftModular_coatom
   rw [hconv, ← hcard]
   omega
 
+/-- **Elementary "small up-set" engine.**  If a join-irreducible `x` admits any
+finset `T` disjoint from its up-set `↑x` (every `a ∈ T` has `¬ x ≤ a`) with
+`|↑x| ≤ |T|`, then `2 |↑x| ≤ |L|`, so `x` is a Frankl witness.  Taking `T = ↓m`
+for a coatom `m ⊉ x` gives `franklLattice_of_large_coatom_ideal`; taking `T` to
+be the union of such ideals gives the strongest checkable criterion explored in
+`research/lattice_frankl_attack.py`. -/
+theorem two_mul_card_upset_le_of_disjoint_finset
+    {L : Type*} [Lattice L] [Finite L] {x : L} {T : Finset L}
+    (hT : ∀ a ∈ T, ¬ x ≤ a) (hbig : Nat.card {z : L // x ≤ z} ≤ T.card) :
+    2 * Nat.card {z : L // x ≤ z} ≤ Nat.card L := by
+  classical
+  haveI : Fintype L := Fintype.ofFinite L
+  have hcard : Fintype.card L = Nat.card L := Nat.card_eq_fintype_card.symm
+  have hTsub : T ⊆ univ.filter (fun z => ¬ x ≤ z) :=
+    fun a ha => mem_filter.mpr ⟨mem_univ _, hT a ha⟩
+  have hTle : T.card ≤ (univ.filter (fun z => ¬ x ≤ z)).card := Finset.card_le_card hTsub
+  have hsplit : (univ.filter (fun z => x ≤ z)).card +
+      (univ.filter (fun z => ¬ x ≤ z)).card = Fintype.card L := by
+    rw [Finset.card_filter_add_card_filter_not, Finset.card_univ]
+  have hconv : Nat.card {z : L // x ≤ z} = (univ.filter (fun z => x ≤ z)).card := by
+    rw [Nat.card_eq_fintype_card, Fintype.card_subtype]
+  rw [hconv] at hbig ⊢
+  rw [← hcard]
+  omega
+
+/-- **A coatom with a large principal ideal forces Frankl** (no modularity
+needed).  If a finite lattice has a coatom `m` lying above at least half of the
+elements (`|L| ≤ 2 |↓m|`), then it satisfies the lattice conjecture.
+
+Take a join-irreducible `x ⊄ m`.  Then `↑x ⊆ L ∖ ↓m` (any `α ≥ x` with `α ≤ m`
+would give `x ≤ m`), so `|↑x| ≤ |L| − |↓m| ≤ |L|/2`.  This is incomparable to the
+modular case: it covers non-modular lattices with a big coatom-ideal, but misses
+"balanced" modular lattices such as `M₃` where every coatom-ideal is below half. -/
+theorem franklLattice_of_large_coatom_ideal
+    {L : Type*} [Lattice L] [Finite L] [BoundedOrder L] {m : L}
+    (hco : IsCoatom m) (hbig : Nat.card L ≤ 2 * Nat.card {z : L // z ≤ m}) :
+    ∃ x : L, SupIrred x ∧ 2 * Nat.card {z : L // x ≤ z} ≤ Nat.card L := by
+  classical
+  haveI : Fintype L := Fintype.ofFinite L
+  have hcard : Fintype.card L = Nat.card L := Nat.card_eq_fintype_card.symm
+  obtain ⟨s, hs, hsi⟩ := exists_supIrred_decomposition (⊤ : L)
+  have hxex : ∃ x ∈ s, ¬ x ≤ m := by
+    by_contra hall
+    push_neg at hall
+    have htop : (⊤ : L) ≤ m := by
+      rw [← hs]; exact Finset.sup_le fun x hx => by simpa using hall x hx
+    exact hco.1 (top_le_iff.mp htop)
+  obtain ⟨x, hxs, hxm⟩ := hxex
+  refine ⟨x, hsi hxs, ?_⟩
+  -- `↑x ⊆ L ∖ ↓m`
+  have hsub : (univ.filter (fun z => x ≤ z)) ⊆ (univ.filter (fun z => ¬ z ≤ m)) := by
+    intro z hz
+    rw [mem_filter] at hz ⊢
+    exact ⟨mem_univ _, fun hzm => hxm (le_trans hz.2 hzm)⟩
+  have hup_le : (univ.filter (fun z => x ≤ z)).card ≤
+      (univ.filter (fun z => ¬ z ≤ m)).card := Finset.card_le_card hsub
+  have hsplit : (univ.filter (fun z => z ≤ m)).card +
+      (univ.filter (fun z => ¬ z ≤ m)).card = Fintype.card L := by
+    rw [Finset.card_filter_add_card_filter_not, Finset.card_univ]
+  have hconvx : Nat.card {z : L // x ≤ z} = (univ.filter (fun z => x ≤ z)).card := by
+    rw [Nat.card_eq_fintype_card, Fintype.card_subtype]
+  have hconvm : Nat.card {z : L // z ≤ m} = (univ.filter (fun z => z ≤ m)).card := by
+    rw [Nat.card_eq_fintype_card, Fintype.card_subtype]
+  rw [hconvx, ← hcard]
+  rw [hconvm, ← hcard] at hbig
+  omega
+
 /-- The **modular case** (Abe–Nakano), a corollary of the left-modular coatom
 theorem: in a modular lattice every element is left-modular, and a finite
 nontrivial lattice has a coatom. -/
