@@ -19,3 +19,6 @@ open OneThirdTwoThirds
 #print axioms isBalancedPair_of_twin
 #print axioms oneThirdTwoThirdsFor_of_twin
 #print axioms oneThirdTwoThirds_conjecture
+#print axioms numBefore_pos_of_incomp
+#print axioms numBefore_pos_lt
+#print axioms widthLE_one_iff_total

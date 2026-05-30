@@ -1,5 +1,6 @@
 import OneThirdTwoThirds.Defs
 import OneThirdTwoThirds.Basic
+import OneThirdTwoThirds.Nontrivial
 import OneThirdTwoThirds.SmallCases
 import OneThirdTwoThirds.Duality
 import OneThirdTwoThirds.Symmetry
