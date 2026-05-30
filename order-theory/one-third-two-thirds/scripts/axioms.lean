@@ -22,3 +22,6 @@ open OneThirdTwoThirds
 #print axioms numBefore_pos_of_incomp
 #print axioms numBefore_pos_lt
 #print axioms widthLE_one_iff_total
+#print axioms isBalancedPair_iff_le_three_min
+#print axioms isTwin_of_discrete
+#print axioms oneThirdTwoThirdsFor_of_discrete

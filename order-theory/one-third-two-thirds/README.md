@@ -53,7 +53,7 @@ formulation than the `OrderHom`/`Set.ncard` statement in
 | `Nontrivial` | **`δ(x,y) ∈ (0,1)`** for incomparable pairs (`0 < e(P,x<y) < e(P)`): both orders are realized, by augmenting `≤` with the forced relation `x<y` (still a poset) and extending | 0 |
 | `SmallCases` | chains satisfy the conjecture vacuously; the tight 3-element poset `V3` (`a<b`, `c` free): `e=3`, balanced pair `{a,c}`, and **tightness** `V3_balance_tight` — every incomparable pair has `min`-balance exactly `1/3`, so `1/3` is best possible (Linial) | 0 |
 | `Duality` | **`δ(P) = δ(Pᵒᵈ)`**: order reversal `f ↦ Fin.rev ∘ f` is a bijection of linear extensions, giving `e(Pᵒᵈ)=e(P)`, `e(Pᵒᵈ,x<y)=e(P,y<x)`, and the conjecture is self-dual | 0 |
-| `Symmetry` | an incomparable pair swapped by an **order-automorphism** is balanced with `δ=1/2`; hence a poset with a pair of **twins** (interchangeable elements) satisfies the conjecture — the order-theoretic analogue of Frankl twin-deletion | 0 |
+| `Symmetry` | an incomparable pair swapped by an **order-automorphism** is balanced with `δ=1/2`; hence a poset with a pair of **twins** (interchangeable elements) satisfies the conjecture — the order-theoretic analogue of Frankl twin-deletion; **antichains** (discrete order) are a special case | 0 |
 | `Width2` | width hierarchy; **width ≤ 1 ⇔ chain** (proved); precise statement of Linial's width-2 theorem `LinialWidthTwo` as the next analytic target | 0 |
 | `Conjecture` | the headline theorem — one intentional `sorry` | 1 |
 

@@ -118,6 +118,28 @@ theorem isBalancedPair_comm {x y : X} : IsBalancedPair x y ↔ IsBalancedPair y 
   · intro h; exact ⟨h.1.symm, key x y h.1 h.2⟩
   · intro h; exact ⟨h.1.symm, key y x h.1 h.2⟩
 
+/-- **Min-form of the balanced-pair predicate.**  `{x,y}` is balanced iff
+`e(P) ≤ 3 · min(e(P,x<y), e(P,y<x))`.  This is the form matching the literature's
+`δ(P) = max_{x∥y} min(δ(x,y), δ(y,x)) ≥ 1/3`: an incomparable pair is balanced
+exactly when the *smaller* side is at least a third.  (Equivalent to the
+two-sided `[1/3,2/3]` definition via the partition identity.) -/
+theorem isBalancedPair_iff_le_three_min {x y : X} :
+    IsBalancedPair x y ↔
+      Incomp x y ∧ numLinExts (X := X) ≤ 3 * min (numBefore x y) (numBefore y x) := by
+  unfold IsBalancedPair
+  constructor
+  · rintro ⟨hinc, h1, h2⟩
+    refine ⟨hinc, ?_⟩
+    have hpart := numBefore_add_numBefore x y hinc.ne
+    rcases le_total (numBefore x y) (numBefore y x) with hmin | hmin
+    · rw [min_eq_left hmin]; exact h1
+    · rw [min_eq_right hmin]; omega
+  · rintro ⟨hinc, h⟩
+    have hpart := numBefore_add_numBefore x y hinc.ne
+    have hx := min_le_left (numBefore x y) (numBefore y x)
+    have hy := min_le_right (numBefore x y) (numBefore y x)
+    exact ⟨hinc, by omega, by omega⟩
+
 /-- A poset that is a chain (totally ordered) satisfies the conjecture
 vacuously: it has no incomparable pair, so the hypothesis `IsNotChain` fails. -/
 theorem oneThirdTwoThirdsFor_of_total

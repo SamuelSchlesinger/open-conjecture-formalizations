@@ -164,4 +164,32 @@ theorem oneThirdTwoThirdsFor_of_twin {x y : X} (h : IsTwin x y) :
     OneThirdTwoThirdsFor (X := X) :=
   fun _ => ⟨x, y, isBalancedPair_of_twin h⟩
 
+/-! ### Antichains
+
+In a poset with the *discrete* order (`a ≤ b ↔ a = b` — i.e. an antichain),
+every two distinct elements are twins: neither relates to anything, so the twin
+condition holds vacuously.  Hence every incomparable pair is balanced with
+`δ = 1/2`, matching the exploration's finding that antichains realize perfect
+balance. -/
+
+omit [Fintype X] [DecidableEq X] [DecidableLE X] in
+/-- In a discretely-ordered poset (an antichain), any two distinct elements are
+twins. -/
+theorem isTwin_of_discrete (hdisc : ∀ a b : X, a ≤ b → a = b) {x y : X}
+    (hxy : x ≠ y) : IsTwin x y := by
+  refine ⟨⟨fun h => hxy (hdisc x y h), fun h => hxy (hdisc y x h).symm⟩, ?_⟩
+  intro z hzx hzy
+  refine ⟨⟨fun h => absurd (hdisc x z h) ?_, fun h => absurd (hdisc y z h) ?_⟩,
+          ⟨fun h => absurd (hdisc z x h) ?_, fun h => absurd (hdisc z y h) ?_⟩⟩
+  · exact fun heq => hzx heq.symm
+  · exact fun heq => hzy heq.symm
+  · exact hzx
+  · exact hzy
+
+/-- **An antichain (discrete order) satisfies the conjecture** — with every
+incomparable pair perfectly balanced (`δ = 1/2`). -/
+theorem oneThirdTwoThirdsFor_of_discrete (hdisc : ∀ a b : X, a ≤ b → a = b) :
+    OneThirdTwoThirdsFor (X := X) :=
+  fun ⟨x, y, hxy⟩ => ⟨x, y, isBalancedPair_of_twin (isTwin_of_discrete hdisc hxy.ne)⟩
+
 end OneThirdTwoThirds
