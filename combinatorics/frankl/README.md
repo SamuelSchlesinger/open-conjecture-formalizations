@@ -120,10 +120,24 @@ behind the geometric-lattice case, isolated with *no* semimodularity:
   (`IsModularLattice.exists_disjoint_and_sup_eq`), so every atom is a witness.
 
 This captures the operative content of the geometric (atomistic upper-semimodular)
-case verified in `research/frankl_negative_space_round.md`.  The genuinely new
-*non-modular* geometric lattices (e.g. partition lattices) are not yet a named
-instance: that needs a semimodular/geometric-lattice class, absent from Mathlib
-`v4.28.0` — flagged as future infrastructure work rather than claimed.
+case verified in `research/frankl_negative_space_round.md`.
+
+**Geometric lattices** (`Frankl.LatticeGeometric`) — the genuinely new,
+*non-modular* semimodular case, built on the relative-complement mechanism.  Since
+Mathlib `v4.28.0` has no semimodular/geometric-lattice class, the geometric
+lattice is given by the two **elementary axioms that define it**:
+
+- `hsm` upper-semimodularity (covering form): `p ⊓ q ⋖ p → q ⋖ p ⊔ q`;
+- `hat` atomisticity (usable form): below any `x ≰ z` lies an atom `c ≤ x`, `c ≰ z`.
+
+From these, `atom_exchange_of_semimodular` derives the **matroid exchange**
+property, `exists_relComplement_of_geometric` derives relative complementation by
+a maximal-element argument, and `franklLattice_witness_of_atom_geometric`
+concludes that **every atom is a Frankl witness** (`2|↑a| ≤ |L|`).  These axioms
+hold for every geometric lattice — partition lattices `Πₙ`, subspace lattices,
+and any atomistic modular lattice — so this covers the non-modular geometric
+lattices that the modular case (`franklLattice_of_modular`) misses.  All
+sorry-free and axiom-clean.
 
 ### Extremal / balanced families (`Frankl.Coatom`)
 
