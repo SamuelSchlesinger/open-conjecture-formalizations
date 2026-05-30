@@ -63,10 +63,12 @@ Every result outside `Conjecture` is **`sorry`-free and axiom-clean** (only
 
 ### What is *proved* vs. *open*
 
-Proved, in full generality: the counting infrastructure and partition identity;
-`e(P) > 0`; tightness of `1/3`; the **duality** reduction; and the **twin /
-symmetry** case (any poset with an incomparable automorphism-swapped pair,
-including all antichains). Stated precisely but **not** formalized (known hard
+Proved, in full generality (sorry-free, axiom-clean): the counting
+infrastructure and partition identity; `e(P) > 0`; **`δ(x,y) ∈ (0,1)`** for
+incomparable pairs; the min-form `δ(P) = max min ≥ 1/3` characterization;
+tightness of `1/3`; the **duality** reduction; the **twin / symmetry** case (any
+poset with an incomparable automorphism-swapped pair); **antichains** (`δ=1/2`);
+and **width ≤ 1 ⇔ chain**. Stated precisely but **not** formalized (known hard
 theorems): Linial's width-2 theorem, and the constant bounds (Kahn–Saks `3/11`,
 BFT `(5−√5)/10`). The full conjecture remains the single `sorry`.
 
