@@ -21,7 +21,7 @@ nav_order: 6
 
 | # | Conjecture | Eponym(s) | Comments |
 |---|-----------|-----------|----------|
-| 1 | [1/3–2/3 conjecture](https://en.wikipedia.org/wiki/1/3%E2%80%932/3_conjecture) | — | |
+| 1 | [1/3–2/3 conjecture](https://en.wikipedia.org/wiki/1/3%E2%80%932/3_conjecture) | Kislitsyn; Fredman; Linial | [In-repo formalization](../order-theory/one-third-two-thirds/): statement + linear-extension counting, tightness of 1/3, duality & twin reductions proved; conjecture open |
 | 2 | [Gold partition conjecture](https://en.wikipedia.org/wiki/1/3%E2%80%932/3_conjecture#Generalizations_and_related_results) | — | |
 
 ## Additive Combinatorics
