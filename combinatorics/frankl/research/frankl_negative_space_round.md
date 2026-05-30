@@ -120,6 +120,25 @@ stays below the `0.382` barrier).
 indecomposable (`Frankl.LatticeProduct`) **and** vertically indecomposable
 (`Frankl.LatticeCut`); geometric lattices are a fully-understood solved subclass.
 
+## Workflow round 4: geometric instance + reduction hunt on the core
+
+- **Concrete geometric instance FORMALIZED** (`Frankl.GeometricInstances`): the
+  powerset lattice `Finset α` satisfies both geometric axioms
+  (`atomistic_finset`, `upperSemimodular_finset`), so singletons are Frankl
+  witnesses (`franklLattice_witness_singleton_finset`) — non-vacuousness.  Bonus:
+  `isUpperSemimodular_of_modular` (modular ⟹ `hsm`, via the diamond order-iso),
+  linking the geometric axiom to Mathlib's `IsModularLattice`.  Sorry-free,
+  axiom-clean.
+- **Reduction hunt on the residual core: no advance** (honest).  Three candidates,
+  each tested on the exhaustive `k≤5` core and adversarially verified:
+  *doubly-irreducible deletion* **fails** (deletion exits the core where Frankl is
+  already known — no induction); *coatom-ideal recursion* is failure-free but
+  **subsumed by the direct scan** (a join-irreducible of `[⊥,m]` with `j≠⊥` is
+  join-irreducible in `L`, so the recursion re-derives exactly the direct witness
+  — no extra power on the core); *fresh witness rules* attain 0 failures on
+  `k≤5` but are **refuted** as provable rules (the obstruction is the usual
+  non-locality).  The hard core continues to resist every new reduction/rule.
+
 ## Workflow round 3: attacking the indecomposable core directly
 
 Having reduced (in Lean) to lattices that are directly- and vertically-

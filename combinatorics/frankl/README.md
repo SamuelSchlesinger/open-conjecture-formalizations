@@ -139,6 +139,17 @@ and any atomistic modular lattice — so this covers the non-modular geometric
 lattices that the modular case (`franklLattice_of_modular`) misses.  All
 sorry-free and axiom-clean.
 
+**Concrete instance & the modular bridge** (`Frankl.GeometricInstances`).  The
+powerset lattice `Finset α` is exhibited as a concrete geometric lattice:
+`atomistic_finset` discharges `hat` (via `Finset.not_subset` and singleton
+atoms), `upperSemimodular_finset` discharges `hsm` (via the powerset cover
+characterisation), and `franklLattice_witness_singleton_finset` instantiates the
+abstract theorem — **every singleton `{a}` is a Frankl witness in `Finset α`** —
+proving the geometric hypotheses are non-vacuous.  Separately,
+`isUpperSemimodular_of_modular` shows *every* modular lattice satisfies `hsm`
+(via the diamond order-iso `infIccOrderIsoIccSup`, which preserves `CovBy`),
+connecting the geometric axiom to Mathlib's `IsModularLattice`.
+
 ### Extremal / balanced families (`Frankl.Coatom`)
 
 A self-contained study of **every-half** families — union-closed families in

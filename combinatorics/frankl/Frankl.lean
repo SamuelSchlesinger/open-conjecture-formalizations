@@ -24,6 +24,7 @@ import Frankl.LatticeProduct
 import Frankl.LatticeCut
 import Frankl.LatticeRelComplement
 import Frankl.LatticeGeometric
+import Frankl.GeometricInstances
 import Frankl.FamilyTwinFree
 import Frankl.Coatom
 import Frankl.Conjecture
