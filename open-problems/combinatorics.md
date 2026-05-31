@@ -35,7 +35,7 @@ nav_order: 6
 | # | Conjecture | Field | Eponym(s) | Comments |
 |---|-----------|-------|-----------|----------|
 | 1 | [Scholz conjecture](https://en.wikipedia.org/wiki/Scholz_conjecture) | Addition chains | Arnold Scholz | |
-| 2 | [Singmaster's conjecture](https://en.wikipedia.org/wiki/Singmaster%27s_conjecture) | Binomial coefficients | David Singmaster | |
+| 2 | [Singmaster's conjecture](https://en.wikipedia.org/wiki/Singmaster%27s_conjecture) | Binomial coefficients | David Singmaster | [In-repo formalization](../combinatorics/singmaster/): computable multiplicity, faithful counter, `N(a)≥2` and an infinite `N≥4` family proved (so `4≤C≤8`); uniform bound open |
 
 ## References
 

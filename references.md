@@ -68,6 +68,9 @@ repository. For per-conjecture details, see the linked project documentation.
 - **Gold partition conjecture** — M. Peczarski, "The Gold Partition Conjecture," *Order* 29 (2012), 321–336. [In-repo project](combinatorics/gold-partition/)
 - **Hadamard conjecture** — Hadamard, J. "Résolution d'une question relative aux déterminants." *Bull. Sci. Math.* 17 (1893), 240–246. [Submodule](combinatorics/hadamard-conjecture/)
 - **Sensitivity conjecture** (now theorem) — Huang, H. "Induced subgraphs of hypercubes and a proof of the Sensitivity Conjecture." *Ann. of Math.* 190 (2019), 949–955. [Submodule](combinatorics/sensitivity/)
+- **Singmaster's conjecture** — Singmaster, D. "How often does an integer occur as a binomial coefficient?" *Amer. Math. Monthly* 78 (1971), 385–386. [In-repo project](combinatorics/singmaster/)
+  - Abbott, H. L.; Erdős, P.; Hanson, D. "On the number of times an integer occurs as a binomial coefficient." *Amer. Math. Monthly* 81 (1974), 256–261. (Bound `O(log a / log log a)`.)
+  - Kane, D. M. "Improved bounds on the number of ways of expressing `t` as a binomial coefficient." *Integers* 7 (2007), A53. (Sharpest known upper bound.)
 
 ## Algebra
 

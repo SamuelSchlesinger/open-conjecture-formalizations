@@ -75,6 +75,7 @@ jobs:
           - combinatorics/hadamard-conjecture
           - combinatorics/frankl
           - combinatorics/sensitivity
+          - combinatorics/singmaster
           - order-theory/one-third-two-thirds
           - algebra/herzog-schonheim
           - graph-theory/reconstruction-conjecture
