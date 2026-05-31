@@ -19,6 +19,9 @@ basis for Singmaster's conjectured constant `C = 8`.
 -/
 
 set_option autoImplicit false
+-- `decide` evaluates the row-by-row `biUnion` definition of `occurrences`, which
+-- needs a little more elaboration depth than the default.
+set_option maxRecDepth 2000
 
 namespace Singmaster
 

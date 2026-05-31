@@ -54,10 +54,10 @@ theorem four_le_singmasterCount_choose_two {n : ℕ} (hn : 5 ≤ n) :
     intro p hp
     simp only [Finset.mem_insert, Finset.mem_singleton] at hp
     rcases hp with h | h | h | h <;> subst h <;> rw [mem_occurrences]
-    · exact ⟨⟨by omega, by omega⟩, by omega, ha_def.symm⟩
-    · exact ⟨⟨by omega, by omega⟩, by omega, hsymm⟩
-    · exact ⟨⟨by omega, by omega⟩, by omega, Nat.choose_one_right a⟩
-    · refine ⟨⟨by omega, by omega⟩, by omega, ?_⟩
+    · exact ⟨by omega, by omega, ha_def.symm⟩
+    · exact ⟨by omega, by omega, hsymm⟩
+    · exact ⟨by omega, by omega, Nat.choose_one_right a⟩
+    · refine ⟨by omega, by omega, ?_⟩
       rw [Nat.choose_symm (by omega : 1 ≤ a), Nat.choose_one_right]
   -- the four positions are pairwise distinct (n < a separates the two groups)
   have hcard : ({(n, 2), (n, n - 2), (a, 1), (a, a - 1)} : Finset (ℕ × ℕ)).card = 4 := by
@@ -75,8 +75,10 @@ theorem four_le_singmasterCount_choose_two {n : ℕ} (hn : 5 ≤ n) :
 /-- The Singmaster bound, if it exists, is at least `4`: no constant below `4`
 can dominate every multiplicity. -/
 theorem four_le_of_singmasterConjecture {C : ℕ}
-    (hC : ∀ a : ℕ, 2 ≤ a → singmasterCount a ≤ C) : 4 ≤ C :=
-  le_trans (four_le_singmasterCount_choose_two (le_refl 5))
-    (hC ((5).choose 2) (by decide))
+    (hC : ∀ a : ℕ, 2 ≤ a → singmasterCount a ≤ C) : 4 ≤ C := by
+  have h1 : 4 ≤ singmasterCount 10 := by
+    have h := four_le_singmasterCount_choose_two (n := 5) (by omega)
+    rwa [show Nat.choose 5 2 = 10 from by decide] at h
+  exact le_trans h1 (hC 10 (by omega))
 
 end Singmaster

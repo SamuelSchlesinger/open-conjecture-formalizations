@@ -1,6 +1,7 @@
 import Mathlib.Data.Nat.Choose.Basic
 import Mathlib.Data.Finset.Card
-import Mathlib.Data.Finset.Prod
+import Mathlib.Data.Finset.Union
+import Mathlib.Data.Finset.Image
 
 /-!
 # Singmaster's conjecture — definitions
@@ -24,38 +25,47 @@ N(a) = #{ (n,k) : k ≤ n, C(n,k) = a }.
 
 For `a ≥ 2`, every occurrence has `n ≤ a`: if `1 ≤ k ≤ n-1` then
 `C(n,k) ≥ n` (the row-minimum away from the `1`-valued ends), so `a = C(n,k) ≥ n`;
-the cases `k = 0` or `k = n` give `C = 1 ≠ a`.  Hence all occurrences live in the
-finite box `{0,…,a} × {0,…,a}`, and
+the cases `k = 0` or `k = n` give `C = 1 ≠ a` (`Basic.le_of_choose_eq`).  Hence
 
 ```
-singmasterCount a = #{ (n,k) ∈ {0,…,a}² : k ≤ n ∧ C(n,k) = a }
+singmasterCount a = #{ (n,k) : n ≤ a ∧ k ≤ n ∧ C(n,k) = a }
 ```
 
-is an honest, *computable* cardinality equal to `N(a)` for `a ≥ 2`
-(`Basic.singmasterCount_eq`).  Small cases are therefore decidable by the kernel
-(`decide`).  (For `a ≤ 1` the box undercounts — `1` occurs infinitely often —
-which is exactly why the conjecture is stated for `a ≥ 2`.)
+is an honest, *computable* cardinality equal to `N(a)` for `a ≥ 2`.  We build it
+row by row (`biUnion` over `n ≤ a`, then `image` of the valid columns) rather
+than as a square product `{0,…,a}²`: this keeps membership proofs free of the
+quadratic blow-up a literal `range (a+1) ×ˢ range (a+1)` would force in the
+elaborator for large `a` (e.g. `a = 3003`, used in `Records`).  Small cases are
+decidable by the kernel (`decide`).  (For `a ≤ 1` this undercounts — `1` occurs
+infinitely often — which is exactly why the conjecture is stated for `a ≥ 2`.)
 -/
 
 set_option autoImplicit false
 
 namespace Singmaster
 
-/-- The set of Pascal-triangle positions `(n, k)` inside the box `{0,…,a}²` with
-`k ≤ n` and `C(n, k) = a`. -/
+/-- The set of Pascal-triangle positions `(n, k)` with `n ≤ a`, `k ≤ n` and
+`C(n, k) = a`.  We build it row by row (`biUnion` over `n`, then `image` of the
+valid columns) rather than as a square product `{0,…,a}²`: this keeps membership
+proofs free of the quadratic blow-up that a literal `range (a+1) ×ˢ range (a+1)`
+would force for large `a` (e.g. `a = 3003`). -/
 def occurrences (a : ℕ) : Finset (ℕ × ℕ) :=
-  (Finset.range (a + 1) ×ˢ Finset.range (a + 1)).filter
-    (fun p => p.2 ≤ p.1 ∧ p.1.choose p.2 = a)
+  (Finset.range (a + 1)).biUnion fun n =>
+    ((Finset.range (n + 1)).filter fun k => n.choose k = a).image fun k => (n, k)
 
 /-- The **Singmaster multiplicity** `N(a)`: the number of times `a` occurs in
 Pascal's triangle (faithful for `a ≥ 2`; see the module doc-comment). -/
 def singmasterCount (a : ℕ) : ℕ := (occurrences a).card
 
-/-- Membership in `occurrences`, unpacked. -/
+/-- Membership in `occurrences`, unpacked: `(n,k)` occurs iff `n ≤ a`, `k ≤ n`
+and `C(n,k) = a`. -/
 @[simp] theorem mem_occurrences {a n k : ℕ} :
-    (n, k) ∈ occurrences a ↔ (n < a + 1 ∧ k < a + 1) ∧ k ≤ n ∧ n.choose k = a := by
-  unfold occurrences
-  simp only [Finset.mem_filter, Finset.mem_product, Finset.mem_range, and_assoc]
+    (n, k) ∈ occurrences a ↔ n < a + 1 ∧ k ≤ n ∧ n.choose k = a := by
+  simp only [occurrences, Finset.mem_biUnion, Finset.mem_range, Finset.mem_image,
+    Finset.mem_filter, Prod.mk.injEq]
+  constructor
+  · rintro ⟨n', hn', k', ⟨hk', hc⟩, rfl, rfl⟩; exact ⟨hn', by omega, hc⟩
+  · rintro ⟨hn, hk, hc⟩; exact ⟨n, hn, k, ⟨by omega, hc⟩, rfl, rfl⟩
 
 /-- **Singmaster's conjecture**: the multiplicity is uniformly bounded. -/
 def SingmasterConjecture : Prop :=

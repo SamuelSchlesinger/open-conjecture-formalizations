@@ -44,6 +44,7 @@ for `a ≥ 2`.
 | `Basic` | **row-minimum** `n ≤ C(n,k)` for `0<k<n` (`self_le_choose`); **box completeness** `n ≤ a` (`le_of_choose_eq`); **`N(a) ≥ 2` for `a ≥ 3`** (`a = C(a,1) = C(a,a-1)`) | 0 |
 | `SmallCases` | `N(2)=1`, `N(6)=3`, `N(10)=4` by `decide` (sanity check on the counter) | 0 |
 | `Family` | **infinite family appearing ≥ 4 times**: `N(C(n,2)) ≥ 4` for all `n ≥ 5` (`four_le_singmasterCount_choose_two`); hence any Singmaster constant is `≥ 4` (`four_le_of_singmasterConjecture`) | 0 |
+| `Records` | **`N(3003) ≥ 8`** — `3003 = C(3003,1) = C(78,2) = C(15,5) = C(14,6)` (and symmetric partners), the largest known multiplicity; hence **`8 ≤ C`** (`eight_le_of_singmasterConjecture`) | 0 |
 | `Conjecture` | the headline theorem — one intentional `sorry` | 1 |
 
 Every result outside `Conjecture` is **`sorry`-free and axiom-clean** (only
@@ -52,10 +53,11 @@ Every result outside `Conjecture` is **`sorry`-free and axiom-clean** (only
 
 ### Proved vs. open
 
-Proved in full generality: the row-minimum bound and box completeness (so the
-counter is faithful); `N(a) ≥ 2` for `a ≥ 3`; and the infinite `≥ 4` family,
-pinning the conjectured constant from below (`4 ≤ C ≤ 8`). The uniform upper
-bound — even *some* constant — is the open problem and the single `sorry`.
+Proved in full generality: the row-minimum bound and completeness (so the
+counter is faithful); `N(a) ≥ 2` for `a ≥ 3`; the infinite `≥ 4` family; and
+`N(3003) ≥ 8`. Together these pin any Singmaster constant from below to **`C ≥ 8`**
+— matching the conjectured value (the experimental maximum is `8`). The uniform
+upper bound — even *some* constant — is the open problem and the single `sorry`.
 
 ## Computational exploration (`research/`)
 

@@ -53,15 +53,27 @@ theorem le_of_choose_eq {a n k : ℕ} (ha : 2 ≤ a) (hkn : k ≤ n) (h : n.choo
     · subst hkeq; rw [Nat.choose_self] at h; omega
     · have := self_le_choose hk0 hklt; omega
 
+/-- **Lower bound from an explicit set of positions.**  If every pair in a
+finite set `S` is a genuine occurrence of `a` (`n ≤ a`, `k ≤ n`, `C(n,k) = a`),
+then `|S| ≤ N(a)`.  Stated with `a` abstract so it can be applied to a concrete
+`a` (e.g. `3003`) without elaboration ever unfolding `occurrences a`. -/
+theorem card_le_singmasterCount {a : ℕ} {S : Finset (ℕ × ℕ)}
+    (h : ∀ p ∈ S, p.1 < a + 1 ∧ p.2 ≤ p.1 ∧ p.1.choose p.2 = a) :
+    S.card ≤ singmasterCount a :=
+  Finset.card_le_card (by
+    intro p hp
+    obtain ⟨n, k⟩ := p
+    exact mem_occurrences.mpr (h (n, k) hp))
+
 /-- `a = C(a,1)`, so for `a ≥ 2` the pair `(a,1)` is an occurrence. -/
 theorem mem_occurrences_a_one {a : ℕ} (ha : 2 ≤ a) : (a, 1) ∈ occurrences a := by
   rw [mem_occurrences]
-  exact ⟨⟨by omega, by omega⟩, by omega, Nat.choose_one_right a⟩
+  exact ⟨by omega, by omega, Nat.choose_one_right a⟩
 
 /-- `a = C(a,a-1)`, so for `a ≥ 3` the pair `(a, a-1)` is a *second* occurrence. -/
 theorem mem_occurrences_a_pred {a : ℕ} (ha : 3 ≤ a) : (a, a - 1) ∈ occurrences a := by
   rw [mem_occurrences]
-  refine ⟨⟨by omega, by omega⟩, by omega, ?_⟩
+  refine ⟨by omega, by omega, ?_⟩
   rw [Nat.choose_symm (by omega : 1 ≤ a), Nat.choose_one_right]
 
 /-- **Every `a ≥ 3` appears at least twice** in Pascal's triangle: it equals
