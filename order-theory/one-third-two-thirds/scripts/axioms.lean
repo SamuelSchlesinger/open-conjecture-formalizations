@@ -27,3 +27,6 @@ open OneThirdTwoThirds
 #print axioms oneThirdTwoThirdsFor_of_discrete
 #print axioms oneThirdTwoThirdsFor_sum_self
 #print axioms isBalancedPair_inl_inr
+#print axioms numLinExts_withTop
+#print axioms numBefore_withTop
+#print axioms oneThirdTwoThirdsFor_withTop
