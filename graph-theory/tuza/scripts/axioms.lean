@@ -8,3 +8,5 @@ open Tuza
 #print axioms tau_K4
 #print axioms tuza_tight
 #print axioms tuza_conjecture
+#print axioms tau_eq_nu_of_edgeDisjoint
+#print axioms tuza_of_edgeDisjoint

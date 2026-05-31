@@ -36,6 +36,7 @@ by `decide`).
 | `Basic` | `triEdges` facts (3 edges per triangle, all in `G`); `ν`, `τ` are attained; **`ν(G) ≤ τ(G)`** (edge-disjoint triangles use distinct cover edges) | 0 |
 | `Bounds` | **`τ(G) ≤ 3·ν(G)`**: a *maximum* packing's `3ν` edges cover every triangle (maximality ⇒ every triangle meets the packing); gives the sandwich `ν ≤ τ ≤ 3ν` | 0 |
 | `Tightness` | **`K₄`: `ν = 1`, `τ = 2`, so `τ = 2ν`** — the factor `2` is best possible (`K₄` facts by `decide`, bounds from the general API) | 0 |
+| `Special` | **edge-disjoint case `τ = ν`**: if no two triangles share an edge, the triangle set is a maximum packing and one edge per triangle is a cover, so `ν = τ = #triangles` and the conjecture holds with room to spare | 0 |
 | `Conjecture` | the headline theorem — one intentional `sorry` | 1 |
 
 Every result outside `Conjecture` is **`sorry`-free and axiom-clean** (only
@@ -45,8 +46,9 @@ Every result outside `Conjecture` is **`sorry`-free and axiom-clean** (only
 ### Proved vs. open
 
 Proved in full generality: `ν` and `τ` are well-defined and attained; the
-sandwich `ν(G) ≤ τ(G) ≤ 3·ν(G)`; and tightness of the constant `2` via `K₄`.
-The conjecture `τ ≤ 2ν` itself is the open problem and the single `sorry`.
+sandwich `ν(G) ≤ τ(G) ≤ 3·ν(G)`; tightness of the constant `2` via `K₄`; and the
+conjecture in the edge-disjoint case (`τ = ν`). The conjecture `τ ≤ 2ν` for
+arbitrary graphs is the open problem and the single `sorry`.
 
 ## Computational exploration (`research/`)
 
