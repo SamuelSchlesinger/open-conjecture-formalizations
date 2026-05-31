@@ -79,6 +79,7 @@ jobs:
           - order-theory/one-third-two-thirds
           - algebra/herzog-schonheim
           - graph-theory/reconstruction-conjecture
+          - graph-theory/tuza
     steps:
       - uses: actions/checkout@v4
         with:

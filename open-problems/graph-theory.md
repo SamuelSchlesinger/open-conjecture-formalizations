@@ -20,7 +20,7 @@ nav_order: 2
 | 7 | [Petersen coloring conjecture](https://en.wikipedia.org/wiki/Petersen_graph#Petersen_coloring_conjecture) | Julius Petersen | |
 | 8 | [Reconstruction conjecture](https://en.wikipedia.org/wiki/Reconstruction_conjecture) | — | |
 | 9 | [Ringel–Kotzig conjecture](https://en.wikipedia.org/wiki/Ringel%E2%80%93Kotzig_conjecture) | Gerhard Ringel, Anton Kotzig | |
-| 10 | [Tuza's conjecture](https://en.wikipedia.org/wiki/Tuza%27s_conjecture) | Zsolt Tuza | |
+| 10 | [Tuza's conjecture](https://en.wikipedia.org/wiki/Tuza%27s_conjecture) | Zsolt Tuza | [In-repo formalization](../graph-theory/tuza/): ν, τ defined; sandwich ν ≤ τ ≤ 3ν proved; factor 2 shown tight (K₄); τ ≤ 2ν open |
 | 11 | [Vizing's conjecture](https://en.wikipedia.org/wiki/Vizing%27s_conjecture) | Vadim G. Vizing | |
 
 ## References
