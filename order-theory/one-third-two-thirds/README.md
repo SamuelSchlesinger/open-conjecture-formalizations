@@ -54,6 +54,7 @@ formulation than the `OrderHom`/`Set.ncard` statement in
 | `SmallCases` | chains satisfy the conjecture vacuously; the tight 3-element poset `V3` (`a<b`, `c` free): `e=3`, balanced pair `{a,c}`, and **tightness** `V3_balance_tight` — every incomparable pair has `min`-balance exactly `1/3`, so `1/3` is best possible (Linial) | 0 |
 | `Duality` | **`δ(P) = δ(Pᵒᵈ)`**: order reversal `f ↦ Fin.rev ∘ f` is a bijection of linear extensions, giving `e(Pᵒᵈ)=e(P)`, `e(Pᵒᵈ,x<y)=e(P,y<x)`, and the conjecture is self-dual | 0 |
 | `Symmetry` | an incomparable pair swapped by an **order-automorphism** is balanced with `δ=1/2`; hence a poset with a pair of **twins** (interchangeable elements) satisfies the conjecture — the order-theoretic analogue of Frankl twin-deletion; **antichains** (discrete order) are a special case | 0 |
+| `DisjointUnion` | the **parallel composition `P ⊕ P`** satisfies the conjecture: the copy-swap automorphism makes `{inl x, inr x}` balanced (`δ=1/2`) — a balanced pair that is *not* a twin pair, so it genuinely uses the global-automorphism lemma beyond the local twin condition | 0 |
 | `Width2` | width hierarchy; **width ≤ 1 ⇔ chain** (proved); precise statement of Linial's width-2 theorem `LinialWidthTwo` as the next analytic target | 0 |
 | `Conjecture` | the headline theorem — one intentional `sorry` | 1 |
 
@@ -68,7 +69,8 @@ infrastructure and partition identity; `e(P) > 0`; **`δ(x,y) ∈ (0,1)`** for
 incomparable pairs; the min-form `δ(P) = max min ≥ 1/3` characterization;
 tightness of `1/3`; the **duality** reduction; the **twin / symmetry** case (any
 poset with an incomparable automorphism-swapped pair); **antichains** (`δ=1/2`);
-and **width ≤ 1 ⇔ chain**. Stated precisely but **not** formalized (known hard
+the **parallel composition `P ⊕ P`**; and **width ≤ 1 ⇔ chain**. Stated precisely
+but **not** formalized (known hard
 theorems): Linial's width-2 theorem, and the constant bounds (Kahn–Saks `3/11`,
 BFT `(5−√5)/10`). The full conjecture remains the single `sorry`.
 

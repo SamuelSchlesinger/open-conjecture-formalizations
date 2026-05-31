@@ -4,5 +4,6 @@ import OneThirdTwoThirds.Nontrivial
 import OneThirdTwoThirds.SmallCases
 import OneThirdTwoThirds.Duality
 import OneThirdTwoThirds.Symmetry
+import OneThirdTwoThirds.DisjointUnion
 import OneThirdTwoThirds.Width2
 import OneThirdTwoThirds.Conjecture

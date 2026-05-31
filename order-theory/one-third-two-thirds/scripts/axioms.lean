@@ -25,3 +25,5 @@ open OneThirdTwoThirds
 #print axioms isBalancedPair_iff_le_three_min
 #print axioms isTwin_of_discrete
 #print axioms oneThirdTwoThirdsFor_of_discrete
+#print axioms oneThirdTwoThirdsFor_sum_self
+#print axioms isBalancedPair_inl_inr
