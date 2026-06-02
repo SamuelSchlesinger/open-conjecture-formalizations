@@ -349,4 +349,90 @@ theorem three_choose_le {m n : ℕ} (hm : 1 ≤ m) (hn : 1 ≤ n) (h3 : 3 ≤ m 
         nlinarith [hsb]
     _ = (a + b + 2).choose (a + 1) * ((a + 1) * (b + 1)) := (choose_ratio_identity a b).symm
 
+/-- The `hstart` binomial bound: `3·C(m+n-1,m-1) ≤ 2·C(m+n,m)` exactly when
+`m ≤ 2n` (i.e. `δ(a₀,b₀) = m/(m+n) ≤ 2/3`). -/
+theorem three_choose_le_two {m n : ℕ} (hm : 1 ≤ m) (hn : 1 ≤ n) (h2 : m ≤ 2 * n) :
+    3 * (m + n - 1).choose (m - 1) ≤ 2 * (m + n).choose m := by
+  obtain ⟨a, rfl⟩ := Nat.exists_eq_add_of_le hm
+  rw [show 1 + a + n - 1 = a + n by omega, show 1 + a - 1 = a by omega,
+    show 1 + a + n = a + n + 1 by omega, show 1 + a = a + 1 by omega]
+  -- goal: 3 * C(a+n, a) ≤ 2 * C(a+n+1, a+1)
+  have hid : (a + n + 1) * (a + n).choose a = (a + n + 1).choose (a + 1) * (a + 1) := by
+    have := Nat.succ_mul_choose_eq (a + n) a
+    simpa using this
+  have hpos : 0 < a + 1 := by omega
+  apply Nat.le_of_mul_le_mul_right _ hpos
+  calc 3 * (a + n).choose a * (a + 1)
+      = 3 * ((a + n).choose a * (a + 1)) := by ring
+    _ ≤ 2 * ((a + n + 1) * (a + n).choose a) := by nlinarith [Nat.choose_pos (show a ≤ a + n by omega)]
+    _ = 2 * ((a + n + 1).choose (a + 1) * (a + 1)) := by rw [hid]
+    _ = 2 * (a + n + 1).choose (a + 1) * (a + 1) := by ring
+
+/-- `C(m+n,m) ≥ 2` for `m, n ≥ 1` (there are at least two shuffles). -/
+theorem two_le_choose_finSum {m n : ℕ} (hm : 1 ≤ m) (hn : 1 ≤ n) : 2 ≤ (m + n).choose m := by
+  have h1 : (m + 1).choose m = m + 1 := Nat.choose_succ_self_right m
+  have h2 : (m + 1).choose m ≤ (m + n).choose m := Nat.choose_le_choose m (by omega)
+  omega
+
+/-- **The cross before-count of `a₀ < b_j`:** `C(m+n,m) − C(m+n-1-j, m)`. -/
+theorem numBefore_inl_inr_finSum [NeZero m] (j : Fin n) :
+    numBefore (X := Fin m ⊕ Fin n) (Sum.inl 0) (Sum.inr j)
+      = (m + n).choose m - (m + n - 1 - j.val).choose m := by
+  have hpart := numBefore_add_numBefore (X := Fin m ⊕ Fin n) (Sum.inl 0) (Sum.inr j)
+    (Sum.inl_ne_inr)
+  rw [numBefore_inr_inl_finSum, numLinExts_finSum] at hpart
+  omega
+
+/-! ### The balanced pair: the row case `m ≤ 2n` -/
+
+/-- **Row case.**  When `m ≤ 2n`, the `a₀`-row `j ↦ δ(a₀, b_j)` starts at
+`m/(m+n) ≤ 2/3`, climbs to `≈ 1` with steps `≤ 1/3`, so it crosses the balanced
+band: `Fin m ⊕ Fin n` has a balanced cross pair. -/
+theorem balancedPair_finSum_row [NeZero m] (hn : 1 ≤ n) (h2 : m ≤ 2 * n) :
+    ∃ u v : Fin m ⊕ Fin n, IsBalancedPair (X := Fin m ⊕ Fin n) u v := by
+  have hm : 1 ≤ m := Nat.pos_of_ne_zero (NeZero.ne m)
+  have hstep : ∀ k, k < n - 1 →
+      3 * ((m + n).choose m - (m + n - 1 - (k + 1)).choose m)
+        ≤ 3 * ((m + n).choose m - (m + n - 1 - k).choose m) + (m + n).choose m := by
+    intro k hk
+    have hA : (m + n - 1 - k).choose m ≤ (m + n).choose m := Nat.choose_le_choose m (by omega)
+    have hB : (m + n - 1 - (k + 1)).choose m ≤ (m + n - 1 - k).choose m :=
+      Nat.choose_le_choose m (by omega)
+    have hpascal : (m + n - 1 - k).choose m
+        = (m + n - 2 - k).choose (m - 1) + (m + n - 1 - (k + 1)).choose m := by
+      have key := Nat.choose_succ_succ (m + n - 2 - k) (m - 1)
+      simp only [Nat.succ_eq_add_one] at key
+      rw [show (m + n - 2 - k) + 1 = m + n - 1 - k by omega, show (m - 1) + 1 = m by omega] at key
+      rw [show m + n - 1 - (k + 1) = m + n - 2 - k by omega]
+      exact key
+    have hgap : 3 * (m + n - 2 - k).choose (m - 1) ≤ (m + n).choose m := by
+      have hmono : (m + n - 2 - k).choose (m - 1) ≤ (m + n - 2).choose (m - 1) :=
+        Nat.choose_le_choose (m - 1) (by omega)
+      have h3 : 3 ≤ m + n := by omega
+      calc 3 * (m + n - 2 - k).choose (m - 1) ≤ 3 * (m + n - 2).choose (m - 1) := by omega
+        _ ≤ (m + n).choose m := three_choose_le hm hn h3
+    omega
+  have hstart : 3 * ((m + n).choose m - (m + n - 1 - 0).choose m) ≤ 2 * (m + n).choose m := by
+    rw [show m + n - 1 - 0 = m + n - 1 by omega]
+    have hpascal : (m + n).choose m = (m + n - 1).choose (m - 1) + (m + n - 1).choose m := by
+      have key := Nat.choose_succ_succ (m + n - 1) (m - 1)
+      simp only [Nat.succ_eq_add_one] at key
+      rw [show (m + n - 1) + 1 = m + n by omega, show (m - 1) + 1 = m by omega] at key
+      exact key
+    have hbound : 3 * (m + n - 1).choose (m - 1) ≤ 2 * (m + n).choose m :=
+      three_choose_le_two hm hn h2
+    omega
+  have hend : (m + n).choose m ≤ 3 * ((m + n).choose m - (m + n - 1 - (n - 1)).choose m) := by
+    rw [show m + n - 1 - (n - 1) = m by omega, Nat.choose_self]
+    have := two_le_choose_finSum hm hn
+    omega
+  obtain ⟨k, hkN, hk1, hk2⟩ := balanced_of_monotone_steps (D := (m + n).choose m) (N := n - 1)
+    (fun k => (m + n).choose m - (m + n - 1 - k).choose m) hstep hstart hend
+  have hkn : k < n := by omega
+  refine ⟨Sum.inl 0, Sum.inr ⟨k, hkn⟩, ?_⟩
+  unfold IsBalancedPair
+  refine ⟨incomp_inl_inr (0 : Fin m) (⟨k, hkn⟩ : Fin n), ?_, ?_⟩
+  · rw [numLinExts_finSum, numBefore_inl_inr_finSum]; exact hk1
+  · rw [numLinExts_finSum, numBefore_inl_inr_finSum]; exact hk2
+
 end OneThirdTwoThirds

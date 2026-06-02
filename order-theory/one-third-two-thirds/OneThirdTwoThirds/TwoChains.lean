@@ -63,17 +63,18 @@ most a third of `D` (`3·d (k+1) ≤ 3·d k + D`), the start is at most two-thir
 The witness is the *first* index whose value reaches `D/3`; the step bound
 guarantees it has not already overshot `2D/3`.  No monotonicity is required. -/
 theorem balanced_of_monotone_steps {D N : ℕ} (d : ℕ → ℕ)
-    (hstep : ∀ k, 3 * d (k + 1) ≤ 3 * d k + D)
+    (hstep : ∀ k, k < N → 3 * d (k + 1) ≤ 3 * d k + D)
     (hstart : 3 * d 0 ≤ 2 * D) (hend : D ≤ 3 * d N) :
-    ∃ k, D ≤ 3 * d k ∧ 3 * d k ≤ 2 * D := by
+    ∃ k, k ≤ N ∧ D ≤ 3 * d k ∧ 3 * d k ≤ 2 * D := by
   classical
   have hex : ∃ k, D ≤ 3 * d k := ⟨N, hend⟩
-  refine ⟨Nat.find hex, Nat.find_spec hex, ?_⟩
+  have hfle : Nat.find hex ≤ N := Nat.find_le hend
+  refine ⟨Nat.find hex, hfle, Nat.find_spec hex, ?_⟩
   rcases Nat.eq_zero_or_pos (Nat.find hex) with h0 | hpos
   · rw [h0]; exact hstart
   · -- the predecessor falls short of `D/3`, so one step lands below `2D/3`
     have hmin : ¬ (D ≤ 3 * d (Nat.find hex - 1)) := Nat.find_min hex (by omega)
-    have hs := hstep (Nat.find hex - 1)
+    have hs := hstep (Nat.find hex - 1) (by omega)
     have hfe : Nat.find hex - 1 + 1 = Nat.find hex := by omega
     rw [hfe] at hs
     omega
