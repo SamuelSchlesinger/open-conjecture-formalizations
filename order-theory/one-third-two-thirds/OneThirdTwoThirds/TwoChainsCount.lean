@@ -301,4 +301,52 @@ theorem numBefore_inr_inl_finSum [NeZero m] (j : Fin n) :
     numBefore (X := Fin m ⊕ Fin n) (Sum.inr j) (Sum.inl 0) = (m + n - 1 - j.val).choose m := by
   rw [numBefore_inr_inl_eq_card, subsetCount]
 
+/-! ### Binomial arithmetic for the intermediate-value step -/
+
+/-- The exact ratio identity `C(a+b+2,a+1)·(a+1)(b+1) = C(a+b,a)·(a+b+2)(a+b+1)`. -/
+theorem choose_ratio_identity (a b : ℕ) :
+    (a + b + 2).choose (a + 1) * ((a + 1) * (b + 1))
+      = (a + b).choose a * ((a + b + 2) * (a + b + 1)) := by
+  have e1 : (a + b + 2).choose (a + 1) * (a + 1).factorial * (b + 1).factorial
+      = (a + b + 2).factorial := by
+    have h := Nat.choose_mul_factorial_mul_factorial (show a + 1 ≤ a + b + 2 by omega)
+    rwa [show a + b + 2 - (a + 1) = b + 1 by omega] at h
+  have e2 : (a + b).choose a * a.factorial * b.factorial = (a + b).factorial := by
+    have h := Nat.choose_mul_factorial_mul_factorial (show a ≤ a + b by omega)
+    rwa [show a + b - a = b by omega] at h
+  have h3 : (a + b + 2).factorial = (a + b + 2) * (a + b + 1) * (a + b).factorial := by
+    rw [show a + b + 2 = (a + b + 1) + 1 by omega, Nat.factorial_succ,
+      show a + b + 1 = (a + b) + 1 by omega, Nat.factorial_succ]; ring
+  have key : (a + b + 2).choose (a + 1) * ((a + 1) * (b + 1)) * (a.factorial * b.factorial)
+      = (a + b).choose a * ((a + b + 2) * (a + b + 1)) * (a.factorial * b.factorial) := by
+    calc (a + b + 2).choose (a + 1) * ((a + 1) * (b + 1)) * (a.factorial * b.factorial)
+        = (a + b + 2).choose (a + 1) * (a + 1).factorial * (b + 1).factorial := by
+          rw [Nat.factorial_succ a, Nat.factorial_succ b]; ring
+      _ = (a + b + 2).factorial := e1
+      _ = (a + b + 2) * (a + b + 1) * ((a + b).choose a * a.factorial * b.factorial) := by
+          rw [e2, h3]
+      _ = (a + b).choose a * ((a + b + 2) * (a + b + 1)) * (a.factorial * b.factorial) := by ring
+  exact Nat.eq_of_mul_eq_mul_right (by positivity) key
+
+/-- **The intermediate-value step bound, binomial form:**
+`3·C(m+n-2,m-1) ≤ C(m+n,m)` for `m,n ≥ 1` — equivalently one `a₀`-row step is at
+most `1/3`. -/
+theorem three_choose_le {m n : ℕ} (hm : 1 ≤ m) (hn : 1 ≤ n) (h3 : 3 ≤ m + n) :
+    3 * (m + n - 2).choose (m - 1) ≤ (m + n).choose m := by
+  obtain ⟨a, rfl⟩ := Nat.exists_eq_add_of_le hm
+  obtain ⟨b, rfl⟩ := Nat.exists_eq_add_of_le hn
+  -- now m = 1 + a, n = 1 + b
+  rw [show 1 + a + (1 + b) - 2 = a + b by omega, show 1 + a - 1 = a by omega,
+    show 1 + a + (1 + b) = a + b + 2 by omega, show 1 + a = a + 1 by omega]
+  -- goal: 3 * C(a+b,a) ≤ C(a+b+2, a+1)
+  have hpos : 0 < (a + 1) * (b + 1) := by positivity
+  apply Nat.le_of_mul_le_mul_right _ hpos
+  calc 3 * (a + b).choose a * ((a + 1) * (b + 1))
+      = (a + b).choose a * (3 * ((a + 1) * (b + 1))) := by ring
+    _ ≤ (a + b).choose a * ((a + b + 2) * (a + b + 1)) := by
+        apply Nat.mul_le_mul_left
+        have hsb := step_bound_arith (m := a + 1) (n := b + 1) (by omega) (by omega) (by omega)
+        nlinarith [hsb]
+    _ = (a + b + 2).choose (a + 1) * ((a + 1) * (b + 1)) := (choose_ratio_identity a b).symm
+
 end OneThirdTwoThirds
