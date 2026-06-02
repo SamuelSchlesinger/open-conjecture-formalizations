@@ -6,5 +6,6 @@ import OneThirdTwoThirds.Duality
 import OneThirdTwoThirds.Symmetry
 import OneThirdTwoThirds.DisjointUnion
 import OneThirdTwoThirds.AddTop
+import OneThirdTwoThirds.OrdinalSum
 import OneThirdTwoThirds.Width2
 import OneThirdTwoThirds.Conjecture
