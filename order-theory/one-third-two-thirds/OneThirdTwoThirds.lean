@@ -8,5 +8,6 @@ import OneThirdTwoThirds.DisjointUnion
 import OneThirdTwoThirds.AddTop
 import OneThirdTwoThirds.OrdinalSum
 import OneThirdTwoThirds.ParallelSum
+import OneThirdTwoThirds.TwoChains
 import OneThirdTwoThirds.Width2
 import OneThirdTwoThirds.Conjecture
