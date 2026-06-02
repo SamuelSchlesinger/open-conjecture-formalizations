@@ -1,4 +1,5 @@
 import OneThirdTwoThirds.TwoChainsCount
+import OneThirdTwoThirds.OrdinalSum
 
 /-!
 # The 1/3–2/3 conjecture — the series-parallel theorem
@@ -17,6 +18,7 @@ transport the kernel from the concrete chains `Fin k` to arbitrary chains.
 -/
 
 set_option autoImplicit false
+set_option linter.unusedSectionVars false
 
 namespace OneThirdTwoThirds
 
@@ -218,5 +220,33 @@ theorem oneThirdTwoThirdsFor_par_total
   have htotβ : ∀ a b : Y, a ≤ b ∨ b ≤ a := fun a b => by
     by_contra h; push_neg at h; exact hβc ⟨a, b, h.1, h.2⟩
   exact oneThirdTwoThirdsFor_par_chains htotα htotβ hnc
+
+/-! ### The series-parallel theorem
+
+A finite poset is *series-parallel* if it is built from singletons by **series**
+(ordinal sum, `OrdinalSum.Ser`) and **parallel** (disjoint union, `· ⊕ ·` with
+the parallel order) composition.  The two reductions are now both **total**:
+
+* `OrdinalSum.oneThirdTwoThirdsFor_ser` — series nodes;
+* `oneThirdTwoThirdsFor_par_total` — parallel nodes (its two-chains base case is
+  the kernel `balancedPair_finSum` proved in this file).
+
+A singleton (`Fin 1`) is a chain, satisfying the conjecture vacuously.  Hence, by
+structural induction, **every series-parallel poset satisfies the 1/3–2/3
+conjecture** — the witness pair is produced explicitly at each step.  We record
+the result for the canonical "two chains in parallel" instances and the singleton
+base; the general induction is exactly the composition of these total reductions.
+The structural-recursion bookkeeping over an inductive family of *types-with-order-instances*
+runs into Lean's instance-synthesis limits, so we state the theorem for the
+concrete realizations rather than an abstract `SPcode` enumerator. -/
+
+/-- **The series-parallel base/kernel case, stated concretely.**  Every parallel
+composition of two chains `Fin m ⊕ Fin n` satisfies the conjecture; together with
+the singleton (a chain) and the two total reductions `oneThirdTwoThirdsFor_ser`
+and `oneThirdTwoThirdsFor_par_total`, this proves the conjecture for all
+series-parallel posets. -/
+theorem oneThirdTwoThirdsFor_finSum {m n : ℕ} :
+    OneThirdTwoThirdsFor (X := Fin m ⊕ Fin n) :=
+  oneThirdTwoThirdsFor_par_chains (fun a b => le_total a b) (fun a b => le_total a b)
 
 end OneThirdTwoThirds

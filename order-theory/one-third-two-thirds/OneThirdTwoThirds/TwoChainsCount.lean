@@ -351,14 +351,14 @@ theorem three_choose_le {m n : ℕ} (hm : 1 ≤ m) (hn : 1 ≤ n) (h3 : 3 ≤ m 
 
 /-- The `hstart` binomial bound: `3·C(m+n-1,m-1) ≤ 2·C(m+n,m)` exactly when
 `m ≤ 2n` (i.e. `δ(a₀,b₀) = m/(m+n) ≤ 2/3`). -/
-theorem three_choose_le_two {m n : ℕ} (hm : 1 ≤ m) (hn : 1 ≤ n) (h2 : m ≤ 2 * n) :
+theorem three_choose_le_two {m n : ℕ} (hm : 1 ≤ m) (h2 : m ≤ 2 * n) :
     3 * (m + n - 1).choose (m - 1) ≤ 2 * (m + n).choose m := by
   obtain ⟨a, rfl⟩ := Nat.exists_eq_add_of_le hm
   rw [show 1 + a + n - 1 = a + n by omega, show 1 + a - 1 = a by omega,
     show 1 + a + n = a + n + 1 by omega, show 1 + a = a + 1 by omega]
   -- goal: 3 * C(a+n, a) ≤ 2 * C(a+n+1, a+1)
   have hid : (a + n + 1) * (a + n).choose a = (a + n + 1).choose (a + 1) * (a + 1) := by
-    have := Nat.succ_mul_choose_eq (a + n) a
+    have := Nat.add_one_mul_choose_eq (a + n) a
     simpa using this
   have hpos : 0 < a + 1 := by omega
   apply Nat.le_of_mul_le_mul_right _ hpos
@@ -420,7 +420,7 @@ theorem balancedPair_finSum_row [NeZero m] (hn : 1 ≤ n) (h2 : m ≤ 2 * n) :
       rw [show (m + n - 1) + 1 = m + n by omega, show (m - 1) + 1 = m by omega] at key
       exact key
     have hbound : 3 * (m + n - 1).choose (m - 1) ≤ 2 * (m + n).choose m :=
-      three_choose_le_two hm hn h2
+      three_choose_le_two hm h2
     omega
   have hend : (m + n).choose m ≤ 3 * ((m + n).choose m - (m + n - 1 - (n - 1)).choose m) := by
     rw [show m + n - 1 - (n - 1) = m by omega, Nat.choose_self]
