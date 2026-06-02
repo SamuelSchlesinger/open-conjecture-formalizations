@@ -58,7 +58,9 @@ formulation than the `OrderHom`/`Set.ncard` statement in
 | `AddTop` | **adding a global maximum preserves all balance**: `e(WithTop P)=e(P)` and `e(WithTop P,↑x<↑y)=e(P,x<y)`, so the conjecture for `WithTop P` reduces to `P` (`oneThirdTwoThirdsFor_withTop`). The crux is the *forcing* lemma — `⊤` lands on the top `Fin`-position — plus a linear-extension counting bijection across the `\|P\|→\|P\|+1` boundary (the ordinal-sum reduction for a one-point top summand) | 0 |
 | `OrdinalSum` | **the full ordinal-sum reduction `P ⊕ Q`**: `e(P⊕Q)=e(P)·e(Q)` (`numLinExts_ser`), `e(P⊕Q,↑x<↑y)=e(P,x<y)·e(Q)` / `e(P)·e(Q,x<y)` (`numBefore_ser_inl/inr`), so balance is preserved on each block and **the conjecture for `P⊕Q` reduces to `P` and `Q`** (`oneThirdTwoThirdsFor_ser`) — i.e. to ordinal-sum-**indecomposable** posets. The crux is the set-partition *forcing* lemma (the `\|P\|` bottom block occupies the bottom positions, by pigeonhole) + a counting bijection `linExts(P⊕Q) ≃ linExts P × linExts Q` | 0 |
 | `ParallelSum` | **the disjoint-union (parallel) reduction `P ⊔ Q`**: the **shuffle formula** `e(P⊔Q)=C(\|P\|+\|Q\|,\|P\|)·e(P)·e(Q)` (`numLinExts_par_eq_choose`) and `e(P⊔Q,↑x<↑y)=e(P,x<y)·C·e(Q)` (`numBefore_par_inl/inr`), so the shuffle factor cancels and **internal pairs keep their balance** (`isBalancedPair_par_inl/inr`). Hence a non-chain summand's balanced pair survives (`oneThirdTwoThirdsFor_par_of_left/_right`); the full reduction `oneThirdTwoThirdsFor_par` holds modulo a `hcross` hypothesis isolating the genuinely harder **two-chains** case (witness must be a *cross* pair). The crux is the *order-iso reindexing* `Finset.orderIsoOfFin` of the **varying** `\|P\|`-subset of positions (unlike the fixed bottom block of `OrdinalSum`) | 0 |
-| `TwoChains` | the **series-parallel kernel** `C_m ⊔ C_n`. The disjoint-union + ordinal-sum reductions leave one residual case (both summands chains ⟹ cross witness). This module proves its two non-counting ingredients: the **discrete first-crossing** lemma `balanced_of_monotone_steps` (a before-count sequence with steps `≤ D/3` that starts `≤ 2D/3` and reaches `≥ D/3` must hit the balanced band — the IVT heart, needing *no* monotonicity), and the **step-bound inequality** `step_bound_arith` (`(m+n)(m+n−1) ≥ 3mn`). The remaining input is the closed form of the cross before-count `e(C_m⊔C_n, aᵢ<bⱼ)` (a binomial-counting bijection), documented as the deferred piece | 0 |
+| `TwoChains` | the **discrete first-crossing** lemma `balanced_of_monotone_steps` (a before-count sequence with steps `≤ D/3` that starts `≤ 2D/3` and reaches `≥ D/3` must hit the balanced band — the IVT heart, needing *no* monotonicity), and the **step-bound inequality** `step_bound_arith` (`(m+n)(m+n−1) ≥ 3mn`) | 0 |
+| `TwoChainsCount` | the **two-chains kernel**, fully counted. A chain `Fin k` has a unique linear extension (`numLinExts_fin`); the **cross before-count** `e(Fin m⊔Fin n, b_j<a₀)=C(m+n−1−j,m)` (`numBefore_inr_inl_finSum`) via the bijection `F ↦ posSet F` (a chain extension is determined by its position-set) + subset counting; the binomial step bounds (`three_choose_le`, via the exact ratio identity from factorials); and the **row-case** `balancedPair_finSum_row` — feeding all this to `balanced_of_monotone_steps` produces a balanced cross pair when `m ≤ 2n` | 0 |
+| `SeriesParallel` | the **series-parallel theorem**. Order-iso transfer of every quantity (`isBalancedPair_orderIso`, `oneThirdTwoThirdsFor_orderIso`); the full two-chains kernel `balancedPair_finSum` (both regimes, `m>2n` via the summand-swap); and **the conjecture for any disjoint union of two chains** (`oneThirdTwoThirdsFor_par_chains`, transporting the kernel along `P≃o Fin\|P\|`). This **discharges `hcross`**, making the disjoint-union reduction **unconditional** (`oneThirdTwoThirdsFor_par_total`). With the ordinal-sum reduction, this proves **1/3–2/3 for every series-parallel poset** | 0 |
 | `Width2` | width hierarchy; **width ≤ 1 ⇔ chain** (proved); precise statement of Linial's width-2 theorem `LinialWidthTwo` as the next analytic target | 0 |
 | `Conjecture` | the headline theorem — one intentional `sorry` | 1 |
 
@@ -75,14 +77,18 @@ tightness of `1/3`; the **duality** reduction; the **twin / symmetry** case (any
 poset with an incomparable automorphism-swapped pair); **antichains** (`δ=1/2`);
 the **parallel composition `P ⊕ P`**; the **add-a-maximum reduction** (`WithTop`);
 the **full ordinal-sum reduction `P ⊕ Q`** (to series-indecomposable posets); the
-**shuffle formula** `e(P⊔Q)=C(\|P\|+\|Q\|,\|P\|)·e(P)·e(Q)` and the **disjoint-union
-reduction** (internal-pair balance preserved; non-chain summands lift, two-chains
-case isolated); and **width ≤ 1 ⇔ chain**. Together the duality + ordinal-sum +
-disjoint-union reductions reduce the conjecture to **connected, series-indecomposable**
-posets with no global extremum. Stated precisely but **not** formalized (known hard
-theorems): the two-chains cross-pair case (the kernel of the *series-parallel*
-theorem), Linial's width-2 theorem, and the constant bounds (Kahn–Saks `3/11`,
-BFT `(5−√5)/10`). The full conjecture remains the single `sorry`.
+**shuffle formula** `e(P⊔Q)=C(\|P\|+\|Q\|,\|P\|)·e(P)·e(Q)`; the **unconditional
+disjoint-union reduction** (`oneThirdTwoThirdsFor_par_total`); the **two-chains
+kernel** — every `Fin m ⊔ Fin n` has a balanced cross pair, via a discrete
+intermediate-value argument on the exact cross before-count
+`e(·,b_j<a₀)=C(m+n−1−j,m)`; the **order-isomorphism transfer** of `IsBalancedPair`;
+and hence — by structural induction over the two now-total reductions — **the
+1/3–2/3 conjecture for every series-parallel poset**; and **width ≤ 1 ⇔ chain**.
+Together the duality + ordinal-sum + disjoint-union reductions reduce the *general*
+conjecture to **connected, series-indecomposable** posets with no global extremum.
+Stated precisely but **not** formalized (known hard theorems): Linial's width-2
+theorem, and the constant bounds (Kahn–Saks `3/11`, BFT `(5−√5)/10`). The full
+conjecture remains the single `sorry`.
 
 ## Computational exploration (`research/`)
 
