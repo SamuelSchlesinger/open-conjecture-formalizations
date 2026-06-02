@@ -57,6 +57,7 @@ formulation than the `OrderHom`/`Set.ncard` statement in
 | `DisjointUnion` | the **parallel composition `P ⊕ P`** satisfies the conjecture: the copy-swap automorphism makes `{inl x, inr x}` balanced (`δ=1/2`) — a balanced pair that is *not* a twin pair, so it genuinely uses the global-automorphism lemma beyond the local twin condition | 0 |
 | `AddTop` | **adding a global maximum preserves all balance**: `e(WithTop P)=e(P)` and `e(WithTop P,↑x<↑y)=e(P,x<y)`, so the conjecture for `WithTop P` reduces to `P` (`oneThirdTwoThirdsFor_withTop`). The crux is the *forcing* lemma — `⊤` lands on the top `Fin`-position — plus a linear-extension counting bijection across the `\|P\|→\|P\|+1` boundary (the ordinal-sum reduction for a one-point top summand) | 0 |
 | `OrdinalSum` | **the full ordinal-sum reduction `P ⊕ Q`**: `e(P⊕Q)=e(P)·e(Q)` (`numLinExts_ser`), `e(P⊕Q,↑x<↑y)=e(P,x<y)·e(Q)` / `e(P)·e(Q,x<y)` (`numBefore_ser_inl/inr`), so balance is preserved on each block and **the conjecture for `P⊕Q` reduces to `P` and `Q`** (`oneThirdTwoThirdsFor_ser`) — i.e. to ordinal-sum-**indecomposable** posets. The crux is the set-partition *forcing* lemma (the `\|P\|` bottom block occupies the bottom positions, by pigeonhole) + a counting bijection `linExts(P⊕Q) ≃ linExts P × linExts Q` | 0 |
+| `ParallelSum` | **the disjoint-union (parallel) reduction `P ⊔ Q`**: the **shuffle formula** `e(P⊔Q)=C(\|P\|+\|Q\|,\|P\|)·e(P)·e(Q)` (`numLinExts_par_eq_choose`) and `e(P⊔Q,↑x<↑y)=e(P,x<y)·C·e(Q)` (`numBefore_par_inl/inr`), so the shuffle factor cancels and **internal pairs keep their balance** (`isBalancedPair_par_inl/inr`). Hence a non-chain summand's balanced pair survives (`oneThirdTwoThirdsFor_par_of_left/_right`); the full reduction `oneThirdTwoThirdsFor_par` holds modulo a `hcross` hypothesis isolating the genuinely harder **two-chains** case (witness must be a *cross* pair). The crux is the *order-iso reindexing* `Finset.orderIsoOfFin` of the **varying** `\|P\|`-subset of positions (unlike the fixed bottom block of `OrdinalSum`) | 0 |
 | `Width2` | width hierarchy; **width ≤ 1 ⇔ chain** (proved); precise statement of Linial's width-2 theorem `LinialWidthTwo` as the next analytic target | 0 |
 | `Conjecture` | the headline theorem — one intentional `sorry` | 1 |
 
@@ -72,9 +73,14 @@ incomparable pairs; the min-form `δ(P) = max min ≥ 1/3` characterization;
 tightness of `1/3`; the **duality** reduction; the **twin / symmetry** case (any
 poset with an incomparable automorphism-swapped pair); **antichains** (`δ=1/2`);
 the **parallel composition `P ⊕ P`**; the **add-a-maximum reduction** (`WithTop`);
-the **full ordinal-sum reduction `P ⊕ Q`** (to series-indecomposable posets); and
-**width ≤ 1 ⇔ chain**. Stated precisely but **not** formalized (known hard
-theorems): Linial's width-2 theorem, and the constant bounds (Kahn–Saks `3/11`,
+the **full ordinal-sum reduction `P ⊕ Q`** (to series-indecomposable posets); the
+**shuffle formula** `e(P⊔Q)=C(\|P\|+\|Q\|,\|P\|)·e(P)·e(Q)` and the **disjoint-union
+reduction** (internal-pair balance preserved; non-chain summands lift, two-chains
+case isolated); and **width ≤ 1 ⇔ chain**. Together the duality + ordinal-sum +
+disjoint-union reductions reduce the conjecture to **connected, series-indecomposable**
+posets with no global extremum. Stated precisely but **not** formalized (known hard
+theorems): the two-chains cross-pair case (the kernel of the *series-parallel*
+theorem), Linial's width-2 theorem, and the constant bounds (Kahn–Saks `3/11`,
 BFT `(5−√5)/10`). The full conjecture remains the single `sorry`.
 
 ## Computational exploration (`research/`)
