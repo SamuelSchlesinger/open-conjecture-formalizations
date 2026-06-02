@@ -138,4 +138,85 @@ theorem balancedPair_finSum {m n : ℕ} (hm : 1 ≤ m) (hn : 1 ≤ n) :
     exact ⟨sumCommOrderIso u, sumCommOrderIso v,
       (isBalancedPair_orderIso (sumCommOrderIso (X := Fin n) (Y := Fin m)) u v).mp hb⟩
 
+/-! ### From abstract chains to `Fin` -/
+
+/-- A linear extension exists for any finite poset. -/
+theorem exists_isLinExt : ∃ f : X → Fin (Fintype.card X), IsLinExt f := by
+  have h := numLinExts_pos (X := X)
+  rw [numLinExts, Finset.card_pos] at h
+  obtain ⟨f, hf⟩ := h
+  exact ⟨f, mem_linExts.mp hf⟩
+
+/-- A **chain** (total order) is order-isomorphic to `Fin (card)`: its unique
+linear extension reflects `≤` by totality. -/
+noncomputable def chainOrderIso (htot : ∀ a b : X, a ≤ b ∨ b ≤ a) :
+    X ≃o Fin (Fintype.card X) :=
+  let f := (exists_isLinExt (X := X)).choose
+  let hf := (exists_isLinExt (X := X)).choose_spec
+  { toEquiv := Equiv.ofBijective f
+      ((Fintype.bijective_iff_injective_and_card f).mpr ⟨hf.1, (Fintype.card_fin _).symm⟩)
+    map_rel_iff' := by
+      intro a b
+      refine ⟨fun hle => ?_, fun hle => hf.2 _ _ hle⟩
+      rcases htot a b with h | h
+      · exact h
+      · have hba : f b ≤ f a := hf.2 _ _ h
+        have : a = b := hf.1 (le_antisymm hle hba)
+        exact this ▸ le_refl a }
+
+/-- Sum of two order isos is an order iso of the parallel compositions. -/
+def sumCongrOrderIso {γ δ : Type*} [PartialOrder γ] [PartialOrder δ]
+    (eα : X ≃o γ) (eβ : Y ≃o δ) : (X ⊕ Y) ≃o (γ ⊕ δ) where
+  toEquiv := Equiv.sumCongr eα.toEquiv eβ.toEquiv
+  map_rel_iff' := by
+    intro a b
+    cases a <;> cases b <;>
+      simp only [Equiv.sumCongr_apply, Sum.map_inl, Sum.map_inr, par_inl_le_inl, par_inr_le_inr] <;>
+      first
+        | exact eα.map_rel_iff'
+        | exact eβ.map_rel_iff'
+        | exact Iff.rfl
+
+/-- **The disjoint-union reduction discharged for two chains.**  If `P` and `Q`
+are chains, then `P ⊔ Q` satisfies the 1/3–2/3 conjecture: any incomparable pair
+is a cross pair, and the two-chains kernel (`balancedPair_finSum`, transported
+along `P ≃o Fin |P|`, `Q ≃o Fin |Q|`) supplies a balanced one. -/
+theorem oneThirdTwoThirdsFor_par_chains
+    (htotα : ∀ a b : X, a ≤ b ∨ b ≤ a) (htotβ : ∀ a b : Y, a ≤ b ∨ b ≤ a) :
+    OneThirdTwoThirdsFor (X := X ⊕ Y) := by
+  have hnotα : ¬ IsNotChain (X := X) := fun ⟨x, y, hxy⟩ => (htotα x y).elim hxy.1 hxy.2
+  have hnotβ : ¬ IsNotChain (X := Y) := fun ⟨x, y, hxy⟩ => (htotβ x y).elim hxy.1 hxy.2
+  refine oneThirdTwoThirdsFor_par (fun h => absurd h hnotα) (fun h => absurd h hnotβ) ?_
+  intro hnc _ _
+  -- a cross incomparable pair witnesses both summands nonempty
+  obtain ⟨u, v, huv⟩ := hnc
+  have hαβ : Nonempty X ∧ Nonempty Y := by
+    cases u with
+    | inl a => cases v with
+      | inl b => exact absurd ⟨a, b, (incomp_par_inl a b).mp huv⟩ hnotα
+      | inr b => exact ⟨⟨a⟩, ⟨b⟩⟩
+    | inr a => cases v with
+      | inl b => exact ⟨⟨b⟩, ⟨a⟩⟩
+      | inr b => exact absurd ⟨a, b, (incomp_par_inr a b).mp huv⟩ hnotβ
+  have hcα : 1 ≤ Fintype.card X := Fintype.card_pos_iff.mpr hαβ.1
+  have hcβ : 1 ≤ Fintype.card Y := Fintype.card_pos_iff.mpr hαβ.2
+  let e : (X ⊕ Y) ≃o (Fin (Fintype.card X) ⊕ Fin (Fintype.card Y)) :=
+    sumCongrOrderIso (chainOrderIso htotα) (chainOrderIso htotβ)
+  obtain ⟨p, q, hb⟩ := balancedPair_finSum hcα hcβ
+  exact ⟨e.symm p, e.symm q, (isBalancedPair_orderIso e.symm p q).mp hb⟩
+
+/-- **The disjoint-union reduction, unconditional.**  If `P` and `Q` each satisfy
+the conjecture, so does `P ⊔ Q` — the `hcross` hypothesis is now discharged
+(`oneThirdTwoThirdsFor_par_chains` handles the case where both summands are
+chains). -/
+theorem oneThirdTwoThirdsFor_par_total
+    (hα : OneThirdTwoThirdsFor (X := X)) (hβ : OneThirdTwoThirdsFor (X := Y)) :
+    OneThirdTwoThirdsFor (X := X ⊕ Y) := by
+  refine oneThirdTwoThirdsFor_par hα hβ (fun hnc hαc hβc => ?_)
+  have htotα : ∀ a b : X, a ≤ b ∨ b ≤ a := fun a b => by
+    by_contra h; push_neg at h; exact hαc ⟨a, b, h.1, h.2⟩
+  have htotβ : ∀ a b : Y, a ≤ b ∨ b ≤ a := fun a b => by
+    by_contra h; push_neg at h; exact hβc ⟨a, b, h.1, h.2⟩
+  exact oneThirdTwoThirdsFor_par_chains htotα htotβ hnc
+
 end OneThirdTwoThirds

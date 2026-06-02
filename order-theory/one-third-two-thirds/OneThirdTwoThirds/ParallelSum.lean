@@ -550,17 +550,17 @@ and requires an intermediate-value argument on the `δ`-values, not formalized
 here. -/
 theorem oneThirdTwoThirdsFor_par
     (hα : OneThirdTwoThirdsFor (X := α)) (hβ : OneThirdTwoThirdsFor (X := β))
-    (hcross : ¬ IsNotChain (X := α) → ¬ IsNotChain (X := β) →
+    (hcross : IsNotChain (X := α ⊕ β) → ¬ IsNotChain (X := α) → ¬ IsNotChain (X := β) →
       ∃ u v : α ⊕ β, IsBalancedPair (X := α ⊕ β) u v) :
     OneThirdTwoThirdsFor (X := α ⊕ β) := by
-  intro _
+  intro hnc
   by_cases hαc : IsNotChain (X := α)
   · obtain ⟨x, y, hb⟩ := hα hαc
     exact ⟨Sum.inl x, Sum.inl y, (isBalancedPair_par_inl x y).mpr hb⟩
   · by_cases hβc : IsNotChain (X := β)
     · obtain ⟨x, y, hb⟩ := hβ hβc
       exact ⟨Sum.inr x, Sum.inr y, (isBalancedPair_par_inr x y).mpr hb⟩
-    · exact hcross hαc hβc
+    · exact hcross hnc hαc hβc
 
 /-- If `P` is not a chain, its balanced pair survives in `P ⊔ Q`, so `P ⊔ Q`
 satisfies the conjecture (no cross-pair argument needed). -/
