@@ -11,5 +11,6 @@ import OneThirdTwoThirds.ParallelSum
 import OneThirdTwoThirds.TwoChains
 import OneThirdTwoThirds.TwoChainsCount
 import OneThirdTwoThirds.SeriesParallel
+import OneThirdTwoThirds.Linial
 import OneThirdTwoThirds.Width2
 import OneThirdTwoThirds.Conjecture
