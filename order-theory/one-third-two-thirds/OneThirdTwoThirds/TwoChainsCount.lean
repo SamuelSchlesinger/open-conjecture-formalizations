@@ -200,4 +200,105 @@ theorem aMin_eq_min [NeZero m]
   obtain ⟨a, -, rfl⟩ := Finset.mem_image.mp hx
   exact hF.2 _ _ ((par_inl_le_inl 0 a).mpr (Fin.le_def.mpr (Nat.zero_le _)))
 
+/-! ### The cross before-count via the position-subset -/
+
+/-- There exists a (the unique) linear extension of any `Fin k`. -/
+theorem exists_isLinExt_fin (k : ℕ) : ∃ g : Fin k → Fin (Fintype.card (Fin k)), IsLinExt g := by
+  have h := numLinExts_pos (X := Fin k)
+  rw [numLinExts, Finset.card_pos] at h
+  obtain ⟨g, hg⟩ := h
+  exact ⟨g, mem_linExts.mp hg⟩
+
+/-- **Cross before-count as a subset count.**  The shuffles in which `b_j`
+precedes `a₀` correspond, via `F ↦ posSet F`, to the `m`-subsets all of whose
+positions exceed `j`. -/
+theorem numBefore_inr_inl_eq_card [NeZero m] (j : Fin n) :
+    numBefore (X := Fin m ⊕ Fin n) (Sum.inr j) (Sum.inl 0)
+      = ((Finset.univ.powersetCard m).filter
+          (fun S : Finset (Fin (Fintype.card (Fin m ⊕ Fin n))) => ∀ x ∈ S, (j : ℕ) < x.val)).card := by
+  classical
+  unfold numBefore
+  refine Finset.card_bij (fun F _ => posSet F) ?_ ?_ ?_
+  · -- well-defined
+    intro F hF
+    rw [Finset.mem_filter] at hF
+    have hL := mem_linExts.mp hF.1
+    rw [Finset.mem_filter, Finset.mem_powersetCard]
+    refine ⟨⟨Finset.subset_univ _, (posSet_card hL.1).trans (Fintype.card_fin m)⟩, ?_⟩
+    intro x hx
+    have hlt : (j : ℕ) < (F (Sum.inl 0)).val := (cross_lt_iff hL j).mp hF.2
+    rw [aMin_eq_min hL] at hlt
+    exact lt_of_lt_of_le hlt (Fin.le_def.mp (Finset.min'_le _ _ hx))
+  · -- injective
+    intro F₁ hF₁ F₂ hF₂ hpos
+    simp only at hpos
+    rw [Finset.mem_filter] at hF₁ hF₂
+    have hL₁ := mem_linExts.mp hF₁.1
+    have hL₂ := mem_linExts.mp hF₂.1
+    have hLeq : restrictParL F₁ (posSet_card hL₁.1) = restrictParL F₂ (posSet_card hL₂.1) :=
+      isLinExt_fin_unique (isLinExt_restrictParL hL₁ _) (isLinExt_restrictParL hL₂ _)
+    have hReq : restrictParR F₁ hL₁.1 (compl_posSet_card hL₁.1)
+        = restrictParR F₂ hL₂.1 (compl_posSet_card hL₂.1) :=
+      isLinExt_fin_unique (isLinExt_restrictParR hL₁ _) (isLinExt_restrictParR hL₂ _)
+    funext z
+    cases z with
+    | inl a =>
+      rw [← restrictParL_spec F₁ (posSet_card hL₁.1) a,
+        ← restrictParL_spec F₂ (posSet_card hL₂.1) a,
+        orderEmbOfFin_congr hpos (posSet_card hL₁.1) (posSet_card hL₂.1), congrFun hLeq a]
+    | inr b =>
+      have hpc : (posSet F₁)ᶜ = (posSet F₂)ᶜ := by rw [hpos]
+      rw [← restrictParR_spec F₁ hL₁.1 (compl_posSet_card hL₁.1) b,
+        ← restrictParR_spec F₂ hL₂.1 (compl_posSet_card hL₂.1) b,
+        orderEmbOfFin_congr hpc (compl_posSet_card hL₁.1) (compl_posSet_card hL₂.1), congrFun hReq b]
+  · -- surjective
+    intro S hS
+    rw [Finset.mem_filter, Finset.mem_powersetCard] at hS
+    obtain ⟨⟨-, hScard⟩, hcond⟩ := hS
+    have hScard' : S.card = Fintype.card (Fin m) := hScard.trans (Fintype.card_fin m).symm
+    obtain ⟨ηm, hηm⟩ := exists_isLinExt_fin m
+    obtain ⟨ηn, hηn⟩ := exists_isLinExt_fin n
+    have hF : IsLinExt (combinePar S hScard' (compl_card_eq hScard') ηm ηn) :=
+      isLinExt_combinePar hηm hηn
+    have hSne : S.Nonempty := by
+      rw [← Finset.card_pos, hScard]; exact Nat.pos_of_ne_zero (NeZero.ne m)
+    have hmin0 : combinePar S hScard' (compl_card_eq hScard') ηm ηn (Sum.inl 0) = S.min' hSne := by
+      rw [combinePar_inl]
+      have hz : ηm 0 = ⟨0, by rw [Fintype.card_fin]; exact Nat.pos_of_ne_zero (NeZero.ne m)⟩ :=
+        Fin.ext (isLinExt_fin_val hηm 0)
+      rw [hz, Finset.orderEmbOfFin_zero]
+    refine ⟨combinePar S hScard' (compl_card_eq hScard') ηm ηn,
+      Finset.mem_filter.mpr ⟨mem_linExts.mpr hF, ?_⟩,
+      posSet_combinePar (linExt_surjective hηm.1)⟩
+    rw [cross_lt_iff hF j, hmin0]
+    exact hcond _ (S.min'_mem hSne)
+
+/-- The subset side: `m`-subsets all of whose positions exceed `j` are the
+`m`-subsets of an `(m+n-1-j)`-element interval. -/
+theorem subsetCount (m n : ℕ) (j : Fin n) :
+    ((Finset.univ.powersetCard m).filter
+        (fun S : Finset (Fin (Fintype.card (Fin m ⊕ Fin n))) => ∀ x ∈ S, (j : ℕ) < x.val)).card
+      = (m + n - 1 - j.val).choose m := by
+  have hN : Fintype.card (Fin m ⊕ Fin n) = m + n := by
+    rw [card_par, Fintype.card_fin, Fintype.card_fin]
+  have hj : j.val < Fintype.card (Fin m ⊕ Fin n) := by rw [hN]; have := j.isLt; omega
+  have hfe : (Finset.univ.powersetCard m).filter
+        (fun S : Finset (Fin (Fintype.card (Fin m ⊕ Fin n))) => ∀ x ∈ S, (j : ℕ) < x.val)
+      = (Finset.Ioi (⟨j.val, hj⟩ : Fin (Fintype.card (Fin m ⊕ Fin n)))).powersetCard m := by
+    ext S
+    rw [Finset.mem_filter, Finset.mem_powersetCard, Finset.mem_powersetCard]
+    constructor
+    · rintro ⟨⟨-, hc⟩, hcond⟩
+      exact ⟨fun x hx => Finset.mem_Ioi.mpr (Fin.lt_def.mpr (hcond x hx)), hc⟩
+    · rintro ⟨hsub, hc⟩
+      exact ⟨⟨Finset.subset_univ _, hc⟩, fun x hx => Fin.lt_def.mp (Finset.mem_Ioi.mp (hsub hx))⟩
+  rw [hfe, Finset.card_powersetCard, Fin.card_Ioi]
+  simp only [hN]
+
+/-- **The cross before-count, closed form:**
+`e(Fin m ⊔ Fin n, b_j < a₀) = C(m+n-1-j, m)`. -/
+theorem numBefore_inr_inl_finSum [NeZero m] (j : Fin n) :
+    numBefore (X := Fin m ⊕ Fin n) (Sum.inr j) (Sum.inl 0) = (m + n - 1 - j.val).choose m := by
+  rw [numBefore_inr_inl_eq_card, subsetCount]
+
 end OneThirdTwoThirds
