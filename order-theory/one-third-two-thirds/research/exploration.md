@@ -97,3 +97,30 @@ witness cannot be read off the Hasse diagram locally.
 - A constant-pushing Lean target (toward Kahn–Saks `3/11` or BFT `(5−√5)/10`)
   would need the FKG / Ahlswede–Daykin machinery already in Mathlib
   (`Finset.four_functions_theorem`, `fkg`) — the realistic next lift.
+
+## Two-chains cross-pair (the series-parallel kernel)
+
+`research/explore_two_chains.py`. The disjoint-union and ordinal-sum reductions
+(`ParallelSum`, `OrdinalSum`) reduce the conjecture for **series-parallel**
+posets to a single kernel: *the disjoint union of two chains has a balanced
+(cross) pair.* This script confirms it and isolates a closed-form witness.
+
+For two chains `a₀<⋯<a_{m-1}` and `b₀<⋯<b_{n-1}`, a linear extension is a
+shuffle (`m`-subset of `m+n` positions), so `e = C(m+n,m)` and the cross
+`δ(aᵢ<bⱼ)` is an explicit hypergeometric sum. Findings (all `m,n ≤ 30`, zero
+violations):
+
+- **A balanced cross pair always exists.** δ(aᵢ<bⱼ) ∈ [1/3, 2/3] for some i,j.
+- **Endpoints:** `δ(a₀,b₀) = m/(m+n)` and `δ(a_{m-1},b_{n-1}) = n/(m+n)`.
+- **Monotone paths with step ≤ 1/3.** Along the `a₀`-row `δ(a₀,bⱼ)` (increasing
+  in `j`) and the `b_top`-column `δ(aᵢ,b_{n-1})` (decreasing in `i`), consecutive
+  values differ by **at most 1/3** (the bound is *attained*, e.g. at `(m,n)=(1,2)`).
+- **Closed-form witness (discrete IVT).** Hence the *first crossing* is balanced:
+  - if `m ≤ 2n` (`δ(a₀,b₀) ≤ 2/3`): the least `j` with `δ(a₀,bⱼ) ≥ 1/3` is balanced
+    (a step from `<1/3` lands `<2/3`);
+  - if `m > 2n`: the least `i` with `δ(aᵢ,b_{n-1}) ≤ 2/3` is balanced.
+
+  This rule succeeds for **every** `(m,n)` tested — giving a fully explicit
+  witness, no search. It is the concrete blueprint for formalizing the
+  series-parallel theorem: cross before-count for chains + monotonicity + the
+  `≤ 1/3` step bound + first-crossing IVT.
