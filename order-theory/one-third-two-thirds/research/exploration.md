@@ -124,3 +124,28 @@ violations):
   witness, no search. It is the concrete blueprint for formalizing the
   series-parallel theorem: cross before-count for chains + monotonicity + the
   `≤ 1/3` step bound + first-crossing IVT.
+
+## Width-2 / Linial's theorem (`research/explore_width2.py`)
+
+Probing the counting core of Linial's width-2 theorem. The series/parallel/AddTop
+reductions reduce width-2 to **prime** (connected, series- *and*
+parallel-indecomposable) width-2 cores. Findings:
+
+- **The bounded-step sweep does NOT extend to width 2.** For the smallest prime
+  core, the **"N"** poset (`a<c, b<c, b<d`, 5 linear extensions): the `a₀`-row
+  before-counts are `e(·,a<b)=2`, `e(·,a<d)=4`, so the sweep step is
+  `3·(4−2)=6 > 5=e(P)` — the `1/3` step bound that powered the disjoint-union
+  kernel **fails**. The rectangular-region argument does not generalize.
+- **No simple pair-selection rule.** All prime cores up to `n=6` satisfy the
+  conjecture (zero violations), but the balanced pair is *not* always the two
+  minima or two maxima: at `n=6`, 2 of 19 cores have a balanced pair only among
+  *interior* incomparable pairs (e.g. core `a<{e,f}, b<f, b<…` with balanced
+  pairs `{a,c}` at δ≈0.62 and `{d,f}` at δ≈0.62). The witness is genuinely
+  non-local.
+
+**Conclusion.** Linial's width-2 argument is *not* a generalization of the
+two-chains kernel — it requires a global counting argument over skew lattice-path
+regions that selects a non-obvious pair. The `Linial.balancedPair_of_sweep`
+engine (the intermediate-value mechanism) is correct and reusable, but the sweep
+it needs cannot be the `a₀`-row for general width-2. Formalizing the full theorem
+needs Linial's specific (reflection/ballot-on-skew-shapes) technique.
