@@ -93,6 +93,9 @@ repository. For per-conjecture details, see the linked project documentation.
 ### Formalized conjectures
 
 - **Reconstruction conjecture** — Kelly, P. J. "A congruence theorem for trees." *Pacific J. Math.* 7 (1957), 961–968. Ulam, S. M. *A Collection of Mathematical Problems*. Interscience, 1960. [Submodule](graph-theory/reconstruction-conjecture/)
+  - Tutte, W. T. "All the king's horses. A guide to reconstruction." In *Graph Theory and Related Topics*, Academic Press, 1979, 15–33. (Characteristic polynomial, spanning trees, Hamiltonian counts reconstructible; formalized in the project.)
+  - Kocay, W. L. "Some new methods in reconstruction theory." In *Combinatorial Mathematics IX*, Lecture Notes in Mathematics 884, Springer, 1981, 89–114. (The spanning-cover counting lemma.)
+  - Thatte, B. D. "Kocay's lemma, Whitney's theorem, and some polynomial invariant reconstruction problems." *Electron. J. Combin.* 12 (2005), R63. (The vertex-spanning-cover route followed by the formalization.)
 - **Tuza's conjecture** — Tuza, Zs. "Conjecture." In *Finite and Infinite Sets* (Proc. Colloq. Math. Soc. János Bolyai), 1981. [In-repo project](graph-theory/tuza/)
   - Tuza, Zs. "A conjecture on triangles of graphs." *Graphs and Combinatorics* 6 (1990), 373–380. (Planar case.)
   - Krivelevich, M. "On a conjecture of Tuza about packing and covering of triangles." *Discrete Math.* 142 (1995), 281–286. (Fractional version `τ* ≤ 2ν*`.)
